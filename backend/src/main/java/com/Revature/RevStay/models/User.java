@@ -3,12 +3,12 @@ package com.Revature.RevStay.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "account")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int user_id;
+    private long user_id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -25,7 +25,21 @@ public class User {
     @Column(nullable = false)
     private String role;
 
-    public int getUser_id() {
+    //no argument constructor
+    public User() {
+    }
+
+    //all argument constructor
+    public User(String firstName, String email, String password, String phone, String role) {
+        this.firstName = firstName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.role = role;
+    }
+
+
+    public long getUser_id() {
         return user_id;
     }
 

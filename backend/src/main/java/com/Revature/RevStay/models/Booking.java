@@ -5,22 +5,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
-@Table(name= "users")
+@Table(name = "bookings")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String phoneNumber;
+    @ManyToOne
+    private User user;
+
+    @ManyToOne
+    private Hotel hotel;
+
+    @ManyToOne
+    private Room room;
+
+    private LocalDate checkIn;
+    private LocalDate checkOut;
+    private Double totalPrice;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private BookingStatus status;
 }

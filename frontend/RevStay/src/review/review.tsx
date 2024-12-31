@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import Star  from './star/star.tsx'
 
-export function Review(){
+export default function Review(){
     const [stars, setStars] = useState(0)
 
     return <div>
@@ -19,4 +18,24 @@ export function Review(){
             <input type="submit" value="Submit"/><br/>
         </form>
     </div>
+}
+
+type StarProps = {
+    starId: number, 
+    stars: number, 
+    setStars: (stars: number)=>void
+}
+function Star(props: StarProps){
+    return (
+        <span 
+            onClick={
+                ()=>props.setStars(props.starId)
+            } 
+            id={
+                "star"+props.starId
+            }
+        >
+            {(props.starId <= props.stars)? "★" : "☆"}
+        </span>
+    )
 }

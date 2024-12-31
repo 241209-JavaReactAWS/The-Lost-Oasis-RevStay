@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +26,12 @@ import java.util.Optional;
 @Service
 public class BookingService {
     private final BookingRepository bookingRepository;
+    private final S3AsyncClient S3AsyncClient;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository) {
+    public BookingService(BookingRepository bookingRepository, S3AsyncClient S3AsyncClient) {
         this.bookingRepository = bookingRepository;
+        this.S3AsyncClient = S3AsyncClient;
     }
 
     public InvoiceDTO generateInvoice(Integer bookingId) {

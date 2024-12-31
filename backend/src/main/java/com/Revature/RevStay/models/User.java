@@ -13,6 +13,11 @@ public class User {
     @Column(name = "first_name")
     private String firstName;
 
+
+
+    @Column(name = "last_name")
+    private String lastName;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -30,8 +35,9 @@ public class User {
     }
 
     //all argument constructor
-    public User(String firstName, String email, String password, String phone, String role) {
+    public User(String firstName, String lastName, String email, String password, String phone, String role) {
         this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.phone = phone;
@@ -53,6 +59,14 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

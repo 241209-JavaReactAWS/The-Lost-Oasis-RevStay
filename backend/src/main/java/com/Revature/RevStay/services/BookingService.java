@@ -2,7 +2,6 @@ package com.Revature.RevStay.services;
 
 import com.Revature.RevStay.daos.BookingRepository;
 import com.Revature.RevStay.models.Booking;
-import com.Revature.RevStay.models.InvoiceDTO;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -13,28 +12,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BookingService {
     private final BookingRepository bookingRepository;
-    private final S3AsyncClient S3AsyncClient;
+    private final S3Client S3Client;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository, S3AsyncClient S3AsyncClient) {
+    public BookingService(BookingRepository bookingRepository, S3Client S3Client) {
         this.bookingRepository = bookingRepository;
-        this.S3AsyncClient = S3AsyncClient;
+        this.S3Client = S3Client;
     }
 
-    public InvoiceDTO generateInvoice(Integer bookingId) {
+    public void generateInvoice(Integer bookingId, OutputStream outputStream) {
         Optional<Booking> bookingOpt = this.bookingRepository.findById(bookingId);
         if (bookingOpt.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
@@ -65,10 +70,21 @@ public class BookingService {
             stream.newLine();
             stream.endText();
 
-            // todo get this image from S3
-            File image = File.createTempFile("imageFile", null);
-            InputStream is = ClassLoader.getSystemResourceAsStream();
-            if (is != null) Files.copy(is, image.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            File image = File.createTempFile("imageFile", null);;
+            List<String> hotelImages = booking.getHotel().getImages();
+            if (!hotelImages.isEmpty()) {
+                GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                        .key(hotelImages.get(0))
+                        .build();
+                ResponseBytes<GetObjectResponse> getObjectResponse = this.S3Client.getObject(getObjectRequest, ResponseTransformer.toBytes());
+                byte[] data = getObjectResponse.asByteArray();
+                Files.write(image.toPath(), data);
+            } else {
+                InputStream is = ClassLoader.getSystemResourceAsStream("images/hotel-placeholder.png");
+                if (is != null) Files.copy(is, image.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                else throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
+            }
+
             PDImageXObject hotelImage = PDImageXObject.createFromFileByContent(image, invoiceDocument);
 
             stream.drawImage(hotelImage, 32, 375, 512, 256);
@@ -124,9 +140,7 @@ public class BookingService {
             stream.close();
 
             invoiceDocument.addPage(invoicePage);
-
-            // todo upload PDF file to S3 and return link
-
+            invoiceDocument.save(outputStream);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An IO Exception occurred while generating the invoice document.");
         }

@@ -29,4 +29,7 @@ public class Hotel {
 
     @OneToMany
     private List<Room> rooms;
+
+    @ElementCollection
+    private List<String> images;
 }

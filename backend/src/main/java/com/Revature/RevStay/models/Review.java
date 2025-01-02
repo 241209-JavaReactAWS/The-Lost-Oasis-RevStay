@@ -2,6 +2,8 @@ package com.Revature.RevStay.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "review")
 
@@ -18,9 +20,9 @@ public class Review {
 
     private int rating;
     private String comment;
-    private String date;
+    private LocalDate date;
 
-    public Review(int id, User user, Hotel hotel, int rating, String comment, String date) {
+    public Review(int id, User user, Hotel hotel, int rating, String comment, LocalDate date) {
         this.id = id;
         this.user = user;
         this.hotel = hotel;
@@ -69,11 +71,11 @@ public class Review {
         this.comment = comment;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 }

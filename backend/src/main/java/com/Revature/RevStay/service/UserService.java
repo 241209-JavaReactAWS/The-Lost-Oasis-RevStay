@@ -3,6 +3,11 @@ package com.Revature.RevStay.service;
 import com.Revature.RevStay.dao.UserRepository;
 import com.Revature.RevStay.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +18,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10); // Use same encoder as during registration
+
+    @Autowired
+    AuthenticationManager authManager;
+
+    @Autowired
+    private JWTService jwtService;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -32,14 +43,53 @@ public class UserService {
     }
 
     // Login a user
-    public Optional<User> loginUser(User user) {
-        User loginUser = userRepository.findByEmail(user.getEmail());
+//    public Optional<User> loginUser(User user) {
+//        User loginUser = userRepository.findByEmail(user.getEmail());
+//
+//        // Compare raw password with hashed password
+//        if (loginUser != null && encoder.matches(user.getPassword(), loginUser.getPassword())) {
+//            return Optional.of(loginUser); // Password matches
+//        }
+//
+//        return Optional.empty(); // Invalid credentials
+//    }
 
-        // Compare raw password with hashed password
-        if (loginUser != null && encoder.matches(user.getPassword(), loginUser.getPassword())) {
-            return Optional.of(loginUser); // Password matches
+
+
+    //For Login
+    public String verifyUser(User user) {
+        try {
+            // Authenticate the user
+            Authentication authentication = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+            );
+
+            if (authentication.isAuthenticated()) {
+                // Generate and return the JWT token
+
+                User fullUser = userRepository.findByEmail(user.getEmail());
+                if (fullUser != null) {
+                    System.out.println("Authenticated User: " + fullUser);
+                    // Generate and return the JWT token
+                    return jwtService.generateToken(user.getEmail());
+                }
+
+
+                //                User userBody = userRepository.findByEmail(user.getEmail());
+//                if (userBody != null) {
+//                    return ResponseEntity.ok(userBody); // Return full user object
+//                }
+                // Return authenticated user
+
+            }
+        } catch (Exception ex) {
+            // Return an error message for authentication failure
+            return "401 Unauthorized: Invalid credentials";
         }
 
-        return Optional.empty(); // Invalid credentials
+        // Return a message for any unexpected error
+        return "400 Bad Request: User not found or unexpected error occurred";
     }
+
+
 }

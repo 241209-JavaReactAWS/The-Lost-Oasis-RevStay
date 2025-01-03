@@ -31,7 +31,7 @@ public class UserController {
         if (registeredUser.isPresent()) {
             return ResponseEntity.ok(registeredUser.get());
         }
-        else if(userService.loginUser(user).isPresent()) {
+        else if(!userService.verifyUser(user).isEmpty()) {
             return ResponseEntity.status(409).build();
         }
         else {
@@ -39,15 +39,22 @@ public class UserController {
         }
     }
 
+//    @PostMapping("/login")
+//    public ResponseEntity<User> login(@RequestBody User user) {
+//        Optional<User> loggedinUser = userService.loginUser(user);
+//        if(loggedinUser.isPresent()) {
+//            return ResponseEntity.ok(loggedinUser.get());
+//        }
+//        else{
+//            return ResponseEntity.status(401).build();
+//        }
+//    }
+
+
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
-        Optional<User> loggedinUser = userService.loginUser(user);
-        if(loggedinUser.isPresent()) {
-            return ResponseEntity.ok(loggedinUser.get());
-        }
-        else{
-            return ResponseEntity.status(401).build();
-        }
+    public String login(@RequestBody User user) {
+        System.out.println("Received User: " + user);
+        return userService.verifyUser(user);
     }
 
 

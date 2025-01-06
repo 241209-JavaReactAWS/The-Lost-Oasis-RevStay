@@ -1,5 +1,6 @@
 package com.Revature.RevStay.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,15 +18,18 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne
     private User user;
 
+    private String subject;
     private String message;
     private boolean read;
     private LocalDateTime timestamp;
 
-    public Notification(User recipient, String message) {
+    public Notification(User recipient, String subject, String message) {
         this.user = recipient;
+        this.subject = subject;
         this.message = message;
         this.read = false;
         this.timestamp = LocalDateTime.now();

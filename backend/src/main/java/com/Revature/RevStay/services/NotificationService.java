@@ -20,8 +20,8 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    public Notification sendNotification(User recipient, String message) {
-        Notification notification = new Notification(recipient, message);
+    public Notification sendNotification(User recipient, String subject, String message) {
+        Notification notification = new Notification(recipient, subject, message);
         return this.notificationRepository.save(notification);
     }
 

@@ -1,4 +1,4 @@
-package com.Revature.RevStay.service;
+package com.Revature.RevStay.services;
 
 import com.Revature.RevStay.daos.NotificationRepository;
 import com.Revature.RevStay.models.Notification;

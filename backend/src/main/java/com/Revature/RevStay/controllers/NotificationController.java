@@ -1,7 +1,7 @@
 package com.Revature.RevStay.controllers;
 
 import com.Revature.RevStay.models.Notification;
-import com.Revature.RevStay.service.NotificationService;
+import com.Revature.RevStay.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

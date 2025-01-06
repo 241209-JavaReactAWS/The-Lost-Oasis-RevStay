@@ -14,17 +14,21 @@ type TableProps<T> = {
 }
 export default function Table<T extends object>(props: TableProps<T>){
     return <table>
+        <thead>
         <tr>
             {
-                props.headers.map(h=><th>{h}</th>)
+                props.headers.map((h, i)=><th key={i}>{h}</th>)
             }
-            <th colSpan={Object.keys(props.actions).length}>Actions</th>
+            <th key={props.headers.length} colSpan={Object.keys(props.actions).length}>Actions</th>
         </tr>
+        </thead>
+        <tbody>
         {
-            props.objs.map(o=> 
-                <Row headers={props.headers} actions={props.actions} obj={o}/>
+            props.objs.map((o, i)=> 
+                <Row key={i} headers={props.headers} actions={props.actions} obj={o}/>
             )
         }
+        </tbody>
     </table>
 }
 
@@ -39,43 +43,44 @@ function Row<T>(props: RowProp<T>){
     
     return <tr>
     {
-        props.headers.map((h)=>
-            <th>
-                <Entry<T> 
-                    initText={
-                        props.obj[h] as string
-                    }
-                    currText={
-                        currT[h] as string
-                    }
-                    setText={
-                        t=>{currT[h] = t as any;  forceUpdate();}
-                    }
-                />
-            </th>
+        props.headers.map((h, i)=>
+            <Entry
+                key={i}
+                initText={
+                    props.obj[h] as string
+                }
+                currText={
+                    currT[h] as string
+                }
+                setText={
+                    t=>{currT[h] = t as any;  forceUpdate();}
+                }
+            />
         )
     }
     {
-        Object.entries(props.actions).map(([name, a], _)=>
-            <th><input type="button" value={name} onClick={()=>a(props.obj, currT)}/></th>
+        Object.entries(props.actions).map(([name, a], i)=>
+            <th key={props.headers.length+i}><input type="button" value={name} onClick={()=>a(props.obj, currT)}/></th>
         )
     }
     </tr>
 }
 
 
-type EntryProp<T> = {
+type EntryProp = {
     initText: string,
     currText: string,
     setText: (arg0: string)=>void
 }
-function Entry<T>(props: EntryProp<T>){
-    return <span className="entry">
-        <input value="↻" onClick={()=>props.setText(props.initText)} disabled={props.currText==props.initText}/>
-        <input 
-            type="text" 
-            value={props.currText} 
-            onChange={e=>{props.setText(e.target.value); console.log(e.target.value)}}
-        />
-    </span>
+function Entry(props: EntryProp){
+    return <th className="entry">
+        <span>
+            <input value="↻" onClick={()=>props.setText(props.initText)} disabled={props.currText==props.initText}/>
+            <input 
+                type="text" 
+                value={props.currText} 
+                onChange={e=>{props.setText(e.target.value); console.log(e.target.value)}}
+            />
+        </span>
+    </th>
 }

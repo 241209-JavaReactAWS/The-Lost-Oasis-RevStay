@@ -8,12 +8,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long user_id;
+    private long userId;
 
     @Column(name = "first_name")
     private String firstName;
-
-
 
     @Column(name = "last_name")
     private String lastName;
@@ -27,15 +25,16 @@ public class User {
     @Column(nullable = false)
     private String phone;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private UserRole role;
 
-    //no argument constructor
+    // No-argument constructor
     public User() {
     }
 
-    //all argument constructor
-    public User(String firstName, String lastName, String email, String password, String phone, String role) {
+    // All-argument constructor
+    public User(String firstName, String lastName, String email, String password, String phone, UserRole role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -45,12 +44,17 @@ public class User {
     }
 
 
-    public long getUser_id() {
-        return user_id;
+
+    // Getters and setters
+    // ...
+
+
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -85,6 +89,14 @@ public class User {
         this.password = password;
     }
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -93,26 +105,15 @@ public class User {
         this.phone = phone;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     @Override
     public String toString() {
         return "User{" +
-                "user_id=" + user_id +
+                "userId=" + userId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", role='" + role + '\'' +
+                ", role=" + role +
                 '}';
     }
-
-
-
 }

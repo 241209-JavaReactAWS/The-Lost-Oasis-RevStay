@@ -59,37 +59,27 @@ public class UserService {
     //For Login
     public String verifyUser(User user) {
         try {
-            // Authenticate the user
             Authentication authentication = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
             );
 
             if (authentication.isAuthenticated()) {
-                // Generate and return the JWT token
-
                 User fullUser = userRepository.findByEmail(user.getEmail());
                 if (fullUser != null) {
                     System.out.println("Authenticated User: " + fullUser);
-                    // Generate and return the JWT token
-                    return jwtService.generateToken(user.getEmail());
+                    String token = jwtService.generateToken(fullUser.getEmail());
+                    System.out.println("JWT Token: " + token);
+                    return token;
                 }
-
-
-                //                User userBody = userRepository.findByEmail(user.getEmail());
-//                if (userBody != null) {
-//                    return ResponseEntity.ok(userBody); // Return full user object
-//                }
-                // Return authenticated user
-
             }
         } catch (Exception ex) {
-            // Return an error message for authentication failure
+            System.out.println("Authentication Failed: " + ex.getMessage());
             return "401 Unauthorized: Invalid credentials";
         }
 
-        // Return a message for any unexpected error
         return "400 Bad Request: User not found or unexpected error occurred";
     }
+
 
 
 }

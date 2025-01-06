@@ -32,15 +32,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login").permitAll() // Public endpoints
-                        .anyRequest().authenticated()) // Secure all other endpoints
-                .httpBasic(httpBasic -> httpBasic.realmName("RevStay API")) // Enable HTTP Basic Auth
+                        .requestMatchers("/register", "/login").permitAll() // Allow unauthenticated access
+                        .anyRequest().authenticated()) // Secure other endpoints
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Stateless sessions
-
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
         return http.build();
     }
+
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

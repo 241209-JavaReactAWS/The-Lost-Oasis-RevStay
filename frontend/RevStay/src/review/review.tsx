@@ -4,17 +4,34 @@ import "./review.css"
 
 export default function Review(){
     const [stars, setStars] = useState(0)
+    const [hoverStars, setHoverStars] = useState(0)
+    
     const [isHidden, setHidden] = useState(false)
 
     return <div id="review" className= {isHidden ? "hidden" : ""}>
         <Close setHidden={()=>setHidden(true)}/>
         <label>Stars</label>
         <div id="stars">
-            <Star starId={1} stars={stars} setStars={setStars}/>
-            <Star starId={2} stars={stars} setStars={setStars}/>
-            <Star starId={3} stars={stars} setStars={setStars}/>
-            <Star starId={4} stars={stars} setStars={setStars}/>
-            <Star starId={5} stars={stars} setStars={setStars}/>
+        {
+            [1,2,3,4,5].map(i=>
+                <Star 
+                    key={i}
+                    shouldDisplay={
+                        (hoverStars == 0) ? i <= stars : i <= hoverStars
+                    }
+                    onClick={
+                        ()=>setStars(i)
+                    }
+                    onMouseIn={
+                        ()=>setHoverStars(i)
+                    }
+                    onMouseOut={
+                        ()=>setHoverStars(0)
+                    }
+
+                />
+            )
+        }
         </div>
         <label>Description</label>
         <textarea/>
@@ -23,21 +40,26 @@ export default function Review(){
 }
 
 type StarProps = {
-    starId: number, 
-    stars: number, 
-    setStars: (stars: number)=>void
+    shouldDisplay: boolean, 
+    onClick: ()=>void,
+    onMouseIn: ()=>void,
+    onMouseOut: ()=>void
 }
 function Star(props: StarProps){
     return (
         <span 
+            className = "star"
             onClick={
-                ()=>props.setStars(props.starId)
+                ()=>props.onClick()
             } 
-            id={
-                "star"+props.starId
+            onMouseEnter={
+                ()=>props.onMouseIn()
+            }
+            onMouseLeave={
+                ()=>props.onMouseOut()
             }
         >
-            {(props.starId <= props.stars)? "★" : "☆"}
+        {props.shouldDisplay ? "★" : "☆"}
         </span>
     )
 }

@@ -18,7 +18,7 @@ public class Booking {
     private Integer id;
 
     @ManyToOne
-    private User user;
+    private User customer;
 
     @ManyToOne
     private Hotel hotel;
@@ -29,6 +29,7 @@ public class Booking {
     private LocalDate checkIn;
     private LocalDate checkOut;
     private Double totalPrice;
+    private Integer numGuests;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;

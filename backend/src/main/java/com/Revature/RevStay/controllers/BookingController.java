@@ -1,25 +1,41 @@
 package com.Revature.RevStay.controllers;
 
+import com.Revature.RevStay.models.Booking;
+import com.Revature.RevStay.models.BookingRequest;
 import com.Revature.RevStay.services.BookingService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping("/bookings")
 public class BookingController {
     private final BookingService bookingService;
 
     @Autowired
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
+    }
+
+//    @PostMapping
+//    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest bookingRequest) {
+//        return ResponseEntity.ok(this.bookingService.book(userID, bookingRequest));
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<List<Booking>> getAllBookingsForCustomer() {
+//        return ResponseEntity.ok(this.bookingService.getCustomerBookings(userID));
+//    }
+    
+    @GetMapping("/hotel/{id}")
+    public ResponseEntity<List<Booking>> getAllBookingsForHotel(@PathVariable Integer id) {
+        return ResponseEntity.ok(this.bookingService.getAllHotelBookings(id));
     }
 
     @GetMapping("/invoice/{id}")

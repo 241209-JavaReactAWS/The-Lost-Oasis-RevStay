@@ -1,7 +1,10 @@
 package com.Revature.RevStay.services;
 
 import com.Revature.RevStay.daos.BookingRepository;
-import com.Revature.RevStay.models.Booking;
+import com.Revature.RevStay.daos.HotelRepository;
+import com.Revature.RevStay.daos.RoomRepository;
+import com.Revature.RevStay.daos.UserRepository;
+import com.Revature.RevStay.models.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -28,15 +31,64 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 @Service
 public class BookingService {
+    private final UserRepository userRepository;
+    private final HotelRepository hotelRepository;
+    private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
     private final S3Client S3Client;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository, S3Client S3Client) {
+    public BookingService(UserRepository userRepository, HotelRepository hotelRepository, RoomRepository roomRepository, BookingRepository bookingRepository, S3Client S3Client) {
+        this.userRepository = userRepository;
+        this.hotelRepository = hotelRepository;
+        this.roomRepository = roomRepository;
         this.bookingRepository = bookingRepository;
         this.S3Client = S3Client;
+    }
+
+    public Booking book(Integer userID, BookingRequest bookingRequest) {
+        Booking booking = new Booking();
+
+        Optional<User> user = this.userRepository.findById(userID);
+        if (user.isEmpty())
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
+        booking.setCustomer(user.get());
+
+        Optional<Hotel> hotel = this.hotelRepository.findById(bookingRequest.getHotelID());
+        if (hotel.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to find hotel with given ID");
+        booking.setHotel(hotel.get());
+
+        Optional<Room> room = this.roomRepository.findById(bookingRequest.getRoomID());
+        if (room.isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to find room with given ID");
+        booking.setRoom(room.get());
+
+        if (bookingRequest.getCheckInDate().isAfter(bookingRequest.getCheckOutDate()) || bookingRequest.getCheckInDate().equals(bookingRequest.getCheckOutDate()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid check-in and check-out dates.");
+        booking.setCheckIn(bookingRequest.getCheckInDate());
+        booking.setCheckOut(bookingRequest.getCheckOutDate());
+
+        if (bookingRequest.getNumGuests() <= 0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid number of guests");
+        booking.setNumGuests(bookingRequest.getNumGuests());
+
+        booking.setTotalPrice(DAYS.between(booking.getCheckIn(), booking.getCheckOut()) * booking.getRoom().getPricePerNight());
+        booking.setStatus(BookingStatus.PENDING);
+
+        return this.bookingRepository.save(booking);
+    }
+
+    public List<Booking> getCustomerBookings(int customerId) {
+        return this.bookingRepository.findAllByCustomerId(customerId);
+    }
+
+    public List<Booking> getAllHotelBookings(int hotelId) {
+        return this.bookingRepository.findAllByHotelId(hotelId);
     }
 
     public void generateInvoice(Integer bookingId, OutputStream outputStream) {
@@ -104,7 +156,7 @@ public class BookingService {
             stream.setFont(MW_BOLD, 16);
             stream.showText("Customer: ");
             stream.setFont(MW_REGULAR, 16);
-            stream.showText("%s %s".formatted(booking.getUser().getFirstName(), booking.getUser().getLastName()));
+            stream.showText("%s %s".formatted(booking.getCustomer().getFirstName(), booking.getCustomer().getLastName()));
             stream.newLine();
             stream.newLine();
             stream.setFont(MW_BOLD, 16);

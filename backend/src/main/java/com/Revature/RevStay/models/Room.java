@@ -6,21 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name= "users")
+@Table(name = "rooms")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@AllArgsConstructor
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String phoneNumber;
+    @ManyToOne
+    private Hotel hotel;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private String roomType;
+    private Double pricePerNight;
 }

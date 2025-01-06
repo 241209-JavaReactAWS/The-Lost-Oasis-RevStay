@@ -24,7 +24,7 @@ public class Hotel {
     private String description;
     private String amenities;
 
-    @ManyToOne
+    @OneToOne
     private User owner;
 
     @OneToMany

@@ -1,0 +1,66 @@
+body{
+    background-color: greenyellow;
+}
+
+#review{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 30%;
+
+    padding: 10px;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    background-color: white;
+    opacity: 90%;
+    border:1px solid black;
+    border-radius: 10px;
+
+    color: black;
+    font-size: large;
+    
+    & * {
+        display: block;
+        text-align: center;
+    }
+
+    & #stars {
+        display: flex;
+        justify-content: center;
+        font-size: xxx-large;
+        color: yellow;
+    }
+
+    & textarea{
+        height: 50%;
+        text-align: left;
+        background-color: gray;
+        resize: none;
+    }
+
+    & input[type="submit"]{
+        height: 5%;
+    }
+
+    & .close{
+        align-self: flex-start;
+    }
+}
+
+.hidden {
+    animation: fadeOut ease 1s;
+    animation-fill-mode: forwards;
+}
+  
+@keyframes fadeOut {
+    100% {
+        opacity: 0;
+    }
+}

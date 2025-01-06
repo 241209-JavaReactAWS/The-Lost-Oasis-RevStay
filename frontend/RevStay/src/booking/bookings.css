@@ -1,0 +1,9 @@
+.bookings{
+    & div:first-child{
+        display: flex;
+
+        padding-bottom: 10px;
+
+        font-weight: bold;
+    }
+}

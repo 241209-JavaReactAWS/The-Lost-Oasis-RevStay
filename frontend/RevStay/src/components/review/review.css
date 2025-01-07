@@ -55,7 +55,7 @@ body{
 }
 
 .hidden {
-    animation: fadeOut ease 1s;
+    animation: fadeOut ease .5s;
     animation-fill-mode: forwards;
 }
   

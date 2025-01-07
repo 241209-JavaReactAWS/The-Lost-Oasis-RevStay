@@ -1,5 +1,5 @@
 import { useState, useReducer } from 'react'
-import "./entry.css"
+import "./admin_table.css"
 
 type Header<T> = keyof T & string
 
@@ -12,7 +12,7 @@ type TableProps<T> = {
     objs: T[], 
     actions: Action<T>
 }
-export default function Table<T extends object>(props: TableProps<T>){
+export default function AdminTable<T extends object>(props: TableProps<T>){
     return <table>
         <thead>
         <tr>
@@ -73,8 +73,8 @@ type EntryProp = {
     setText: (arg0: string)=>void
 }
 function Entry(props: EntryProp){
-    return <th className="entry">
-        <span>
+    return <th>
+        <span className="entry">
             <input value="↻" onClick={()=>props.setText(props.initText)} disabled={props.currText==props.initText}/>
             <input 
                 type="text" 

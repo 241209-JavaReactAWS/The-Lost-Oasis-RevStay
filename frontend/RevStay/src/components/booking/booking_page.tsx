@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Booking, Completed, InSession, Pending } from "./booking_type"
-import Table from "../table/table"
+import Table from "../admin_table/admin_table"
 import "./bookings.css"
 
 export default function Bookings(){

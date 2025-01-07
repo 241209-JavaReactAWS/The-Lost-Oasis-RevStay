@@ -83,8 +83,10 @@ public class BookingService {
         return this.bookingRepository.save(booking);
     }
 
-    public List<Booking> getCustomerBookings(int customerId) {
-        return this.bookingRepository.findAllByCustomerId(customerId);
+    public List<Booking> getCustomerBookings(String customerEmail) {
+        User customer = this.userRepository.findByEmail(customerEmail);
+        if (customer == null) return List.of();
+        else return this.bookingRepository.findAllByCustomer(customer);
     }
 
     public List<Booking> getAllHotelBookings(int hotelId) {

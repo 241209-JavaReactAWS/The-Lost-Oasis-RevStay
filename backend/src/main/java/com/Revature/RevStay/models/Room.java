@@ -16,8 +16,10 @@ public class Room {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
+    private String roomNumber;
     private String roomType;
     private Double pricePerNight;
 }

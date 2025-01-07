@@ -32,4 +32,5 @@ public class Hotel {
 
     @ElementCollection
     private List<String> images;
+
 }

@@ -4,6 +4,7 @@ import com.Revature.RevStay.models.Notification;
 import com.Revature.RevStay.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +19,10 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Notification>> getUserNotifications(@RequestAttribute UserDetails userDetails) {
-        return ResponseEntity.ok(this.notificationService.getAllUserNotifications(userDetails.getUserId()));
-    }
+   // @GetMapping
+    //public ResponseEntity<List<Notification>> getUserNotifications(@RequestAttribute UserDetails userDetails) {
+    //    return ResponseEntity.ok(this.notificationService.getAllUserNotifications(userDetails.getUserId()));
+    //}
 
     @PostMapping("/{notificationId}")
     public ResponseEntity<?> markNotificationAsRead(@PathVariable Integer notificationId) {

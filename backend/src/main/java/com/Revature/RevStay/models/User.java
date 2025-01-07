@@ -29,6 +29,7 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+
     // No-argument constructor
     public User() {
     }
@@ -116,4 +117,5 @@ public class User {
                 ", role=" + role +
                 '}';
     }
+
 }

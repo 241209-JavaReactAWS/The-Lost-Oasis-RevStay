@@ -28,8 +28,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
-<<<<<<< HEAD
-=======
 
     // No-argument constructor
     public User() {
@@ -118,5 +116,4 @@ public class User {
                 ", role=" + role +
                 '}';
     }
->>>>>>> sagar-dev
 }

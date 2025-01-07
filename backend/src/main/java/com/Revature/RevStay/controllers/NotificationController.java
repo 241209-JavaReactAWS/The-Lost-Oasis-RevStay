@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
@@ -19,10 +20,10 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-   // @GetMapping
-    //public ResponseEntity<List<Notification>> getUserNotifications(@RequestAttribute UserDetails userDetails) {
-    //    return ResponseEntity.ok(this.notificationService.getAllUserNotifications(userDetails.getUserId()));
-    //}
+    @GetMapping
+    public ResponseEntity<List<Notification>> getUserNotifications(@RequestAttribute UserDetails userDetails) {
+        return ResponseEntity.ok(this.notificationService.getAllUserNotifications(userDetails.getUsername()));
+    }
 
     @PostMapping("/{notificationId}")
     public ResponseEntity<?> markNotificationAsRead(@PathVariable Integer notificationId) {

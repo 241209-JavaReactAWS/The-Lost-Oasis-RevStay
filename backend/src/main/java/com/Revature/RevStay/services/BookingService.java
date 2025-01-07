@@ -58,7 +58,7 @@ public class BookingService {
         this.emailService = emailService;
     }
 
-    public Booking createBooking(Long userId, BookingRequest bookingRequest) {
+    public Booking createBooking(Integer userId, BookingRequest bookingRequest) {
         // Validate user
         User customer = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -102,6 +102,11 @@ public class BookingService {
         return savedBooking;
     }
 
+    public List<Booking> getCustomerBookings(String customerEmail) {
+        User customer = this.userRepository.findByEmail(customerEmail);
+        if (customer == null) return List.of();
+        else return this.bookingRepository.findAllByCustomer(customer);
+    }
 
     public Booking updateBooking(Integer bookingId, BookingRequest updatedRequest) {
         // Find booking
@@ -122,12 +127,6 @@ public class BookingService {
         sendBookingUpdateEmail(booking.getCustomer(), updatedBooking);
 
         return updatedBooking;
-    }
-
-
-
-    public List<Booking> getCustomerBookings(int customerId) {
-        return this.bookingRepository.findAllByCustomerId(customerId);
     }
 
     public List<Booking> getAllHotelBookings(int hotelId) {

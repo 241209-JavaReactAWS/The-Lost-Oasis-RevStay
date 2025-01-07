@@ -25,8 +25,8 @@ public class NotificationService {
         return this.notificationRepository.save(notification);
     }
 
-    public List<Notification> getAllUserNotifications(Integer userId) {
-        return this.notificationRepository.findAllByUserId(userId);
+    public List<Notification> getAllUserNotifications(String email) {
+        return this.notificationRepository.findAllByUserEmail(email);
     }
 
     public void markNotificationAsRead(Integer notificationId) {

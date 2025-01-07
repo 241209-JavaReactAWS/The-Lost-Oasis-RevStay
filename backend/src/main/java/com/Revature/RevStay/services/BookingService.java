@@ -31,6 +31,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
@@ -40,48 +46,85 @@ public class BookingService {
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
     private final S3Client S3Client;
+    private final EmailService emailService;
 
     @Autowired
-    public BookingService(UserRepository userRepository, HotelRepository hotelRepository, RoomRepository roomRepository, BookingRepository bookingRepository, S3Client S3Client) {
+    public BookingService(UserRepository userRepository, HotelRepository hotelRepository, RoomRepository roomRepository, BookingRepository bookingRepository, S3Client S3Client, EmailService emailService) {
         this.userRepository = userRepository;
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
         this.bookingRepository = bookingRepository;
         this.S3Client = S3Client;
+        this.emailService = emailService;
     }
 
-    public Booking book(Integer userID, BookingRequest bookingRequest) {
+    public Booking createBooking(Long userId, BookingRequest bookingRequest) {
+        // Validate user
+        User customer = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Validate hotel
+        Hotel hotel = hotelRepository.findById(bookingRequest.getHotelID())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found"));
+
+        // Validate room
+        Room room = roomRepository.findById(bookingRequest.getRoomID())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
+
+        // Validate dates
+        if (bookingRequest.getCheckInDate().isAfter(bookingRequest.getCheckOutDate()) ||
+                bookingRequest.getCheckInDate().isEqual(bookingRequest.getCheckOutDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid check-in and check-out dates");
+        }
+
+        // Validate guest count
+        if (bookingRequest.getNumGuests() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid number of guests");
+        }
+
+        // Create booking
         Booking booking = new Booking();
-
-        Optional<User> user = this.userRepository.findById(userID);
-        if (user.isEmpty())
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
-        booking.setCustomer(user.get());
-
-        Optional<Hotel> hotel = this.hotelRepository.findById(bookingRequest.getHotelID());
-        if (hotel.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to find hotel with given ID");
-        booking.setHotel(hotel.get());
-
-        Optional<Room> room = this.roomRepository.findById(bookingRequest.getRoomID());
-        if (room.isEmpty())
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unable to find room with given ID");
-        booking.setRoom(room.get());
-
-        if (bookingRequest.getCheckInDate().isAfter(bookingRequest.getCheckOutDate()) || bookingRequest.getCheckInDate().equals(bookingRequest.getCheckOutDate()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid check-in and check-out dates.");
+        booking.setCustomer(customer);
+        booking.setHotel(hotel);
+        booking.setRoom(room);
         booking.setCheckIn(bookingRequest.getCheckInDate());
         booking.setCheckOut(bookingRequest.getCheckOutDate());
-
-        if (bookingRequest.getNumGuests() <= 0)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid number of guests");
         booking.setNumGuests(bookingRequest.getNumGuests());
-
-        booking.setTotalPrice(DAYS.between(booking.getCheckIn(), booking.getCheckOut()) * booking.getRoom().getPricePerNight());
+        booking.setTotalPrice(DAYS.between(bookingRequest.getCheckInDate(), bookingRequest.getCheckOutDate()) * room.getPricePerNight());
         booking.setStatus(BookingStatus.PENDING);
 
-        return this.bookingRepository.save(booking);
+        // Save booking
+        Booking savedBooking = bookingRepository.save(booking);
+
+        // Send email notification
+        sendBookingConfirmationEmail(customer, savedBooking);
+
+        return savedBooking;
     }
+
+
+    public Booking updateBooking(Integer bookingId, BookingRequest updatedRequest) {
+        // Find booking
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+
+        // Update booking details
+        booking.setCheckIn(updatedRequest.getCheckInDate());
+        booking.setCheckOut(updatedRequest.getCheckOutDate());
+        booking.setNumGuests(updatedRequest.getNumGuests());
+        booking.setTotalPrice(DAYS.between(updatedRequest.getCheckInDate(), updatedRequest.getCheckOutDate()) * booking.getRoom().getPricePerNight());
+        booking.setStatus(BookingStatus.CONFIRMED);
+
+        // Save updated booking
+        Booking updatedBooking = bookingRepository.save(booking);
+
+        // Send email notification
+        sendBookingUpdateEmail(booking.getCustomer(), updatedBooking);
+
+        return updatedBooking;
+    }
+
+
 
     public List<Booking> getCustomerBookings(int customerId) {
         return this.bookingRepository.findAllByCustomerId(customerId);
@@ -196,5 +239,33 @@ public class BookingService {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An IO Exception occurred while generating the invoice document.");
         }
+    }
+
+    private void sendBookingConfirmationEmail(User customer, Booking booking) {
+        String subject = "Booking Confirmation - RevStay";
+        String message = String.format("Dear %s %s,\n\nYour booking is confirmed!\n\nDetails:\nHotel: %s\nRoom: %s\nCheck-in: %s\nCheck-out: %s\nTotal Price: $%.2f\n\nThank you for choosing RevStay!",
+                customer.getFirstName(),
+                customer.getLastName(),
+                booking.getHotel().getName(),
+                booking.getRoom().getRoomType(),
+                booking.getCheckIn().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getTotalPrice());
+
+        emailService.sendEmail(customer.getEmail(), subject, message);
+    }
+
+    private void sendBookingUpdateEmail(User customer, Booking booking) {
+        String subject = "Booking Updated - RevStay";
+        String message = String.format("Dear %s %s,\n\nYour booking has been updated!\n\nUpdated Details:\nHotel: %s\nRoom: %s\nCheck-in: %s\nCheck-out: %s\nTotal Price: $%.2f\n\nThank you for choosing RevStay!",
+                customer.getFirstName(),
+                customer.getLastName(),
+                booking.getHotel().getName(),
+                booking.getRoom().getRoomType(),
+                booking.getCheckIn().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getTotalPrice());
+
+        emailService.sendEmail(customer.getEmail(), subject, message);
     }
 }

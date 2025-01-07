@@ -1,8 +1,11 @@
 import {AppBar, Badge, Box, IconButton, Toolbar, Typography} from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu'
+import {useNavigate} from 'react-router'
 
 export default function Navbar() {
+    const navigate = useNavigate()
+
     return <Box sx={{flexGrow: 1}}>
         <AppBar position='static'>
             <Toolbar>
@@ -25,7 +28,7 @@ export default function Navbar() {
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
                 <Box>
-                    <IconButton size="large" color="inherit">
+                    <IconButton size="large" color="inherit" onClick={() => navigate('/notifications')}>
                         <Badge invisible badgeContent={0} color="error">
                             <NotificationsIcon />
                         </Badge>

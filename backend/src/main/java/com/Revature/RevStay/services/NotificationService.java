@@ -26,7 +26,7 @@ public class NotificationService {
     }
 
     public List<Notification> getAllUserNotifications(Integer userId) {
-        return this.notificationRepository.findAllByUserIdAndReadFalse(userId);
+        return this.notificationRepository.findAllByUserId(userId);
     }
 
     public void markNotificationAsRead(Integer notificationId) {

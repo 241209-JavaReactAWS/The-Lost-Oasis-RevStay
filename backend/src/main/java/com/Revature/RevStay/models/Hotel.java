@@ -32,4 +32,7 @@ public class Hotel {
 
     @ElementCollection
     private List<String> images;
+
+    public Hotel(Integer hotelId) {
+    }
 }

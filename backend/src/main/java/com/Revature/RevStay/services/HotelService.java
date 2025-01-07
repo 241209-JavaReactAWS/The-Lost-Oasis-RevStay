@@ -7,6 +7,8 @@ import com.Revature.RevStay.models.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class HotelService {
 
@@ -27,5 +29,9 @@ public class HotelService {
 
         hotel.setOwner(user);
         return hotelRepository.save(hotel);
+    }
+
+    public Optional<Hotel> getHotelById(Integer hotelId) {
+        return hotelRepository.findById(hotelId);
     }
 }

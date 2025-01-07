@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -76,6 +77,12 @@ public class UserService {
         return "400 Bad Request: User not found or unexpected error occurred";
     }
 
+    @Transactional(readOnly = true)
+    public Long getUserIdByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .map(User::getUserId)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + email));
+    }
 
 
 }

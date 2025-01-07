@@ -1,4 +1,4 @@
-package com.Revature.RevStay.config;
+package com.Revature.RevStay.configurations;
 
 import com.Revature.RevStay.filter.JWTFilter;
 import org.springframework.beans.factory.annotation.Autowired;

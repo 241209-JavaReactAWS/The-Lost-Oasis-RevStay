@@ -1,7 +1,7 @@
-package com.Revature.RevStay.controller;
+package com.Revature.RevStay.controllers;
 
 import com.Revature.RevStay.models.User;
-import com.Revature.RevStay.service.UserService;
+import com.Revature.RevStay.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

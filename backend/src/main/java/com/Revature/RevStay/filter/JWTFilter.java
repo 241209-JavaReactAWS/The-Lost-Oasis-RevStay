@@ -1,7 +1,7 @@
 package com.Revature.RevStay.filter;
 
-import com.Revature.RevStay.service.CustomUserDetailsService;
-import com.Revature.RevStay.service.JWTService;
+import com.Revature.RevStay.services.CustomUserDetailsService;
+import com.Revature.RevStay.services.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

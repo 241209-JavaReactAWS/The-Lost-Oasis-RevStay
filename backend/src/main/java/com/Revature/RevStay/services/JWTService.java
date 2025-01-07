@@ -1,4 +1,4 @@
-package com.Revature.RevStay.service;
+package com.Revature.RevStay.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

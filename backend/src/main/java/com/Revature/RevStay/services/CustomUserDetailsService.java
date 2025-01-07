@@ -1,6 +1,6 @@
-package com.Revature.RevStay.service;
+package com.Revature.RevStay.services;
 
-import com.Revature.RevStay.dao.UserRepository;
+import com.Revature.RevStay.daos.UserRepository;
 import com.Revature.RevStay.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -20,52 +20,10 @@ export default function Notifications() {
     const [error, setError] = useState<boolean>(false)
 
     useEffect(() => {
-        // todo uncomment postman request
-        // postman.get('/notifications')
-        //     .then((res) => {
-        //         setNotifications(res.data)
-        //     }).catch(() => setError(true))
-
-        // todo replace this with API call
-        const notifications: Array<INotification> = [
-            {
-                id: 1,
-                subject: 'Booking Confirmed',
-                message: 'Your booking at Buena Vista Hotel has been confirmed for 12/19.',
-                read: false,
-                timestamp: '2025-01-01 05:45:19'
-            },
-            {
-                id: 2,
-                subject: 'Booking Confirmed',
-                message: 'Your booking at Buena Vista Hotel has been confirmed for 12/19.',
-                read: false,
-                timestamp: '2025-01-01 05:45:19'
-            },
-            {
-                id: 3,
-                subject: 'Booking Confirmed',
-                message: 'Your booking at Buena Vista Hotel has been confirmed for 12/19.',
-                read: false,
-                timestamp: '2025-01-01 05:45:19'
-            },
-            {
-                id: 4,
-                subject: 'Booking Confirmed',
-                message: 'Your booking at Buena Vista Hotel has been confirmed for 12/19.',
-                read: true,
-                timestamp: '2025-01-01 05:45:19'
-            },
-            {
-                id: 5,
-                subject: 'Booking Confirmed',
-                message: 'Your booking at Buena Vista Hotel has been confirmed for 12/19.',
-                read: true,
-                timestamp: '2025-01-01 05:45:19'
-            }
-        ]
-
-        setNotifications(notifications)
+        postman.get('/notifications')
+            .then((res) => {
+                setNotifications(res.data)
+            }).catch(() => setError(true))
     }, [])
 
     const handleFilterToggle = (_event: MouseEvent<HTMLElement>, newFilter: 'all' | 'unread' | null) => {

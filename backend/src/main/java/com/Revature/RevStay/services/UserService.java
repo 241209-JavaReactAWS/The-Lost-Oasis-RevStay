@@ -14,17 +14,15 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private final AuthenticationManager authManager;
+    private final JWTService jwtService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10); // Use same encoder as during registration
 
     @Autowired
-    AuthenticationManager authManager;
-
-    @Autowired
-    private JWTService jwtService;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(AuthenticationManager authManager, JWTService jwtService, UserRepository userRepository) {
+        this.authManager = authManager;
+        this.jwtService = jwtService;
         this.userRepository = userRepository;
     }
 

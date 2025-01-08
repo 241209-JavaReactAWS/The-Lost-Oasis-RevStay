@@ -19,12 +19,14 @@ import java.io.IOException;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
+    private final JWTService jwtService;
+    private final ApplicationContext applicationContext;
 
     @Autowired
-    private JWTService jwtService;
-
-    @Autowired
-    ApplicationContext applicationContext;
+    public JWTFilter(JWTService jwtService, ApplicationContext applicationContext) {
+        this.jwtService = jwtService;
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -54,6 +56,7 @@ public class JWTFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                request.setAttribute("userDetails", userDetails);
             }else {
                 System.out.println("Token Validation Failed");
             }

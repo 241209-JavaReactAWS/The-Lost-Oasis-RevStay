@@ -112,4 +112,7 @@ public class Hotel {
     public void setImages(List<String> images) {
         this.images = images;
     }
+
+
+
 }

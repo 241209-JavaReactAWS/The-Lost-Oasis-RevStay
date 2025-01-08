@@ -1,0 +1,30 @@
+.rooms-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rooms-table th,
+.rooms-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.rooms-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.rooms-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.rooms-table tr:hover {
+  background-color: #ddd;
+}
+
+.rooms-table img {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+}

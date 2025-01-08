@@ -1,7 +1,7 @@
-import LoginForm from '../../components/login/LoginForm';
+import RegisterForm from '../../components/register/RegisterForm';
 import { Box, Typography } from '@mui/material';
 
-const LoginPage = () => {
+const RegisterPage = () => {
     return (
         <Box
             sx={{
@@ -28,12 +28,12 @@ const LoginPage = () => {
                     textAlign="center"
                     sx={{ color: '#1976d2', fontWeight: 'bold' }}
                 >
-                    Login
+                    Register
                 </Typography>
-                <LoginForm />
+                <RegisterForm />
             </Box>
         </Box>
     );
 };
 
-export default LoginPage;
+export default RegisterPage;

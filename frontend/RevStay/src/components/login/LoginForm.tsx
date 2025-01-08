@@ -1,4 +1,4 @@
-import axios from 'axios';
+import {postman as axios} from '../../postman';
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 

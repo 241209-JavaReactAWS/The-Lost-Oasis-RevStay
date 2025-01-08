@@ -2,6 +2,9 @@ package com.Revature.RevStay.services;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.Revature.RevStay.daos.UserRepository;
+import com.Revature.RevStay.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Revature.RevStay.models.Review;
 import com.Revature.RevStay.daos.ReviewRepository;
@@ -12,8 +15,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReviewService {
 
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+
     @Autowired
-    private ReviewRepository reviewRepository;
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository) {
+        this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
+    }
 
     // Create or Save a Review
     public Review createReview(Review review) {
@@ -26,8 +35,9 @@ public class ReviewService {
     }
 
     // Find all Reviews for a specific User
-    public List<Review> getReviewsByUser(int userId) {
-        return reviewRepository.findByUserId(userId);
+    public List<Review> getReviewsByUser(String userEmail) {
+        User user = userRepository.findByEmail(userEmail);
+        return reviewRepository.findByUser(user);
     }
 
     // Find all Reviews for a specific Hotel

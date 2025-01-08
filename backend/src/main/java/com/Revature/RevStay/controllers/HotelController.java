@@ -1,4 +1,5 @@
 package com.Revature.RevStay.controllers;
+
 import com.Revature.RevStay.dtos.BulkRoomCreationDTO;
 import com.Revature.RevStay.models.Hotel;
 import com.Revature.RevStay.models.Room;
@@ -47,4 +48,34 @@ public class HotelController {
                 })
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+  
+  
+  // Add a new room to a hotel
+    @PostMapping("/{hotelId}/rooms")
+    public ResponseEntity<Room> addRoom(@PathVariable Integer hotelId, @RequestBody Room room) {
+        Room addedRoom = hotelService.addRoomToHotel(hotelId, room);
+
+        if (addedRoom == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(addedRoom);
+    }
+
+    // Update room availability or status
+    @PutMapping("/rooms/{roomId}")
+    public ResponseEntity<Room> updateRoom(@PathVariable Integer roomId, @RequestBody Room updatedRoom) {
+        Room room = hotelService.updateRoomDetails(roomId, updatedRoom);
+
+        if (room == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(room);
+    }
+  
+  
+  
+  
 }
+

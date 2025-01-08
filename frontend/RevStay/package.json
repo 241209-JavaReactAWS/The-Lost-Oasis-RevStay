@@ -101,6 +101,7 @@
     "react-dom": "^18.3.1",
     "react-refresh": "^0.14.2",
     "react-router": "^7.1.1",
+    "react-router-dom": "^7.1.1",
     "resolve-from": "^4.0.0",
     "reusify": "^1.0.4",
     "rollup": "^4.29.1",
@@ -137,6 +138,7 @@
   "devDependencies": {
     "@types/react": "^19.0.3",
     "@types/react-dom": "^19.0.2",
+    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.3.4"
   }
 }

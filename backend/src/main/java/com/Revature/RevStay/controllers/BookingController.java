@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,7 +34,7 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getAllBookingsForCustomer(@RequestAttribute UserDetails userDetails) {
         return ResponseEntity.ok(this.bookingService.getCustomerBookings(userDetails.getUsername()));
     }
-    
+
     @GetMapping("/hotel/{id}")
     public ResponseEntity<List<Booking>> getAllBookingsForHotel(@PathVariable Integer id) {
         return ResponseEntity.ok(this.bookingService.getAllHotelBookings(id));

@@ -46,7 +46,7 @@ const Rooms = () => {
                     </tr>
                     <tr>
                         <td>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:***REMOVED***XQ&s" alt="" />
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp4CULCWWaUzxMP5rGxTBVS2kwwKocDDsbXQ&s" alt="" />
                         </td>
                         <td>102</td>
                         <td>Double</td>
@@ -57,7 +57,7 @@ const Rooms = () => {
                     </tr>
                     <tr>
                         <td>
-                            <img src="https://www.choicehotels.***REMOVED***/NC319SHNK77_1.webp" alt="" />
+                            <img src="https://www.choicehotels.com/hotelmedia/US/NC/charlotte/NC319/480/NC319SHNK77_1.webp" alt="" />
                         </td>
                         <td>103</td>
                         <td>Suite</td>

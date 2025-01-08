@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import "./review.css"
 
-export default function Review(){
+export default function ReviewPopup(){
     const [stars, setStars] = useState(0)
     const [hoverStars, setHoverStars] = useState(0)
     

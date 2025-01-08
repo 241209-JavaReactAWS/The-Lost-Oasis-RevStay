@@ -1,9 +1,43 @@
 import { useState } from "react"
 import { Booking, Completed, InSession, Pending } from "./booking_type"
 import Table from "../admin_table/admin_table"
-import "./bookings.css"
+import "./owners_booking.css"
+import axios from "axios"
 
-export default function Bookings(){
+export default function OwnersBooking(){
+    axios(
+        {
+            url: "/login",
+            method: "get",
+            params: {
+                firstName: "",
+                lastName: "",
+                email: "owner1@gmail.com",
+                password: "password",
+                phone: "",
+                role: "OWNER"
+            }
+        }
+    )
+    .then(response=>{
+        if (response.status != 200){
+            throw "NOT OK!"
+        }
+        else {
+            console.log("login ok")
+        }
+    })
+
+    axios(
+        {
+            url: "/bookings/hotel/0",
+            method: "get",
+        }
+    )
+    .then(response=>{
+        console.log(response)
+    })
+
     return (
         <div className="bookings">
             <h1>My Bookings</h1>

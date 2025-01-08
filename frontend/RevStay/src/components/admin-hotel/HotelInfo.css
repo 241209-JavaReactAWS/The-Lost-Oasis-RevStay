@@ -1,0 +1,58 @@
+.hotel-info {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+}
+
+.hotel-info h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.hotel-info p {
+  margin: 10px 0;
+}
+
+.hotel-info.editing form > div {
+  margin-bottom: 15px;
+}
+
+.hotel-info.editing label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.hotel-info.editing input,
+.hotel-info.editing textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.button-group button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+}
+
+.button-group button:nth-child(2) {
+  background-color: #f44336;
+}
+
+.hotel-info.editing .button-group button:nth-child(2) {
+  background-color: #ccc;
+}

@@ -8,23 +8,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 public class UserService {
 
+    private final AuthenticationManager authManager;
+    private final JWTService jwtService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10); // Use same encoder as during registration
 
     @Autowired
-    AuthenticationManager authManager;
-
-    @Autowired
-    private JWTService jwtService;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(AuthenticationManager authManager, JWTService jwtService, UserRepository userRepository) {
+        this.authManager = authManager;
+        this.jwtService = jwtService;
         this.userRepository = userRepository;
     }
 
@@ -78,6 +77,12 @@ public class UserService {
         return "400 Bad Request: User not found or unexpected error occurred";
     }
 
+    @Transactional(readOnly = true)
+    public Long getUserIdByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .map(User::getUserId)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + email));
+    }
 
 
 }

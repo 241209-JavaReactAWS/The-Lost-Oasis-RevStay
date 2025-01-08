@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,15 +24,15 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest bookingRequest) {
-//        return ResponseEntity.ok(this.bookingService.book(userID, bookingRequest));
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<List<Booking>> getAllBookingsForCustomer() {
-//        return ResponseEntity.ok(this.bookingService.getCustomerBookings(userID));
-//    }
+    @PostMapping
+    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest bookingRequest, @RequestAttribute UserDetails userDetails) {
+        return ResponseEntity.ok(this.bookingService.createBooking(userDetails.getUsername(), bookingRequest));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Booking>> getAllBookingsForCustomer(@RequestAttribute UserDetails userDetails) {
+        return ResponseEntity.ok(this.bookingService.getCustomerBookings(userDetails.getUsername()));
+    }
     
     @GetMapping("/hotel/{id}")
     public ResponseEntity<List<Booking>> getAllBookingsForHotel(@PathVariable Integer id) {

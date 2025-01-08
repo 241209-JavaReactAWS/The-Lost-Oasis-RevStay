@@ -31,12 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
@@ -47,21 +41,25 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final S3Client S3Client;
     private final EmailService emailService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public BookingService(UserRepository userRepository, HotelRepository hotelRepository, RoomRepository roomRepository, BookingRepository bookingRepository, S3Client S3Client, EmailService emailService) {
+    public BookingService(UserRepository userRepository, HotelRepository hotelRepository,
+                          RoomRepository roomRepository, BookingRepository bookingRepository,
+                          S3Client S3Client, EmailService emailService, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
         this.bookingRepository = bookingRepository;
         this.S3Client = S3Client;
         this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
-    public Booking createBooking(Long userId, BookingRequest bookingRequest) {
+    public Booking createBooking(String userEmail, BookingRequest bookingRequest) {
         // Validate user
-        User customer = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User customer = userRepository.findByEmail(userEmail);
+        if (customer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
 
         // Validate hotel
         Hotel hotel = hotelRepository.findById(bookingRequest.getHotelID())
@@ -99,9 +97,20 @@ public class BookingService {
         // Send email notification
         sendBookingConfirmationEmail(customer, savedBooking);
 
+        // Send notification to hotel
+        this.notificationService.sendNotification(hotel.getOwner(), "New Booking Request",
+                "A new booking request has been made for your hotel for dates %s through %s.".formatted(
+                        savedBooking.getCheckIn().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                        savedBooking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))));
+
         return savedBooking;
     }
 
+    public List<Booking> getCustomerBookings(String customerEmail) {
+        User customer = this.userRepository.findByEmail(customerEmail);
+        if (customer == null) return List.of();
+        else return this.bookingRepository.findAllByCustomer(customer);
+    }
 
     public Booking updateBooking(Integer bookingId, BookingRequest updatedRequest) {
         // Find booking
@@ -121,13 +130,13 @@ public class BookingService {
         // Send email notification
         sendBookingUpdateEmail(booking.getCustomer(), updatedBooking);
 
+        // Send notification to hotel
+        this.notificationService.sendNotification(updatedBooking.getHotel().getOwner(), "Booking Update",
+                "A booking for your hotel has been updated for dates %s through %s.".formatted(
+                        updatedBooking.getCheckIn().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                        updatedBooking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))));
+
         return updatedBooking;
-    }
-
-
-
-    public List<Booking> getCustomerBookings(int customerId) {
-        return this.bookingRepository.findAllByCustomerId(customerId);
     }
 
     public List<Booking> getAllHotelBookings(int hotelId) {

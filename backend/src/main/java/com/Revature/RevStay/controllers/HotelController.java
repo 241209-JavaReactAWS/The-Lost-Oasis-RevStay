@@ -51,16 +51,16 @@ public class HotelController {
   
   
   // Add a new room to a hotel
-    @PostMapping("/{hotelId}/rooms")
-    public ResponseEntity<Room> addRoom(@PathVariable Integer hotelId, @RequestBody Room room) {
-        Room addedRoom = hotelService.addRoomToHotel(hotelId, room);
-
-        if (addedRoom == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(addedRoom);
-    }
+//    @PostMapping("/{hotelId}/rooms")
+//    public ResponseEntity<Room> addRoom(@PathVariable Integer hotelId, @RequestBody Room room) {
+//        Room addedRoom = hotelService.addRoomToHotel(hotelId, room);
+//
+//        if (addedRoom == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        return ResponseEntity.ok(addedRoom);
+//    }
 
     // Update room availability or status
     @PutMapping("/rooms/{roomId}")

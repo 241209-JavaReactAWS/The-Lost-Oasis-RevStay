@@ -1,5 +1,7 @@
 package com.Revature.RevStay.models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -113,8 +115,15 @@ public class Hotel {
         this.images = images;
     }
 
+    @OneToMany
+    @JsonIgnore
+    private List<Review> reviews;
 
     public Hotel(Integer hotelId) {
     }
 
+    @JsonGetter("rating")
+    public Double getRating() {
+        return reviews.stream().map(Review::getRating).reduce(0, Integer::sum) / (double) reviews.size();
+    }
 }

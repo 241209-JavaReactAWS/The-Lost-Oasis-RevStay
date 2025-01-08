@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private final UserService userService;
@@ -39,11 +40,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
-        System.out.println("Received User: " + user);
-        String token = userService.verifyUser(user);
-        System.out.println("JWT Token: " + token);
-        return token; // Return the token directly
+    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
+        try {
+            String token = userService.verifyUser(user);
+            User fullUser = userRepository.findByEmail(user.getEmail());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", fullUser);
+
+            return ResponseEntity.ok(response);
+        }catch(Exception e) {
+            return ResponseEntity.status(401).body(null);
+        }
     }
 
     @PostMapping("/validate-token")

@@ -5,9 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
@@ -52,25 +50,32 @@ public class FileStorageService {
         }
     }
 
-    public String getPresignedUrl(String imageKey) {
+    public String getPresignedUrl(String fileKey) {
+        // If the key is already a full URL, return it as is
+        if (fileKey.startsWith("http")) {
+            return fileKey;
+        }
+
         S3Presigner presigner = S3Presigner.builder()
                 .region(Region.of(s3Client.serviceClientConfiguration().region().toString()))
                 .credentialsProvider(s3Client.serviceClientConfiguration().credentialsProvider())
                 .build();
 
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(imageKey)
-                .build();
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileKey)
+                    .build();
 
-        GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(30))
-                .getObjectRequest(getObjectRequest)
-                .build();
+            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(30))
+                    .getObjectRequest(getObjectRequest)
+                    .build();
 
-        PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(getObjectPresignRequest);
-        String presignedUrl = presignedRequest.url().toString();
-        presigner.close();
-        return presignedUrl;
+            PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+            return presignedRequest.url().toString();
+        } finally {
+            presigner.close();
+        }
     }
 }

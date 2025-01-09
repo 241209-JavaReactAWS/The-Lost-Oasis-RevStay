@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
-import {useNavigate} from 'react-router'
+import { useNavigate } from 'react-router'
 import './HotelInfo.css';
 
 interface HotelData {
     id: string;
     name: string;
     address: string;
-    rating: number;
+    city: string;
+    state: string;
     description: string;
-    image?: string;
+    amenities: string;
+    // owner?: User;
+    rooms: any[]; // You can create a Room interface if needed
+    images: string[];
+    rating: number;
 }
 
 interface HotelInfoProps {
+
     hotel: HotelData;
     onUpdate: (updatedHotel: HotelData) => void;
     onDelete: (hotelId: string) => void;
+
 }
+
 
 const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -104,7 +112,7 @@ const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
 
     return (
         <div className="hotel-info">
-            <img src={hotel.image} alt="" />
+            <img src={hotel.images[0]} alt="" />
             <h2>{hotel.name}</h2>
             <p><strong>Address:</strong> {hotel.address}</p>
             <p><strong>Rating:</strong> {hotel.rating} / 5</p>

@@ -47,6 +47,10 @@ public class Hotel {
 
     @JsonGetter("rating")
     public Double getRating() {
-        return reviews.stream().map(Review::getRating).reduce(0, Integer::sum) / (double) reviews.size();
+        if (reviews == null || reviews.isEmpty()) {
+            return 0.0;
+        }else {
+            return reviews.stream().map(Review::getRating).reduce(0, Integer::sum) / (double) reviews.size();
+        }
     }
 }

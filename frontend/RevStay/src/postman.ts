@@ -10,7 +10,7 @@ export const postman = axios.create({
 
 postman.interceptors.request.use((config) => {
     const controller = new AbortController()
-    const token = sessionStorage.getItem('token')
+    const token = localStorage.getItem('token')
 
     if (token !== null && !config.headers.has('Authorization')) {
         config.headers.set('Authorization', `Bearer ${token}`)

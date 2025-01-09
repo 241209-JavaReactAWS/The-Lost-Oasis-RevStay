@@ -1,4 +1,4 @@
-import axios from 'axios';
+import {postman as axios } from '../../postman';
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 
@@ -12,7 +12,7 @@ const LoginForm = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8080/login', {
+            const response = await axios.post('/login', {
                 email,
                 password,
             });

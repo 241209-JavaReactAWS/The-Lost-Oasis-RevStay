@@ -1,7 +1,10 @@
 import LoginForm from '../../components/login/LoginForm';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Link } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+    const navigate = useNavigate();
+
     return (
         <Box
             sx={{
@@ -29,6 +32,25 @@ const LoginPage = () => {
                     sx={{ color: '#1976d2', fontWeight: 'bold' }}
                 >
                     Login
+                </Typography>
+                <Typography
+                    sx={{
+                        textAlign: 'center',
+                        marginBottom: '16px',
+                        fontSize: '14px',
+                        color: '#757575',
+                    }}
+                >
+                    New user?{' '}
+                    <Link
+                        component="button"
+                        underline="hover"
+                        sx={{ color: '#1976d2', fontWeight: 'bold' }}
+                        onClick={() => navigate('/register')} // Navigate to the register page
+                    >
+                        Click here
+                    </Link>
+                    {' '}to register.
                 </Typography>
                 <LoginForm />
             </Box>

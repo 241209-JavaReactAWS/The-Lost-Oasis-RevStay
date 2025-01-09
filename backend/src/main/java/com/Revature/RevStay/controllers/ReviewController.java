@@ -5,6 +5,7 @@ import com.Revature.RevStay.services.ReviewService.ReviewNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,7 +51,7 @@ public class ReviewController {
 
     // Get all Reviews for a User
     @GetMapping("/user")
-    public ResponseEntity<List<Review>> getReviewsByUser(@RequestAttribute UserDetails userDetails) {
+    public ResponseEntity<List<Review>> getReviewsByUser(@AuthenticationPrincipal UserDetails userDetails) {
         List<Review> reviews = reviewService.getReviewsByUser(userDetails.getUsername());
         return ResponseEntity.ok(reviews);
     }

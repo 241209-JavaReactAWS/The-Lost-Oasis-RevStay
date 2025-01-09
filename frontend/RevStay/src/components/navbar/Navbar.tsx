@@ -41,7 +41,7 @@ export default function Navbar() {
                     component="div"
                     sx={{ display: { xs: 'none', sm: 'block' } }}
                 >
-                    Lost Oasis
+                    RevStay
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
                 <Box>

@@ -1,11 +1,14 @@
-import {Box, Chip, IconButton, Stack, Typography} from '@mui/material'
+import {Box, Chip, IconButton, Paper, Stack, Typography} from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import hotelPlaceholderImage from "../../assets/hotel-placeholder.png"
 import IRoom from '../../components/room/IRoom.tsx'
 import Room from '../../components/room/Room.tsx'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import StarIcon from '@mui/icons-material/Star';
 import {useState} from 'react'
+import BookingForm from '../../components/booking-form/BookingForm.tsx'
+import {useParams} from 'react-router'
 
 interface Hotel {
     id: number,
@@ -17,10 +20,13 @@ interface Hotel {
     amenities: string,
     rooms: Array<IRoom>,
     images: Array<string>,
+    rating: number,
 }
 
 export default function Hotel() {
+    const { id } = useParams()
     const [imageIndex, setImageIndex] = useState(0)
+    const [selectedRoom, setSelectedRoom] = useState<null | IRoom>(null)
 
     const hotel: Hotel = {
         id: 1,
@@ -50,7 +56,8 @@ export default function Hotel() {
                 pricePerNight: 199.38
             }
         ],
-        images: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/28/ce/fa/12/hotel-cadiz-bahia.jpg?w=1400&h=-1&s=1', 'https://assets.hyatt.com/content/dam/hyatt/hyattdam/images/2017/10/09/1703/Grand-Hyatt-Doha-Hotel-and-Villas-P381-Exterior-Facade.jpg/Grand-Hyatt-Doha-Hotel-and-Villas-P381-Exterior-Facade.16x9.adapt.1920.1080.jpg']
+        images: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/28/ce/fa/12/hotel-cadiz-bahia.jpg?w=1400&h=-1&s=1', 'https://assets.hyatt.com/content/dam/hyatt/hyattdam/images/2017/10/09/1703/Grand-Hyatt-Doha-Hotel-and-Villas-P381-Exterior-Facade.jpg/Grand-Hyatt-Doha-Hotel-and-Villas-P381-Exterior-Facade.16x9.adapt.1920.1080.jpg'],
+        rating: 4.2
     }
 
     const cycleImages = (direction: number) => {
@@ -65,20 +72,28 @@ export default function Hotel() {
 
     return <Box sx={{my: 2, display: 'flex', flexDirection: 'column'}}>
         <Stack sx={{mx: 'auto', width: '75rem'}} gap={1}>
-            <Box sx={{border: '1px solid black', borderRadius: 10, p: 5, boxShadow: '5px 5px 5px 2px gray', display: 'flex', alignItems: 'center', height: 300}}>
-                <Box>
-                    <IconButton onClick={() => cycleImages(-1)}>
-                        <NavigateBeforeIcon />
-                    </IconButton>
+            <Paper elevation={1}>
+                <Box sx={{p: 5, display: 'flex', alignItems: 'center', height: 300}}>
+                    <Box>
+                        <IconButton onClick={() => cycleImages(-1)}>
+                            <NavigateBeforeIcon />
+                        </IconButton>
+                    </Box>
+                    <img style={{margin: '0 auto'}} width={600} src={hotel.images.length === 0 ? hotelPlaceholderImage : hotel.images[imageIndex]} alt='Hotel Image' />
+                    <Box>
+                        <IconButton onClick={() => cycleImages(-1)}>
+                            <NavigateNextIcon />
+                        </IconButton>
+                    </Box>
                 </Box>
-                <img style={{margin: '0 auto'}} width={600} src={hotel.images.length === 0 ? hotelPlaceholderImage : hotel.images[imageIndex]} alt='Hotel Image' />
-                <Box>
-                    <IconButton onClick={() => cycleImages(-1)}>
-                        <NavigateNextIcon />
-                    </IconButton>
-                </Box>
-            </Box>
-            <Typography sx={{mt: 2}} variant='h4'>{hotel.name}</Typography>
+            </Paper>
+            <Stack sx={{mt: 2}} direction='row' alignItems='center' gap={3}>
+                <Typography variant='h4'>{hotel.name}</Typography>
+                <Stack direction='row' sx={{backgroundColor: '#1976d2', p: 1, borderRadius: 10, color: 'white'}}>
+                    <Typography variant='subtitle1'>{hotel.rating}</Typography>
+                    <StarIcon />
+                </Stack>
+            </Stack>
             <Typography variant='overline'>{`${hotel.address}, ${hotel.city}, ${hotel.state}`}</Typography>
             <Typography sx={{mt: 1}} variant='h5'>About this property</Typography>
             <Typography variant='subtitle1'>{hotel.description}</Typography>
@@ -88,12 +103,13 @@ export default function Hotel() {
                 </Grid>
                 <Grid size={11}>
                     <Stack direction='row' gap={2}>
-                        {hotel.amenities.split(',').map((amenity) => <Chip color='primary' label={amenity} />)}
+                        {hotel.amenities.split(',').map((amenity, index) => <Chip key={index} color='primary' label={amenity} />)}
                     </Stack>
                 </Grid>
             </Grid>
             <Typography sx={{mt: 3}} variant='h4'>Rooms</Typography>
-            {hotel.rooms.map((room) => <Room {...room} />)}
+            {hotel.rooms.map((room) => <Room key={room.id} {...room} onSelected={() => setSelectedRoom(room)} />)}
+            {selectedRoom && <BookingForm hotelId={id} room={selectedRoom} />}
         </Stack>
     </Box>
 }

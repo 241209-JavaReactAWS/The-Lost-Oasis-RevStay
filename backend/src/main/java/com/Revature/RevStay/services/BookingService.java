@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -75,6 +76,12 @@ public class BookingService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid check-in and check-out dates");
         }
 
+        for (Booking b: bookingRepository.findAll()){
+            if (isDateOverlapping(bookingRequest.getCheckInDate(), bookingRequest.getCheckOutDate(), b.getCheckIn(), b.getCheckOut())){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Check-in date and check-out dates conflicts with other booking");
+            }
+        }
+
         // Validate guest count
         if (bookingRequest.getNumGuests() <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid number of guests");
@@ -104,6 +111,11 @@ public class BookingService {
                         savedBooking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))));
 
         return savedBooking;
+    }
+
+    //FROM https://stackoverflow.com/questions/56732882/how-to-check-if-one-date-period-overlapping-another-date-period
+    private static boolean isDateOverlapping(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {
+        return start2.isBefore(end1) && end2.isAfter(start1);
     }
 
     public List<Booking> getCustomerBookings(String customerEmail) {

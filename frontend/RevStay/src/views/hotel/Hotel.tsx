@@ -8,7 +8,7 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import StarIcon from '@mui/icons-material/Star';
 import { useState } from 'react';
 import BookingForm from '../../components/booking-form/BookingForm.tsx';
-import { useNavigate, useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 
 interface Hotel {
     id: number;
@@ -65,16 +65,16 @@ export default function Hotel() {
     };
 
     const cycleImages = (direction: number) => {
-        setImageIndex((prevIndex) =>
-            direction > 0
-                ? (prevIndex + 1) % hotel.images.length
-                : (prevIndex - 1 + hotel.images.length) % hotel.images.length
-        );
+        if (direction > 0) {
+            setImageIndex((prevIndex) => (prevIndex + 1 > hotel.images.length - 1 ? 0 : prevIndex + 1));
+        } else if (direction < 0) {
+            setImageIndex((prevIndex) => (prevIndex - 1 < 0 ? hotel.images.length - 1 : prevIndex - 1));
+        }
     };
 
-    const handleBooking = (room: IRoom) => {
-        setSelectedRoom(room);
-        navigate(`/payment`, { state: { room, hotelId: id } });
+    const handleReserve = (room: IRoom) => {
+        // Navigate to the payment page with the selected room details
+        navigate('/payment', { state: { room } });
     };
 
     return (
@@ -82,23 +82,30 @@ export default function Hotel() {
             <Stack sx={{ mx: 'auto', width: '75rem' }} gap={1}>
                 <Paper elevation={1}>
                     <Box sx={{ p: 5, display: 'flex', alignItems: 'center', height: 300 }}>
-                        <IconButton onClick={() => cycleImages(-1)}>
-                            <NavigateBeforeIcon />
-                        </IconButton>
+                        <Box>
+                            <IconButton onClick={() => cycleImages(-1)}>
+                                <NavigateBeforeIcon />
+                            </IconButton>
+                        </Box>
                         <img
                             style={{ margin: '0 auto' }}
                             width={600}
                             src={hotel.images.length === 0 ? hotelPlaceholderImage : hotel.images[imageIndex]}
-                            alt="Hotel"
+                            alt="Hotel Image"
                         />
-                        <IconButton onClick={() => cycleImages(1)}>
-                            <NavigateNextIcon />
-                        </IconButton>
+                        <Box>
+                            <IconButton onClick={() => cycleImages(1)}>
+                                <NavigateNextIcon />
+                            </IconButton>
+                        </Box>
                     </Box>
                 </Paper>
                 <Stack sx={{ mt: 2 }} direction="row" alignItems="center" gap={3}>
                     <Typography variant="h4">{hotel.name}</Typography>
-                    <Stack direction="row" sx={{ backgroundColor: '#1976d2', p: 1, borderRadius: 10, color: 'white' }}>
+                    <Stack
+                        direction="row"
+                        sx={{ backgroundColor: '#1976d2', p: 1, borderRadius: 10, color: 'white' }}
+                    >
                         <Typography variant="subtitle1">{hotel.rating}</Typography>
                         <StarIcon />
                     </Stack>
@@ -115,7 +122,7 @@ export default function Hotel() {
                     <Grid size={11}>
                         <Stack direction="row" gap={2}>
                             {hotel.amenities.split(',').map((amenity, index) => (
-                                <Chip key={index} color="primary" label={amenity} />
+                                <Chip key={index} color="primary" label={amenity.trim()} />
                             ))}
                         </Stack>
                     </Grid>
@@ -124,8 +131,16 @@ export default function Hotel() {
                     Rooms
                 </Typography>
                 {hotel.rooms.map((room) => (
-                    <Room key={room.id} {...room} onSelected={() => handleBooking(room)} />
+                    <Room key={room.id} {...room} onSelected={() => setSelectedRoom(room)} />
                 ))}
+                {selectedRoom && (
+                    <BookingForm
+                    hotel={hotel}
+                        hotelId={id}
+                        room={selectedRoom}
+                       // Pass handler to BookingForm
+                    />
+                )}
             </Stack>
         </Box>
     );

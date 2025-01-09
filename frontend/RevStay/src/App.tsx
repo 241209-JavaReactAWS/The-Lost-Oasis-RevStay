@@ -9,7 +9,7 @@ import RegisterPage from './views/notification/RegisterPage.tsx'
 import Rooms from './components/rooms/Rooms.tsx'
 import AdminHotelList from './views/admin-hotels/AdminHotelList.tsx'
 import Hotel from './views/hotel/Hotel.tsx'
-import Payment from './components/payment/Payment.tsx';
+import Payment from './components/payment/Payment';
 
 function App() {
   return (

@@ -19,6 +19,7 @@ const LoginForm = () => {
 
             const { token, user } = response.data;
             localStorage.setItem('token', token);
+            localStorage.setItem('userId', user.id);
             setUser(user);
             console.log('User logged in:', user);
 

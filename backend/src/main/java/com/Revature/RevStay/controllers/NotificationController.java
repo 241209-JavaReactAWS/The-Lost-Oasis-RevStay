@@ -4,12 +4,13 @@ import com.Revature.RevStay.models.Notification;
 import com.Revature.RevStay.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
+
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
@@ -21,7 +22,7 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Notification>> getUserNotifications(@RequestAttribute UserDetails userDetails) {
+    public ResponseEntity<List<Notification>> getUserNotifications(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(this.notificationService.getAllUserNotifications(userDetails.getUsername()));
     }
 

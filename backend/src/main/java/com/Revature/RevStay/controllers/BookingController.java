@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +27,12 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest bookingRequest, @RequestAttribute UserDetails userDetails) {
+    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest bookingRequest, @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(this.bookingService.createBooking(userDetails.getUsername(), bookingRequest));
     }
 
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookingsForCustomer(@RequestAttribute UserDetails userDetails) {
+    public ResponseEntity<List<Booking>> getAllBookingsForCustomer(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(this.bookingService.getCustomerBookings(userDetails.getUsername()));
     }
 

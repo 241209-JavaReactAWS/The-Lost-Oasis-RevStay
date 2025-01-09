@@ -9,33 +9,66 @@ import com.Revature.RevStay.daos.UserRepository;
 import com.Revature.RevStay.models.Hotel;
 import com.Revature.RevStay.models.User;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class HotelService {
 
 
     private final HotelRepository hotelRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final FileStorageService fileStorageService;
 
-    public HotelService(HotelRepository hotelRepository, UserRepository userRepository,RoomRepository roomRepository) {
+    public HotelService(HotelRepository hotelRepository, UserRepository userRepository,RoomRepository roomRepository, FileStorageService fileStorageService) {
         this.hotelRepository = hotelRepository;
         this.userRepository = userRepository;
       this.roomRepository = roomRepository;
+        this.fileStorageService = fileStorageService;
     }
 
-    @Transactional
-    public Hotel createHotel(Hotel hotel, Long userId) {
-        //TODO replace with user.
-        userId = 1L;
-        User user = userRepository.findById(userId)
+    public Hotel createHotel(Hotel hotel, List<MultipartFile> images, Long userId) {
+        // Set owner
+        User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        hotel.setOwner(owner);
 
-        hotel.setOwner(user);
+        System.out.println("Hotel Owner: " + hotel.getOwner());
+
+        // Process and save images
+        List<String> imageUrls = new ArrayList<>();
+        for (MultipartFile image : images) {
+            try {
+                String imageUrl = fileStorageService.saveFile(image);
+                imageUrls.add(imageUrl);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to process image", e);
+            }
+        }
+
+        hotel.setImages(imageUrls);
         return hotelRepository.save(hotel);
+    }
+
+    public Hotel getHotelWithImages(Integer hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+
+        // Convert S3 keys to presigned URLs
+        List<String> imageUrls = hotel.getImages().stream()
+                .map(fileStorageService::getPresignedUrl)
+                .collect(Collectors.toList());
+
+        hotel.setImages(imageUrls);
+        return hotel;
     }
 
     public Optional<Hotel> getHotelById(Integer hotelId) {
@@ -44,7 +77,7 @@ public class HotelService {
 
 
 
-public Room addRoomToHotel(Integer hotelId, Room room) {
+    public Room addRoomToHotel(Integer hotelId, Room room) {
         Optional<Hotel> hotelOptional = hotelRepository.findById(hotelId);
 
         if (hotelOptional.isPresent()) {
@@ -71,8 +104,6 @@ public Room addRoomToHotel(Integer hotelId, Room room) {
         // Return null or handle the case where the room is not found
         return null;
     }
-
-
 
 }
 

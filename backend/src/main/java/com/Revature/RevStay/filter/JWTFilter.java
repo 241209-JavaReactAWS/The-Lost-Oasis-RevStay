@@ -56,7 +56,6 @@ public class JWTFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-                request.setAttribute("userDetails", userDetails);
             }else {
                 System.out.println("Token Validation Failed");
             }

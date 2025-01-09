@@ -23,6 +23,8 @@ public class Hotel {
     private String address;
     private String city;
     private String state;
+
+    @Column(length = 10000)
     private String description;
     private String amenities;
 

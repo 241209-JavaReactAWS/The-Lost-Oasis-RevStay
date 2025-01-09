@@ -7,6 +7,8 @@ import axios from './services/axiosConfig.ts'
 import RegisterPage from './views/notification/RegisterPage.tsx'
 import Rooms from './components/rooms/Rooms.tsx'
 import AdminHotelList from './views/admin-hotels/AdminHotelList.tsx'
+import SearchHotel from './components/search-hotel/SearchHotel.tsx'
+import FilterHotel from './components/filter-hotel/FilterHotel.tsx'
 
 
 
@@ -16,7 +18,8 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
-
+            
+            <Route path='/' element={<div>Welcome to Lost Oasis</div>} />
             <Route path='/notifications' element={<Notifications />} />
             <Route path='/login' element={<LoginPage/>} />
             <Route path='/register' element={<RegisterPage/>} ></Route>
@@ -24,7 +27,9 @@ function App() {
             <Route path='admin/hotels/:hotelId/rooms' element={<Rooms />} />
             <Route path='/admin/hotels' element={<AdminHotelList />} />
             <Route path='/notifications' element={<Notifications />} />
-            <Route path='/hotel/:id' element={<Hotel />} />
+            {/* <Route path='/hotel/:id' element={<Hotel />} /> */}
+            <Route path='/search' element={<SearchHotel />} />
+            <Route path='/filter' element={<FilterHotel />} />
 
         </Routes>
       </BrowserRouter>

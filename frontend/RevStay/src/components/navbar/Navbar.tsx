@@ -4,6 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import {useNavigate} from 'react-router'
 import {useEffect, useState} from 'react'
 import {postman} from '../../postman.ts'
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
     const navigate = useNavigate()
@@ -43,6 +44,18 @@ export default function Navbar() {
                     Lost Oasis
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
+                <Box>
+                        <nav>
+                            <ul style={{ display: 'flex', listStyle: 'none', padding: 0 }}>
+                                <li style={{ marginRight: '20px' }}>
+                                    <Link to="/search" style={{ textDecoration: 'none', color: 'inherit' }}>Hotel Search</Link>
+                                </li>
+                                <li>
+                                    <Link to="/filter" style={{ textDecoration: 'none', color: 'inherit' }}>Hotel Filter</Link>
+                                </li>
+                            </ul>
+                        </nav>
+                    </Box>
                 <Box>
                     <IconButton size="large" color="inherit" onClick={() => navigate('/notifications')}>
                         <Badge invisible={notificationsCount === 0} badgeContent={notificationsCount} color="error">

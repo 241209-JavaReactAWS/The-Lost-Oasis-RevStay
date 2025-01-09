@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { postman as axios } from '../../postman';
 import {
     Box,
     TextField,
@@ -32,7 +32,7 @@ const RegisterForm = () => {
             // Determine the role based on checkbox state
             const role = isHotelOwner ? 'OWNER' : 'CUSTOMER';
 
-            const response = await axios.post('http://localhost:8080/register', {
+            const response = await axios.post('/register', {
                 firstName,
                 lastName,
                 email,

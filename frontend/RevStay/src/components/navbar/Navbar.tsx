@@ -4,10 +4,13 @@ import MenuIcon from '@mui/icons-material/Menu'
 import {useNavigate} from 'react-router'
 import {useEffect, useState} from 'react'
 import {postman} from '../../postman.ts'
+import LoginButton from '../login/LoginButton.tsx';
+import LogoutButton from '../login/LogoutButton.tsx';
 
 export default function Navbar() {
     const navigate = useNavigate()
     const [notificationsCount, setNotificationsCount] = useState<number>(0)
+    const [isLogged, setIsLogged] = useState<boolean>(!!localStorage.getItem('token'))
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -21,6 +24,13 @@ export default function Navbar() {
             clearInterval(interval)
         }
     }, [])
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setIsLogged(false);
+        navigate('/login');
+    }
+
 
     return <Box sx={{flexGrow: 1}}>
         <AppBar position='static'>
@@ -43,6 +53,13 @@ export default function Navbar() {
                     RevStay
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
+                <Box>
+                    {
+                        isLogged
+                            ? <LogoutButton onLogout={handleLogout} />
+                            : <LoginButton />
+                    }
+                </Box>
                 <Box>
                     <IconButton size="large" color="inherit" onClick={() => navigate('/notifications')}>
                         <Badge invisible={notificationsCount === 0} badgeContent={notificationsCount} color="error">

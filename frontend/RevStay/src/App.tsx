@@ -7,6 +7,7 @@ import axios from './services/axiosConfig.ts'
 import RegisterPage from './views/notification/RegisterPage.tsx'
 import Rooms from './components/rooms/Rooms.tsx'
 import AdminHotelList from './views/admin-hotels/AdminHotelList.tsx'
+import Hotel from './views/hotel/Hotel.tsx'
 
 
 

@@ -9,6 +9,7 @@ import RegisterPage from './views/login/RegisterPage.tsx'
 import Rooms from './components/rooms/Rooms.tsx'
 import AdminHotelList from './views/admin-hotels/AdminHotelList.tsx'
 import Hotel from './views/hotel/Hotel.tsx'
+import Payment from './components/payment/Payment';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <BrowserRouter>
           <Navbar />
           <Routes>
+            <Route path='/payment' element={<Payment />} />
             <Route path='/notifications' element={<Notifications />} />
             <Route path='/login' element={<LoginPage />} />
             <Route path='/register' element={<RegisterPage />}></Route>

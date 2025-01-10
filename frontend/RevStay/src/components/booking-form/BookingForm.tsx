@@ -1,18 +1,15 @@
 import {useState} from 'react'
-import {Box, Button, MenuItem, Select, Stack, Typography} from '@mui/material'
+import {Box, MenuItem, Select, Stack, Typography} from '@mui/material'
 import {DatePicker} from '@mui/x-date-pickers'
 import IRoom from '../room/IRoom.tsx'
 import {Dayjs} from 'dayjs'
 import {postman} from '../../postman.ts'
 import { useNavigate } from 'react-router';
+import Room from '../room/Room.tsx'
+import IHotel from '../../views/hotel/IHotel.ts'
 
 interface Props {
-    hotelId: string | undefined,
-    hotel: {
-        name: string;
-        id: number;
-    };
-    room: IRoom,
+    hotel: IHotel
 }
 
 export default function BookingForm(props: Props) {
@@ -21,18 +18,19 @@ export default function BookingForm(props: Props) {
     const [numGuests, setNumGuests] = useState<number>(1)
     const navigate = useNavigate();
 
-    const reserve = () => {
+    const days = checkOutDate?.diff(checkInDate, 'days')
+
+    const reserve = (room: IRoom) => {
 
         if (checkInDate === null || checkOutDate === null) {
             console.error('Check-in or Check-out date is null');
             return;
         }
-        const totalAmount = checkOutDate.diff(checkInDate, 'days') * props.room.pricePerNight;
 
          postman
             .post('/bookings', {
-                hotelID: props.hotelId,
-                roomID: props.room.id,
+                hotelID: props.hotel.id,
+                roomID: room.id,
                 checkInDate: checkInDate,
                 checkOutDate: checkOutDate,
                 numGuests: numGuests,
@@ -41,11 +39,11 @@ export default function BookingForm(props: Props) {
                 console.log(res);
                 navigate('/payment', {
                     state: {
-                        hotelId: props.hotelId,
+                        hotelId: props.hotel.id,
                             hotelName: props.hotel.name, // Pass the hotel name
-                            room: props.room,
+                            room: room,
                             userId: 1,
-                            totalAmount: props.room.pricePerNight * checkOutDate.diff(checkInDate, 'days'), // Calculate total price
+                            totalAmount: days ? days * room.pricePerNight : 0.00, // Calculate total price
                     }
                 });
             })
@@ -54,14 +52,12 @@ export default function BookingForm(props: Props) {
              });
     };
 
-
     const reserveButtonDisabled = checkInDate === null || checkOutDate === null
         || checkInDate.isSame(checkOutDate) || checkInDate.isAfter(checkOutDate)
 
-    return <Box sx={{my: 3}}>
+    return <Box sx={{mt: 3}}>
         <Typography variant='h4'>Reservation</Typography>
-        <Typography variant='h5' sx={{my: 2}}>{props.room.roomType}</Typography>
-        <Stack direction='row' gap={3} sx={{my: 2}} alignItems='end'>
+        <Stack direction='row' gap={3} sx={{mt: 2}} alignItems='end'>
             <Box>
                 <Typography>Check-in</Typography>
                 <DatePicker value={checkInDate} onChange={(nv) => setCheckInDate(nv)} />
@@ -81,13 +77,10 @@ export default function BookingForm(props: Props) {
                     <MenuItem value={6}>6</MenuItem>
                 </Select>
             </Box>
-            <Box>
-                <Typography>Total</Typography>
-                <Box sx={{py: 2, px: 1, border: '1px solid #0000003F'}}>
-                    <Typography>{(checkInDate && checkOutDate) ? `$${props.room.pricePerNight * checkOutDate.diff(checkInDate, 'days')}` : 'N/A'}</Typography>
-                </Box>
-            </Box>
-            <Button disabled={reserveButtonDisabled} sx={{height: 60}} variant='contained' onClick={reserve}>Reserve</Button>
+        </Stack>
+        <Stack gap={1}>
+            <Typography sx={{mt: 3}} variant='h5'>Rooms</Typography>
+            {props.hotel.rooms.map((room) => <Room key={room.id} numDays={days} reserveButtonDisabled={reserveButtonDisabled} {...room} onSelected={() => reserve(room)} />)}
         </Stack>
     </Box>
 }

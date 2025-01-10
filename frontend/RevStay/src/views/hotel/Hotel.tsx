@@ -1,35 +1,19 @@
 import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import hotelPlaceholderImage from "../../assets/hotel-placeholder.png";
-import IRoom from '../../components/room/IRoom.tsx';
-import Room from '../../components/room/Room.tsx';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import StarIcon from '@mui/icons-material/Star';
 import { useState } from 'react';
 import BookingForm from '../../components/booking-form/BookingForm.tsx';
-import { useParams, useNavigate } from 'react-router';
-
-interface Hotel {
-    id: number;
-    name: string;
-    address: string;
-    city: string;
-    state: string;
-    description: string;
-    amenities: string;
-    rooms: Array<IRoom>;
-    images: Array<string>;
-    rating: number;
-}
+import { useParams } from 'react-router';
+import IHotel from './IHotel.ts'
 
 export default function Hotel() {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [imageIndex, setImageIndex] = useState(0);
-    const [selectedRoom, setSelectedRoom] = useState<null | IRoom>(null);
+    const { id } = useParams()
+    const [imageIndex, setImageIndex] = useState(0)
 
-    const hotel: Hotel = {
+    const hotel: IHotel = {
         id: 1,
         name: "Buena Vista Hotel",
         address: '123 Main St',
@@ -72,76 +56,44 @@ export default function Hotel() {
         }
     };
 
-    const handleReserve = (room: IRoom) => {
-        // Navigate to the payment page with the selected room details
-        navigate('/payment', { state: { room } });
-    };
-
-    return (
-        <Box sx={{ my: 2, display: 'flex', flexDirection: 'column' }}>
-            <Stack sx={{ mx: 'auto', width: '75rem' }} gap={1}>
-                <Paper elevation={1}>
-                    <Box sx={{ p: 5, display: 'flex', alignItems: 'center', height: 300 }}>
-                        <Box>
-                            <IconButton onClick={() => cycleImages(-1)}>
-                                <NavigateBeforeIcon />
-                            </IconButton>
-                        </Box>
-                        <img
-                            style={{ margin: '0 auto' }}
-                            width={600}
-                            src={hotel.images.length === 0 ? hotelPlaceholderImage : hotel.images[imageIndex]}
-                            alt="Hotel Image"
-                        />
-                        <Box>
-                            <IconButton onClick={() => cycleImages(1)}>
-                                <NavigateNextIcon />
-                            </IconButton>
-                        </Box>
+    return <Box sx={{my: 2, display: 'flex', flexDirection: 'column'}}>
+        <Stack sx={{mx: 'auto', width: '75rem'}} gap={1}>
+            <Paper elevation={1}>
+                <Box sx={{p: 5, display: 'flex', alignItems: 'center', height: 300}}>
+                    <Box>
+                        <IconButton onClick={() => cycleImages(-1)}>
+                            <NavigateBeforeIcon />
+                        </IconButton>
                     </Box>
-                </Paper>
-                <Stack sx={{ mt: 2 }} direction="row" alignItems="center" gap={3}>
-                    <Typography variant="h4">{hotel.name}</Typography>
-                    <Stack
-                        direction="row"
-                        sx={{ backgroundColor: '#1976d2', p: 1, borderRadius: 10, color: 'white' }}
-                    >
-                        <Typography variant="subtitle1">{hotel.rating}</Typography>
-                        <StarIcon />
-                    </Stack>
+                    <img style={{margin: '0 auto'}} width={600} src={hotel.images.length === 0 ? hotelPlaceholderImage : hotel.images[imageIndex]} alt='Hotel Image' />
+                    <Box>
+                        <IconButton onClick={() => cycleImages(-1)}>
+                            <NavigateNextIcon />
+                        </IconButton>
+                    </Box>
+                </Box>
+            </Paper>
+            <Stack sx={{mt: 2}} direction='row' alignItems='center' gap={3}>
+                <Typography variant='h4'>{hotel.name}</Typography>
+                <Stack direction='row' sx={{backgroundColor: '#1976d2', p: 1, borderRadius: 10, color: 'white'}}>
+                    <Typography variant='subtitle1'>{hotel.rating}</Typography>
+                    <StarIcon />
                 </Stack>
-                <Typography variant="overline">{`${hotel.address}, ${hotel.city}, ${hotel.state}`}</Typography>
-                <Typography sx={{ mt: 1 }} variant="h5">
-                    About this property
-                </Typography>
-                <Typography variant="subtitle1">{hotel.description}</Typography>
-                <Grid container spacing={2}>
-                    <Grid size={1}>
-                        <Typography variant="h6">Amenities</Typography>
-                    </Grid>
-                    <Grid size={11}>
-                        <Stack direction="row" gap={2}>
-                            {hotel.amenities.split(',').map((amenity, index) => (
-                                <Chip key={index} color="primary" label={amenity.trim()} />
-                            ))}
-                        </Stack>
-                    </Grid>
-                </Grid>
-                <Typography sx={{ mt: 3 }} variant="h4">
-                    Rooms
-                </Typography>
-                {hotel.rooms.map((room) => (
-                    <Room key={room.id} {...room} onSelected={() => setSelectedRoom(room)} />
-                ))}
-                {selectedRoom && (
-                    <BookingForm
-                    hotel={hotel}
-                        hotelId={id}
-                        room={selectedRoom}
-                       // Pass handler to BookingForm
-                    />
-                )}
             </Stack>
-        </Box>
-    );
+            <Typography variant='overline'>{`${hotel.address}, ${hotel.city}, ${hotel.state}`}</Typography>
+            <Typography sx={{mt: 1}} variant='h5'>About this property</Typography>
+            <Typography variant='subtitle1'>{hotel.description}</Typography>
+            <Grid container spacing={2}>
+                <Grid size={1}>
+                    <Typography variant='h6'>Amenities</Typography>
+                </Grid>
+                <Grid size={11}>
+                    <Stack direction='row' gap={2}>
+                        {hotel.amenities.split(',').map((amenity, index) => <Chip key={index} color='primary' label={amenity} />)}
+                    </Stack>
+                </Grid>
+            </Grid>
+            <BookingForm hotel={hotel} />
+        </Stack>
+    </Box>
 }

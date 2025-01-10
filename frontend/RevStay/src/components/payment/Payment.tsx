@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Button, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import axios from 'axios';
+import {postman} from '../../postman.ts'
 
 const Payment = () => {
     const location = useLocation();
     const { state } = location; // Get state passed from Hotel.tsx
-    const { hotelName, room, userId, totalAmount } = state; // Extract hotel name and totalAmount
+    const { hotelName, room, totalAmount } = state; // Extract hotel name and totalAmount
 
     const [paymentMethod, setPaymentMethod] = useState('');
     const [cardNumber, setCardNumber] = useState('');
@@ -27,19 +27,18 @@ const Payment = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/payments', {
-                userId, 
+            const response = await postman.post('http://localhost:8080/payment/create', {
                 amount: totalAmount, // Use the totalAmount
-                paymentDate: new Date().toISOString(), 
+                paymentDate: new Date().toISOString(),
                 paymentMethod,
-                cardNumber, 
-                cvv, 
+                cardNumber,
+                cvv,
                 expiryDate,
             });
 
             console.log('Payment successful:', response.data);
             alert('Payment successful!');
-            
+
         } catch (err) {
             console.error('Payment failed:', err);
             setError('Failed to process the payment. Please try again.');
@@ -69,10 +68,7 @@ const Payment = () => {
             <Typography variant="subtitle1">
                 Room: {room.roomType} - ${totalAmount.toFixed(2)} {/* Display total amount */}
             </Typography>
-            <Typography variant="subtitle1">
-                User ID: {userId}
-            </Typography>
-            
+
             <Select
                 value={paymentMethod}
                 onChange={handlePaymentMethodChange}
@@ -87,7 +83,7 @@ const Payment = () => {
                 <MenuItem value="SenseiCard">SenseiCard</MenuItem>
                 <MenuItem value="PalPay">PalPay</MenuItem>
             </Select>
-            
+
             <TextField
                 label="Credit Card Number"
                 value={cardNumber}
@@ -99,7 +95,7 @@ const Payment = () => {
                 sx={{ marginTop: '1rem' }}
                 helperText="Enter 16 digits"
             />
-            
+
             <TextField
                 label="Security Code (CVV)"
                 value={cvv}
@@ -110,7 +106,7 @@ const Payment = () => {
                 fullWidth
                 sx={{ marginTop: '1rem' }}
             />
-            
+
             <TextField
                 label="Expiration Date (MM/YY)"
                 value={expiryDate}

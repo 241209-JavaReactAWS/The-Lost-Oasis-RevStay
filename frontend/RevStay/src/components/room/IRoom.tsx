@@ -3,4 +3,5 @@ export default interface IRoom {
     roomNumber: number,
     roomType: string,
     pricePerNight: number
+   
 }

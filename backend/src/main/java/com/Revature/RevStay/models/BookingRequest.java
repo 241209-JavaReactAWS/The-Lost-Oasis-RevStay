@@ -14,3 +14,7 @@ public class BookingRequest {
     private LocalDate checkOutDate;
     private int numGuests;
 }
+
+
+
+

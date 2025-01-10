@@ -29,6 +29,7 @@ DELETE /reviews/{id}: Delete a review by its ID.
 
 @RestController
 @RequestMapping("/reviews")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ReviewController {
 
     @Autowired

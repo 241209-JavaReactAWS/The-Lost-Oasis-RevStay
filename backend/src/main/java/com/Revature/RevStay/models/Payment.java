@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "payments")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,55 +20,7 @@ public class Payment {
     private Double amount;
     private String paymentMethod;
     private String paymentDate;
-
-
-
-    public Payment(User user, Double amount, String paymentMethod, String paymentDate) {
-        this.user = user;
-        this.amount = amount;
-        this.paymentMethod = paymentMethod;
-        this.paymentDate = paymentDate;
-    }
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Payment() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public String getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(String paymentDate) {
-        this.paymentDate = paymentDate;
-    }
+    private String cardNumber;
+    private String cvv;
+    private String expiryDate;
 }

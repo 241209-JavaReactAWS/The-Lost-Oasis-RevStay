@@ -2,7 +2,11 @@ package com.Revature.RevStay.controllers;
 
 import com.Revature.RevStay.models.Payment;
 import com.Revature.RevStay.services.PaymentService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +15,8 @@ import java.util.List;
 @RequestMapping("/payment")
 @CrossOrigin(origins = "http://localhost:5173")
 public class PaymentController {
-
-
-   private final PaymentService paymentService;
+    private static final Logger logger = LogManager.getLogger();
+    private final PaymentService paymentService;
 
     @Autowired
     public PaymentController(PaymentService paymentService){
@@ -21,8 +24,9 @@ public class PaymentController {
     }
 
     @PostMapping("/create")
-    public void createPayment(Payment payment){
-        this.paymentService.createPayment(payment);
+    public void createPayment(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Payment payment){
+        logger.info("Received payment info from user: {}, with details: {}", userDetails.getUsername(), payment);
+        this.paymentService.createPayment(userDetails.getUsername(), payment);
     }
 
     @GetMapping("/all")
@@ -31,8 +35,7 @@ public class PaymentController {
     }
 
     @GetMapping("{id}")
-    public Payment getPaymentById(Integer id){
+    public Payment getPaymentById(@PathVariable Integer id){
         return this.paymentService.getPaymentById(id).orElse(null);
     }
-
 }

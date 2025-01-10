@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {Box, MenuItem, Select, Stack, Typography} from '@mui/material'
+import {Alert, Box, MenuItem, Select, Snackbar, Stack, Typography} from '@mui/material'
 import {DatePicker} from '@mui/x-date-pickers'
 import IRoom from '../room/IRoom.tsx'
 import {Dayjs} from 'dayjs'
@@ -17,6 +17,7 @@ export default function BookingForm(props: Props) {
     const [checkOutDate, setCheckOutDate] = useState<Dayjs | null>(null)
     const [numGuests, setNumGuests] = useState<number>(1)
     const navigate = useNavigate();
+    const [error, setError] = useState(false)
 
     const days = checkOutDate?.diff(checkInDate, 'days')
 
@@ -42,13 +43,12 @@ export default function BookingForm(props: Props) {
                         hotelId: props.hotel.id,
                             hotelName: props.hotel.name, // Pass the hotel name
                             room: room,
-                            userId: 1,
                             totalAmount: days ? days * room.pricePerNight : 0.00, // Calculate total price
                     }
                 });
             })
-            .catch((err) => {
-                 console.log(err);
+            .catch(() => {
+                 setError(true)
              });
     };
 
@@ -82,5 +82,8 @@ export default function BookingForm(props: Props) {
             <Typography sx={{mt: 3}} variant='h5'>Rooms</Typography>
             {props.hotel.rooms.map((room) => <Room key={room.id} numDays={days} reserveButtonDisabled={reserveButtonDisabled} {...room} onSelected={() => reserve(room)} />)}
         </Stack>
+        <Snackbar anchorOrigin={{vertical: 'bottom', horizontal: 'right'}} open={error} autoHideDuration={6000} onClose={() => setError(false)}>
+            <Alert variant='filled' severity='error'>Unable to process reservation</Alert>
+        </Snackbar>
     </Box>
 }

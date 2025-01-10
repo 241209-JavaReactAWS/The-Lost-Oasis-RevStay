@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react'
 import {postman} from '../../postman.ts'
 import LoginButton from '../login/LoginButton.tsx';
 import LogoutButton from '../login/LogoutButton.tsx';
+import {INotification} from '../notification/INotification.ts'
 
 export default function Navbar() {
     const navigate = useNavigate()
@@ -16,7 +17,10 @@ export default function Navbar() {
         const interval = setInterval(() => {
             postman.get('/notifications')
                 .then((res) => {
-                    if (res.data) setNotificationsCount(res.data.length)
+                    if (res.data) {
+                        const notifications = res.data as Array<INotification>
+                        setNotificationsCount(notifications.filter((n) => !n.read).length)
+                    }
                 }).catch(() => setNotificationsCount(0))
         }, 30000)
 

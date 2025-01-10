@@ -1,10 +1,17 @@
 package com.Revature.RevStay.controllers;
+import com.Revature.RevStay.dtos.RoomRequest;
 import com.Revature.RevStay.models.Hotel;
 import com.Revature.RevStay.models.Room;
 import com.Revature.RevStay.services.RoomService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,44 +25,26 @@ public class RoomController {
         this.roomService = roomService;
     }
 
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Room> addRoom(
+            @PathVariable Integer hotelId,
+            @RequestPart("data") String roomData,
+            @RequestPart("images") List<MultipartFile> images
+    ) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        RoomRequest roomRequest = mapper.readValue(roomData, RoomRequest.class);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Room room = roomService.addRoom(hotelId, roomRequest, images, email);
+        return ResponseEntity.ok(room);
+    }
+
     @GetMapping
     public ResponseEntity<List<Room>> getRoomsByHotelId(@PathVariable Integer hotelId) {
         List<Room> rooms = roomService.getRoomsByHotelId(hotelId);
-        return new ResponseEntity<>(rooms, HttpStatus.OK);
-    }
-
-    @GetMapping("/{roomId}")
-    public ResponseEntity<Room> getRoomByIdAndHotelId(@PathVariable Integer hotelId, @PathVariable Integer roomId) {
-        return roomService.getRoomByIdAndHotelId(roomId, hotelId)
-                .map(room -> new ResponseEntity<>(room, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @PostMapping
-    public ResponseEntity<Room> createRoom(@PathVariable Integer hotelId, @RequestBody Room room) {
-        room.setHotel(new Hotel(hotelId));
-        Room savedRoom = roomService.saveRoom(room);
-        return new ResponseEntity<>(savedRoom, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{roomId}")
-    public ResponseEntity<Room> updateRoom(@PathVariable Integer hotelId, @PathVariable Integer roomId, @RequestBody Room room) {
-        return roomService.getRoomByIdAndHotelId(roomId, hotelId)
-                .map(existingRoom -> {
-                    room.setId(roomId);
-                    room.setHotel(new Hotel(hotelId));
-                    return new ResponseEntity<>(roomService.saveRoom(room), HttpStatus.OK);
-                })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @DeleteMapping("/{roomId}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable Integer hotelId, @PathVariable Integer roomId) {
-        return roomService.getRoomByIdAndHotelId(roomId, hotelId)
-                .map(room -> {
-                    roomService.deleteRoom(roomId);
-                    return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-                })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseEntity.ok(rooms);
     }
 }

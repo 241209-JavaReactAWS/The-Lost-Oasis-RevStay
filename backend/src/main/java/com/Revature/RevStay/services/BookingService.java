@@ -214,7 +214,7 @@ public class BookingService {
             stream.setFont(MW_BOLD, 16);
             stream.showText("Room: ");
             stream.setFont(MW_REGULAR, 16);
-            stream.showText(booking.getRoom().getRoomType());
+            stream.showText(String.valueOf(booking.getRoom().getRoomType()));
             stream.newLine();
             stream.newLine();
             stream.setFont(MW_BOLD, 16);

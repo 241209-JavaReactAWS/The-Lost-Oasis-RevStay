@@ -3,6 +3,7 @@ package com.Revature.RevStay.services;
 import com.Revature.RevStay.daos.HotelRepository;
 import com.Revature.RevStay.daos.RoomRepository;
 import com.Revature.RevStay.models.Room;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.Revature.RevStay.daos.UserRepository;
 import com.Revature.RevStay.models.Hotel;
@@ -29,10 +30,13 @@ public class HotelService {
     private final FileStorageService fileStorageService;
     private final S3Client s3Client;
 
+    @Value("${aws.bucket.url}")
+    private String AWS_BUCKET_URL;
+
     public HotelService(HotelRepository hotelRepository, UserRepository userRepository, RoomRepository roomRepository, FileStorageService fileStorageService, S3Client s3Client) {
         this.hotelRepository = hotelRepository;
         this.userRepository = userRepository;
-      this.roomRepository = roomRepository;
+        this.roomRepository = roomRepository;
         this.fileStorageService = fileStorageService;
         this.s3Client = s3Client;
     }
@@ -50,7 +54,7 @@ public class HotelService {
         for (MultipartFile image : images) {
             try {
                 String imageUrl = fileStorageService.saveFile(image);
-                imageUrls.add(imageUrl);
+                imageUrls.add("%s/%s".formatted(AWS_BUCKET_URL, imageUrl));
             } catch (IOException e) {
                 throw new RuntimeException("Failed to process image", e);
             }
@@ -61,41 +65,13 @@ public class HotelService {
     }
 
     public Hotel getHotelWithImages(Integer hotelId) {
-        Hotel hotel = hotelRepository.findById(hotelId)
+        return hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
-
-        // Convert S3 keys to presigned URLs
-        List<String> imageUrls = hotel.getImages().stream()
-                .map(fileStorageService::getPresignedUrl)
-                .collect(Collectors.toList());
-
-        hotel.setImages(imageUrls);
-        return hotel;
     }
 
     public List<Hotel> getHotelsByUserId(Long userId) {
-        List<Hotel> hotels = hotelRepository.findByOwner_userId(userId);
-
-        // Process each hotel's images
-        hotels.forEach(hotel -> {
-            List<String> imageUrls = hotel.getImages().stream()
-                    .map(imageKey -> {
-                        // If it's already a URL, use it as is
-                        if (imageKey.startsWith("http")) {
-                            return imageKey;
-                        }
-                        // Otherwise generate presigned URL
-                        return fileStorageService.getPresignedUrl(imageKey);
-                    })
-                    .collect(Collectors.toList());
-
-            hotel.setImages(imageUrls);
-        });
-
-        return hotels;
+        return hotelRepository.findByOwner_userId(userId);
     }
-
-
 
     public Room addRoomToHotel(Integer hotelId, Room room) {
         Optional<Hotel> hotelOptional = hotelRepository.findById(hotelId);

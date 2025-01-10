@@ -5,6 +5,7 @@ import com.Revature.RevStay.daos.RoomRepository;
 import com.Revature.RevStay.dtos.RoomRequest;
 import com.Revature.RevStay.models.Hotel;
 import com.Revature.RevStay.models.Room;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,9 @@ public class RoomService {
     private final HotelRepository hotelRepository;
     private final UserService userService;
     private final FileStorageService fileStorageService;
+
+    @Value("${aws.bucket.url}")
+    private String AWS_BUCKET_URL;
 
     public RoomService(RoomRepository roomRepository,
                        HotelRepository hotelRepository,
@@ -46,7 +50,7 @@ public class RoomService {
         for (MultipartFile image : images) {
             try {
                 String imageUrl = fileStorageService.saveFile(image);
-                imageUrls.add(imageUrl);
+                imageUrls.add("%s/%s".formatted(AWS_BUCKET_URL, imageUrl));
             } catch (IOException e) {
                 throw new RuntimeException("Failed to process image", e);
             }
@@ -69,56 +73,12 @@ public class RoomService {
     public List<Room> getRoomsByHotelId(Integer hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
-
-        List<Room> rooms = roomRepository.findByHotel(hotel);
-
-        // Process images for each room
-        rooms.forEach(room -> {
-            List<String> imageUrls = room.getImages().stream()
-                    .map(fileStorageService::getPresignedUrl)
-                    .collect(Collectors.toList());
-            room.setImages(imageUrls);
-        });
-
-        return rooms;
+        return roomRepository.findByHotel(hotel);
     }
-
-
-
-
-
 
     // Method to get room with presigned URLs for images
     public Room getRoomWithImages(Integer roomId) {
-        Room room = roomRepository.findById(roomId)
+        return roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
-
-        // Convert S3 keys to presigned URLs
-        List<String> imageUrls = room.getImages().stream()
-                .map(fileStorageService::getPresignedUrl)
-                .collect(Collectors.toList());
-
-        room.setImages(imageUrls);
-        return room;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

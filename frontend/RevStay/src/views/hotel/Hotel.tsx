@@ -1,52 +1,26 @@
-import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import {Alert, Box, Chip, IconButton, Paper, Stack, Typography} from '@mui/material'
 import Grid from '@mui/material/Grid2';
 import hotelPlaceholderImage from "../../assets/hotel-placeholder.png";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import StarIcon from '@mui/icons-material/Star';
-import { useState } from 'react';
+import {useEffect, useState} from 'react'
 import BookingForm from '../../components/booking-form/BookingForm.tsx';
 import { useParams } from 'react-router';
 import IHotel from './IHotel.ts'
+import {postman} from '../../postman.ts'
 
 export default function Hotel() {
     const { id } = useParams()
+    const [hotel, setHotel] = useState<IHotel | null>(null)
     const [imageIndex, setImageIndex] = useState(0)
+    const [error, setError] = useState<boolean>(false)
 
-    const hotel: IHotel = {
-        id: 1,
-        name: "Buena Vista Hotel",
-        address: '123 Main St',
-        city: 'Jarabacoa',
-        state: 'La Vega',
-        description: 'Buena Vista Hotel is a charming retreat nestled in the lush mountains of Jarabacoa, Dominican Republic. Surrounded by breathtaking views, this boutique hotel offers cozy accommodations, a serene ambiance, and personalized service. Guests can enjoy on-site amenities like an infinity pool, farm-to-table dining, and adventure packages for hiking, rafting, and exploring nearby waterfalls. Perfect for nature lovers and those seeking tranquility.',
-        amenities: 'pool, dining, gym, lounge',
-        rooms: [
-            {
-                id: 1,
-                roomNumber: 123,
-                roomType: 'Room, 1 King Bed',
-                pricePerNight: 165.48,
-            },
-            {
-                id: 2,
-                roomNumber: 124,
-                roomType: 'Room, 2 Queen Beds',
-                pricePerNight: 175.98,
-            },
-            {
-                id: 3,
-                roomNumber: 125,
-                roomType: 'Studio Suite, 1 King Bed',
-                pricePerNight: 199.38,
-            },
-        ],
-        images: [
-            'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/28/ce/fa/12/hotel-cadiz-bahia.jpg?w=1400&h=-1&s=1',
-            'https://assets.hyatt.com/content/dam/hyatt/hyattdam/images/2017/10/09/1703/Grand-Hyatt-Doha-Hotel-and-Villas-P381-Exterior-Facade.jpg/Grand-Hyatt-Doha-Hotel-and-Villas-P381-Exterior-Facade.16x9.adapt.1920.1080.jpg',
-        ],
-        rating: 4.2,
-    };
+    useEffect(() => {
+        postman.get(`/api/v1/hotels/${id}`)
+            .then((res) => setHotel(res.data))
+            .catch(() => setError(true))
+    }, [id])
 
     const cycleImages = (direction: number) => {
         if (direction > 0) {
@@ -56,7 +30,11 @@ export default function Hotel() {
         }
     };
 
-    return <Box sx={{my: 2, display: 'flex', flexDirection: 'column'}}>
+    const errorView = <Stack sx={{mt: 2}}>
+            <Alert sx={{width: '25vw', mx: 'auto'}} variant='filled' severity='error'>Unable to load hotel details.</Alert>
+        </Stack>
+
+    return error ? errorView : hotel && <Box sx={{my: 2, display: 'flex', flexDirection: 'column'}}>
         <Stack sx={{mx: 'auto', width: '75rem'}} gap={1}>
             <Paper elevation={1}>
                 <Box sx={{p: 5, display: 'flex', alignItems: 'center', height: 300}}>

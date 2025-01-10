@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Hotel } from '../../interface/HotelTypes';
+import './FilterHotel.css';
 
 function FilterHotels() {
     const [criteria, setCriteria] = useState({ location: '', minPrice: 0, maxPrice: 0 });
     const [hotels, setHotels] = useState<Hotel[]>([]);
     const [filteredHotels, setFilteredHotels] = useState<Hotel[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("/data/hotels.json")
@@ -21,10 +24,14 @@ function FilterHotels() {
         setFilteredHotels(filtered);
     };
 
+    const handleSelect = (hotel: Hotel) => {
+        navigate(`/hotel/${hotel.id}`);
+    };
+
     return (
-        <div>
+        <div className="filter-hotels">
             <h1>Filter Hotels</h1>
-            <div>
+            <div className="filter-hotels-container">
                 <label htmlFor="location">Location</label>
                 <input
                     id="location"
@@ -49,7 +56,7 @@ function FilterHotels() {
                     value={criteria.maxPrice}
                     onChange={(e) => setCriteria({ ...criteria, maxPrice: parseInt(e.target.value) })}
                 />
-                <button onClick={handleFilter}>Filter</button>
+                <button type="button" onClick={handleFilter}>Filter</button>
             </div>
             <div>
                 {filteredHotels.length === 0 ? (
@@ -65,6 +72,7 @@ function FilterHotels() {
                             <p>Price: ${hotel.price} per night</p>
                             <p>Rating: {hotel.rating}</p>
                             <p>Amenities: {hotel.amenities.join(", ")}</p>
+                            <button onClick={() => handleSelect(hotel)}>Select</button>
                         </div>
                     ))
                 )}

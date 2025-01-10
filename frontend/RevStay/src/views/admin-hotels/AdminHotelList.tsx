@@ -1,37 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HotelInfo from '../../components/admin-hotel/HotelInfo';
 import AddHotelModal from '../../components/admin-hotel/AddHotelModal';
+import { postman } from '../../postman';
+
+// interface User {
+//     userId: number;
+//     firstName: string;
+//     lastName: string;
+//     email: string;
+//     phone: string;
+//     role: string;
+// }
 
 interface HotelData {
     id: string;
     name: string;
     address: string;
-    rating: number;
+    city: string;
+    state: string;
     description: string;
-    image?: string;
+    amenities: string;
+    // owner?: User;
+    rooms: any[];
+    images: string[];
+    rating: number;
 }
 
 const HotelList: React.FC = () => {
-    const [hotels, setHotels] = useState<HotelData[]>([
-        {
-            id: "1",
-            name: "Sunset Beach Resort",
-            address: "123 Ocean Drive, Beachville, FL 12345",
-            rating: 4.5,
-            description: "A luxurious beachfront resort with stunning ocean views and world-class amenities.",
-            image: "https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc="
-        },
-        {
-            id: "2",
-            name: "Mountain View Lodge",
-            address: "456 Pine Road, Hilltown, CO 67890",
-            rating: 4.2,
-            description: "Cozy mountain retreat offering scenic hiking trails and ski-in/ski-out access.",
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeuffyYgvL-bm9vzoRrxKEfkHeuVssPK_w_A&s"
-        },
-    ]);
 
+    const [hotels, setHotels] = useState<HotelData[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchHotels = async () => {
+            try {
+                const response = await postman.get('/api/v1/hotels/admin');
+                setHotels(response.data);
+            } catch (error) {
+                console.error('Error fetching hotels:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchHotels();
+    }, []);
+
 
     const handleUpdateHotel = (updatedHotel: HotelData) => {
         setHotels(prevHotels =>
@@ -48,12 +63,14 @@ const HotelList: React.FC = () => {
     };
 
     const handleAddHotel = (newHotel: Omit<HotelData, 'id'>) => {
-        const hotelWithId = {
-            ...newHotel,
-            id: Date.now().toString(), // Generate a simple unique ID
-        };
-        setHotels(prevHotels => [...prevHotels, hotelWithId]);
+        // const hotelWithId = {
+        //     ...newHotel,
+        //     id: Date.now().toString(), // Generate a simple unique ID
+        // };
+        // setHotels(prevHotels => [...prevHotels, hotelWithId]);
     };
+
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div className="hotel-list">
@@ -71,7 +88,7 @@ const HotelList: React.FC = () => {
             <AddHotelModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onAddHotel={handleAddHotel}
+                onAddHotel={() => console.log('Add hotel')}
             />
 
         </div>

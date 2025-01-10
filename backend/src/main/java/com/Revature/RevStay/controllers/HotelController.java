@@ -60,6 +60,16 @@ public class HotelController {
         return ResponseEntity.ok(hotel);
     }
 
+    @GetMapping("/admin")
+    public ResponseEntity<List<Hotel>> getUserHotels() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long userId = userService.getUserIdByEmail(email);
+
+        List<Hotel> hotels = hotelService.getHotelsByUserId(userId);
+        return ResponseEntity.ok(hotels);
+    }
+
 
 
 

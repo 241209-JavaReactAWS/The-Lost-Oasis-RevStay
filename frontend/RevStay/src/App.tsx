@@ -13,24 +13,24 @@ import Payment from './components/payment/Payment';
 
 function App() {
   return (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div id='App'>
-              <BrowserRouter>
-                  <Navbar/>
-                  <Routes>
-                  <Route path='/payment' element={<Payment/>}/>
-                      <Route path='/notifications' element={<Notifications/>}/>
-                      <Route path='/login' element={<LoginPage/>}/>
-                      <Route path='/register' element={<RegisterPage/>}></Route>
-                      <Route path='/notifications' element={<Notifications/>}/>
-                      <Route path='admin/hotels/:hotelId/rooms' element={<Rooms/>}/>
-                      <Route path='/admin/hotels' element={<AdminHotelList/>}/>
-                      <Route path='/notifications' element={<Notifications/>}/>
-                      <Route path='/hotel/:id' element={<Hotel/>}/>
-                  </Routes>
-              </BrowserRouter>
-          </div>
-      </LocalizationProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div id='App'>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path='/payment' element={<Payment />} />
+            <Route path='/notifications' element={<Notifications />} />
+            <Route path='/login' element={<LoginPage />} />
+            <Route path='/register' element={<RegisterPage />}></Route>
+            <Route path='/notifications' element={<Notifications />} />
+            <Route path='admin/hotels/:hotelId/rooms' element={<Rooms />} />
+            <Route path='/owner-dashboard' element={<AdminHotelList />} />
+            <Route path='/notifications' element={<Notifications />} />
+            <Route path='/hotel/:id' element={<Hotel />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </LocalizationProvider>
   )
 }
 

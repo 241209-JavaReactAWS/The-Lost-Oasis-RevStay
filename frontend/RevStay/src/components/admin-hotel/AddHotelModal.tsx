@@ -1,27 +1,39 @@
 import React, { useState } from 'react';
 import './AddHotelModal.css';
 
+
 interface HotelData {
+    id: string;
     name: string;
     address: string;
-    rating: number;
+    city: string;
+    state: string;
     description: string;
+    amenities: string;
+    // owner?: User;
+    rooms: any[];
     images: File[];
+    rating: number;
 }
 
 interface AddHotelModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onAddHotel: (hotel: HotelData) => void;
+    onAddHotel: (hotel: Omit<HotelData, 'id'> & { images: File[] }) => void;
 }
 
 const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHotel }) => {
     const [hotel, setHotel] = useState<HotelData>({
+        id: '',
         name: '',
         address: '',
-        rating: 0,
+        city: '',
+        state: '',
         description: '',
+        amenities: '',
+        rooms: [],
         images: [],
+        rating: 0,
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,7 +55,7 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHot
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onAddHotel(hotel);
-        setHotel({ name: '', address: '', rating: 0, description: '', images: [] });
+        setHotel({ id: '', name: '', address: '', city: '', state: '', description: '', amenities: '', rooms: [], images: [], rating: 0 });
         onClose();
     };
 

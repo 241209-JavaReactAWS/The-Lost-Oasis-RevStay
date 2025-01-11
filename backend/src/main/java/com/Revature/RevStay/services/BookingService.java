@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,6 +43,12 @@ public class BookingService {
     private final S3Client S3Client;
     private final EmailService emailService;
     private final NotificationService notificationService;
+
+    @Value("${aws.bucket.name}")
+    private String bucketName;
+
+    @Value("${aws.bucket.url}")
+    private String bucketURL;
 
     @Autowired
     public BookingService(UserRepository userRepository, HotelRepository hotelRepository,
@@ -112,6 +119,13 @@ public class BookingService {
         else return this.bookingRepository.findAllByCustomer(customer);
     }
 
+    public void cancelBooking(Integer id) {
+        Booking booking = this.bookingRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+        booking.setStatus(BookingStatus.USER_CANCELED);
+        this.bookingRepository.save(booking);
+    }
+
     public Booking updateBooking(Integer bookingId, BookingRequest updatedRequest) {
         // Find booking
         Booking booking = bookingRepository.findById(bookingId)
@@ -178,7 +192,8 @@ public class BookingService {
             List<String> hotelImages = booking.getHotel().getImages();
             if (!hotelImages.isEmpty()) {
                 GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                        .key(hotelImages.get(0))
+                        .bucket(bucketName)
+                        .key(hotelImages.get(0).replace("%s/".formatted(bucketURL), ""))
                         .build();
                 ResponseBytes<GetObjectResponse> getObjectResponse = this.S3Client.getObject(getObjectRequest, ResponseTransformer.toBytes());
                 byte[] data = getObjectResponse.asByteArray();

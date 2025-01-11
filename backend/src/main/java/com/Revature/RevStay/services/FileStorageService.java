@@ -1,5 +1,6 @@
 package com.Revature.RevStay.services;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -18,7 +19,9 @@ import java.util.UUID;
 public class FileStorageService {
 
     private final S3Client s3Client;
-    private final String bucketName = "lostoasis-revstay";
+
+    @Value("${aws.bucket.name}")
+    private String bucketName;
 
     public FileStorageService(S3Client s3Client) {
         this.s3Client = s3Client;

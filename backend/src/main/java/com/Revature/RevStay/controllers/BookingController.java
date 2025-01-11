@@ -42,6 +42,12 @@ public class BookingController {
         return ResponseEntity.ok(this.bookingService.getAllHotelBookings(id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> cancelBooking(@PathVariable Integer id) {
+        this.bookingService.cancelBooking(id);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/invoice/{id}")
     public void getInvoice(HttpServletResponse response, @PathVariable Integer id) {
         response.setHeader("Content-Type", "application/pdf");

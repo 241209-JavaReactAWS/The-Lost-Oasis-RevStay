@@ -18,11 +18,31 @@ export default function Hotel() {
 
     useEffect(() => {
         postman.get(`/api/v1/hotels/${id}`)
-            .then((res) => setHotel(res.data))
+            .then((res) => {
+                const hotelInfo = res.data as IHotel
+                const images: Array<string> = []
+
+                if (hotelInfo.rooms) {
+                    hotelInfo.rooms.forEach((room) => {
+                        if (room.images) {
+                            room.images.forEach((image) => images.push(image))
+                        }
+                    })
+                }
+
+                if (hotelInfo.images) {
+                    hotelInfo.images = hotelInfo.images.concat(images)
+                } else {
+                    hotelInfo.images = images
+                }
+
+                setHotel(hotelInfo)
+            })
             .catch(() => setError(true))
     }, [id])
 
     const cycleImages = (direction: number) => {
+        if (hotel === null || !hotel.images) return
         if (direction > 0) {
             setImageIndex((prevIndex) => (prevIndex + 1 > hotel.images.length - 1 ? 0 : prevIndex + 1));
         } else if (direction < 0) {
@@ -54,7 +74,7 @@ export default function Hotel() {
             <Stack sx={{mt: 2}} direction='row' alignItems='center' gap={3}>
                 <Typography variant='h4'>{hotel.name}</Typography>
                 <Stack direction='row' sx={{backgroundColor: '#1976d2', p: 1, borderRadius: 10, color: 'white'}}>
-                    <Typography variant='subtitle1'>{hotel.rating}</Typography>
+                    <Typography variant='subtitle1'>{hotel.rating === 0.0 ? 'Not Rated' : hotel.rating.toFixed(1)}</Typography>
                     <StarIcon />
                 </Stack>
             </Stack>

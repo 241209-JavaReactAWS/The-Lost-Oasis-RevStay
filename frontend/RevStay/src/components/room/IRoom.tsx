@@ -2,6 +2,6 @@ export default interface IRoom {
     id: number,
     roomNumber: number,
     roomType: string,
-    pricePerNight: number
-   
+    pricePerNight: number,
+    images: Array<string>,
 }

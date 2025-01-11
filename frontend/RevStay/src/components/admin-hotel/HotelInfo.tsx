@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import './HotelInfo.css';
 
 interface HotelData {
-    id: string;
+    id: number;
     name: string;
     address: string;
     city: string;
@@ -20,7 +20,7 @@ interface HotelInfoProps {
 
     hotel: HotelData;
     onUpdate: (updatedHotel: HotelData) => void;
-    onDelete: (hotelId: string) => void;
+    onDelete: (hotelId: number) => void;
 
 }
 
@@ -28,6 +28,8 @@ interface HotelInfoProps {
 const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedHotel, setEditedHotel] = useState<HotelData>(hotel);
+    const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
@@ -47,9 +49,9 @@ const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
     };
 
     const handleDelete = () => {
-        if (window.confirm('Are you sure you want to delete this hotel?')) {
-            onDelete(hotel.id);
-        }
+
+        onDelete(hotel.id);
+
     };
 
     if (isEditing) {
@@ -119,9 +121,17 @@ const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
             <p><strong>Description:</strong> {hotel.description}</p>
             <div className="button-group">
                 <button onClick={() => setIsEditing(true)}>Edit</button>
-                <button onClick={handleDelete}>Delete</button>
+                <button
+                    onClick={handleDelete}
+                    disabled={deleteLoading === hotel.id}
+                >
+                    Delete
+                </button>
                 <button onClick={handleAddRooms}>Add Rooms</button>
             </div>
+            {deleteError && deleteLoading === hotel.id && (
+                <div className="error-message">{deleteError}</div>
+            )}
         </div>
     );
 };

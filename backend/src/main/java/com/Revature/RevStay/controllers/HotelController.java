@@ -63,5 +63,16 @@ public class HotelController {
         List<Hotel> hotels = hotelService.getHotelsByUserId(userId);
         return ResponseEntity.ok(hotels);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteHotel(@PathVariable Integer id) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long userId = userService.getUserIdByEmail(email);
+
+        hotelService.deleteHotel(id, userId);
+        return ResponseEntity.ok().build();
+    }
 }
 

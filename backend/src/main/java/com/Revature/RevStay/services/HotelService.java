@@ -82,24 +82,36 @@ public class HotelService {
             return roomRepository.save(room);
         }
 
-
         return null;
     }
 
-    public Room updateRoomDetails(Integer roomId, Room updatedRoom) {
-        Optional<Room> roomOptional = roomRepository.findById(roomId);
+    public void deleteHotel(Integer hotelId, Long userId) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
-        if (roomOptional.isPresent()) {
-            Room existingRoom = roomOptional.get();
-            existingRoom.setPricePerNight(updatedRoom.getPricePerNight());
-            existingRoom.setIsAvailable(updatedRoom.getIsAvailable());
-            existingRoom.setStatus(updatedRoom.getStatus());
-            return roomRepository.save(existingRoom);
+        // Verify that the user is the owner of the hotel
+        if (hotel.getOwner().getUserId() != userId) {
+            throw new RuntimeException("User is not authorized to delete this hotel");
         }
 
-        // Return null or handle the case where the room is not found
-        return null;
-    }
+        // Delete images from S3
+        if (hotel.getImages() != null && !hotel.getImages().isEmpty()) {
+            hotel.getImages().forEach(imageKey -> {
+                try {
+                    fileStorageService.deleteFile(imageKey);
+                } catch (Exception e) {
+                    System.out.println("Failed to delete image: " + imageKey + e);
+                }
+            });
+        }
 
+        hotelRepository.delete(hotel);
+    }
 }
+
+
+
+
+
+
 

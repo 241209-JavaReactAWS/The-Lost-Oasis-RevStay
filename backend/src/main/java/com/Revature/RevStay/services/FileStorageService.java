@@ -81,4 +81,13 @@ public class FileStorageService {
             presigner.close();
         }
     }
+
+    public void deleteFile(String fileKey) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileKey)
+                .build();
+
+        s3Client.deleteObject(deleteObjectRequest);
+    }
 }

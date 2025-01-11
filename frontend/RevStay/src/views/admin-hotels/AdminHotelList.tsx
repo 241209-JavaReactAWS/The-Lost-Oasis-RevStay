@@ -1,26 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import HotelInfo from '../../components/admin-hotel/HotelInfo';
 import AddHotelModal from '../../components/admin-hotel/AddHotelModal';
+import EditHotelModal from '../../components/admin-hotel/EditHotelModal';
 import { postman } from '../../postman';
 
-// interface User {
-//     userId: number;
-//     firstName: string;
-//     lastName: string;
-//     email: string;
-//     phone: string;
-//     role: string;
-// }
-
 interface HotelData {
-    id: string;
+    id: number;
     name: string;
     address: string;
     city: string;
     state: string;
     description: string;
     amenities: string;
-    // owner?: User;
     rooms: any[];
     images: string[];
     rating: number;
@@ -31,46 +22,66 @@ const HotelList: React.FC = () => {
     const [hotels, setHotels] = useState<HotelData[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [editingHotel, setEditingHotel] = useState<HotelData | null>(null);
+
+    const handleDeleteHotel = async (hotelId: number) => {
+        if (!window.confirm('Are you sure you want to delete this hotel?')) {
+            return;
+        }
+
+        try {
+            setDeleteLoading(hotelId);
+            setDeleteError(null);
+
+            await postman.delete(`/api/v1/hotels/${hotelId}`);
+
+            // Remove hotel from state
+            setHotels(prevHotels => prevHotels.filter(hotel => hotel.id !== hotelId));
+
+        } catch (err) {
+            setDeleteError('Failed to delete hotel');
+            console.error('Error deleting hotel:', err);
+        } finally {
+            setDeleteLoading(null);
+        }
+    };
+
+    const fetchHotels = async () => {
+        try {
+            setLoading(true);
+            const response = await postman.get<HotelData[]>('/api/v1/hotels/admin');
+            setHotels(response.data);
+            setError(null);
+        } catch (err) {
+            setError('Failed to fetch hotels');
+            console.error('Error fetching hotels:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
-        const fetchHotels = async () => {
-            try {
-                const response = await postman.get('/api/v1/hotels/admin');
-                setHotels(response.data);
-            } catch (error) {
-                console.error('Error fetching hotels:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchHotels();
     }, []);
 
+    const handleSuccess = () => {
+        fetchHotels(); // Refresh the hotel list
+    };
+
 
     const handleUpdateHotel = (updatedHotel: HotelData) => {
-        setHotels(prevHotels =>
-            prevHotels.map(hotel =>
-                hotel.id === updatedHotel.id ? updatedHotel : hotel
-            )
-        );
+
+        setEditingHotel(updatedHotel);
 
     };
 
-    const handleDeleteHotel = (hotelId: string) => {
-        setHotels(prevHotels => prevHotels.filter(hotel => hotel.id !== hotelId));
-
-    };
-
-    const handleAddHotel = (newHotel: Omit<HotelData, 'id'>) => {
-        // const hotelWithId = {
-        //     ...newHotel,
-        //     id: Date.now().toString(), // Generate a simple unique ID
-        // };
-        // setHotels(prevHotels => [...prevHotels, hotelWithId]);
-    };
 
     if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="hotel-list">
@@ -85,11 +96,29 @@ const HotelList: React.FC = () => {
                 />
             ))}
 
+            {hotels.length === 0 && (
+                <div>
+                    <p>No hotels found. Add your first hotel!</p>
+                </div>
+            )}
+
             <AddHotelModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onAddHotel={() => console.log('Add hotel')}
+                onSuccess={handleSuccess}
             />
+
+            {editingHotel && (
+                <EditHotelModal
+                    hotel={editingHotel}
+                    isOpen={!!editingHotel}
+                    onClose={() => setEditingHotel(null)}
+                    onSuccess={() => {
+                        fetchHotels();
+                        setEditingHotel(null);
+                    }}
+                />
+            )}
 
         </div>
     );

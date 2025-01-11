@@ -80,7 +80,7 @@ export default function Navbar() {
                 {auth.role === 'CUSTOMER' && <>
                     {/* Add Customer functions here */}
                     <ListItem disablePadding>
-                        <ListItemButton>
+                        <ListItemButton onClick={() => navigate('/reservations')}>
                             <ListItemIcon>
                                 <BookIcon />
                             </ListItemIcon>

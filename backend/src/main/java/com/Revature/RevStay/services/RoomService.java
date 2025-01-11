@@ -5,6 +5,7 @@ import com.Revature.RevStay.daos.RoomRepository;
 import com.Revature.RevStay.dtos.RoomRequest;
 import com.Revature.RevStay.models.Hotel;
 import com.Revature.RevStay.models.Room;
+import com.Revature.RevStay.models.RoomStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RoomService {
@@ -59,11 +59,11 @@ public class RoomService {
         Room room = new Room();
         room.setHotel(hotel);
         room.setRoomNumber(request.getRoomNumber());
-        room.setRoomType(request.getRoomType()); // Directly set the RoomType enum
+        room.setRoomType(request.getRoomType());
         room.setPricePerNight(request.getPricePerNight());
         room.setTotalRooms(request.getTotalRooms());
         room.setAvailableRooms(request.getTotalRooms());
-        room.setIsAvailable(true);
+        room.setIsAvailable(request.getStatus() == RoomStatus.AVAILABLE); // Set based on status
         room.setStatus(request.getStatus());
         room.setImages(imageUrls);
 
@@ -74,11 +74,5 @@ public class RoomService {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
         return roomRepository.findByHotel(hotel);
-    }
-
-    // Method to get room with presigned URLs for images
-    public Room getRoomWithImages(Integer roomId) {
-        return roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
     }
 }

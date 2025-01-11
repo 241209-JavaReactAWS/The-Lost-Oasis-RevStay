@@ -1,9 +1,11 @@
 package com.Revature.RevStay.controllers;
 
+import com.Revature.RevStay.dtos.HotelRequest;
 import com.Revature.RevStay.models.Hotel;
 import com.Revature.RevStay.services.HotelService;
 import com.Revature.RevStay.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -32,20 +35,34 @@ public class HotelController {
         this.userService = userService;
     }
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Hotel> createHotel(
-            @RequestPart(value = "data", required = true) String hotelData,  // Change Hotel to String
-            @RequestPart(value = "images", required = true) List<MultipartFile> images
+            @RequestPart("data") String hotelData,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images
     ) throws JsonProcessingException {
+        System.out.println("Received hotel creation request");
+        System.out.println("Hotel data: " + hotelData);
+        System.out.println("Images null? " + (images == null));
+        System.out.println("Number of images received: " + (images != null ? images.size() : 0));
+
+        if (images != null) {
+            images.forEach(image -> {
+                System.out.println("Image name: " + image.getOriginalFilename());
+                System.out.println("Image size: " + image.getSize());
+            });
+        }
+
         ObjectMapper mapper = new ObjectMapper();
-        Hotel hotel = mapper.readValue(hotelData, Hotel.class);  // Convert JSON string to Hotel object
+        HotelRequest hotelRequest = mapper.readValue(hotelData, HotelRequest.class);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Long userId = userService.getUserIdByEmail(email);
 
-        Hotel createdHotel = hotelService.createHotel(hotel, images, userId);
-        return ResponseEntity.ok(createdHotel);
+        List<MultipartFile> imagesList = images != null ? images : new ArrayList<>();
+
+        Hotel hotel = hotelService.createHotel(hotelRequest, imagesList, userId);
+        return ResponseEntity.ok(hotel);
     }
 
     @GetMapping("/{id}")
@@ -73,6 +90,27 @@ public class HotelController {
 
         hotelService.deleteHotel(id, userId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Hotel> updateHotel(
+            @PathVariable Integer id,
+            @RequestPart("data") String hotelData,
+            @RequestPart(value = "images", required = false) List<MultipartFile> newImages,
+            @RequestPart(value = "deletedImages", required = false) String deletedImagesJson
+    ) throws JsonProcessingException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Long userId = userService.getUserIdByEmail(email);
+
+        ObjectMapper mapper = new ObjectMapper();
+        HotelRequest hotelRequest = mapper.readValue(hotelData, HotelRequest.class);
+        List<String> deletedImages = deletedImagesJson != null ?
+                mapper.readValue(deletedImagesJson, new TypeReference<List<String>>() {}) :
+                new ArrayList<>();
+
+        Hotel updatedHotel = hotelService.updateHotel(id, hotelRequest, newImages, deletedImages, userId);
+        return ResponseEntity.ok(updatedHotel);
     }
 }
 

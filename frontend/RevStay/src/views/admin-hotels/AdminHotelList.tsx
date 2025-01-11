@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import HotelInfo from '../../components/admin-hotel/HotelInfo';
 import AddHotelModal from '../../components/admin-hotel/AddHotelModal';
+import EditHotelModal from '../../components/admin-hotel/EditHotelModal';
 import { postman } from '../../postman';
-
-// interface User {
-//     userId: number;
-//     firstName: string;
-//     lastName: string;
-//     email: string;
-//     phone: string;
-//     role: string;
-// }
 
 interface HotelData {
     id: number;
@@ -20,7 +12,6 @@ interface HotelData {
     state: string;
     description: string;
     amenities: string;
-    // owner?: User;
     rooms: any[];
     images: string[];
     rating: number;
@@ -34,6 +25,7 @@ const HotelList: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [editingHotel, setEditingHotel] = useState<HotelData | null>(null);
 
     const handleDeleteHotel = async (hotelId: number) => {
         if (!window.confirm('Are you sure you want to delete this hotel?')) {
@@ -82,18 +74,11 @@ const HotelList: React.FC = () => {
 
 
     const handleUpdateHotel = (updatedHotel: HotelData) => {
-        setHotels(prevHotels =>
-            prevHotels.map(hotel =>
-                hotel.id === updatedHotel.id ? updatedHotel : hotel
-            )
-        );
+
+        setEditingHotel(updatedHotel);
 
     };
 
-    // const handleDeleteHotel = (hotelId: string) => {
-    //     setHotels(prevHotels => prevHotels.filter(hotel => hotel.id !== hotelId));
-
-    // };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -122,6 +107,18 @@ const HotelList: React.FC = () => {
                 onClose={() => setIsModalOpen(false)}
                 onSuccess={handleSuccess}
             />
+
+            {editingHotel && (
+                <EditHotelModal
+                    hotel={editingHotel}
+                    isOpen={!!editingHotel}
+                    onClose={() => setEditingHotel(null)}
+                    onSuccess={() => {
+                        fetchHotels();
+                        setEditingHotel(null);
+                    }}
+                />
+            )}
 
         </div>
     );

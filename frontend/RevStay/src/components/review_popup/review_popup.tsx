@@ -1,14 +1,20 @@
 import { useState } from 'react'
 
 import "./review.css"
+import { postman } from '../../postman'
 
-export default function ReviewPopup(){
-    const [stars, setStars] = useState(0)
-    const [hoverStars, setHoverStars] = useState(0)
-    
+
+interface ReviewProps{
+    hotelId: number
+}
+
+export default function ReviewPopup(props: ReviewProps){
+    const [rating, setRating] = useState(0)
+    const [suggestedRating, setSuggestedRating] = useState(0)
     const [isHidden, setHidden] = useState(false)
+    const [text, setText] = useState("")
 
-    return <div id="review" className= {isHidden ? "hidden" : ""}>
+    return <div className = {"review_popup" + (isHidden ? " hidden" : "")} >
         <Close setHidden={()=>setHidden(true)}/>
         <label>Stars</label>
         <div id="stars">
@@ -17,16 +23,16 @@ export default function ReviewPopup(){
                 <Star 
                     key={i}
                     shouldDisplay={
-                        (hoverStars == 0) ? i <= stars : i <= hoverStars
+                        (suggestedRating == 0) ? i <= rating : i <= suggestedRating
                     }
                     onClick={
-                        ()=>setStars(i)
+                        ()=>setRating(i)
                     }
                     onMouseIn={
-                        ()=>setHoverStars(i)
+                        ()=>setSuggestedRating(i)
                     }
                     onMouseOut={
-                        ()=>setHoverStars(0)
+                        ()=>setSuggestedRating(0)
                     }
 
                 />
@@ -34,9 +40,33 @@ export default function ReviewPopup(){
         }
         </div>
         <label>Description</label>
-        <textarea/>
-        <input type="submit" value="Submit"/>
+        <textarea onChange={e=>setText(e.target.value)}/>
+        <input 
+            type="submit" 
+            value="Submit" 
+            onClick={()=>submit(props.hotelId, rating, text)}
+        />
     </div>
+}
+
+function submit(hotelId: number, rating: number, description: string){
+    if (rating == 0){
+        alert("Please select a rating")
+        return
+    }
+
+    const body = {
+        hotelId: hotelId,
+        rating: rating,
+        comment: description
+    }
+
+    console.log(body)
+
+    postman.post(
+        "/reviews", 
+        body
+    )
 }
 
 type StarProps = {

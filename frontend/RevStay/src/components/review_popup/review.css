@@ -1,8 +1,4 @@
-body{
-    background-color: greenyellow;
-}
-
-#review{
+.review_popup{
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -52,13 +48,14 @@ body{
     & .close{
         align-self: flex-start;
     }
+
+    &.hidden {
+        visibility: hidden;
+        animation: fadeOut ease .5s;
+        animation-fill-mode: forwards;
+    }
 }
 
-.hidden {
-    animation: fadeOut ease .5s;
-    animation-fill-mode: forwards;
-}
-  
 @keyframes fadeOut {
     100% {
         opacity: 0;

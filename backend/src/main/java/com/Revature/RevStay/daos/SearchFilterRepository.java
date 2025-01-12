@@ -16,6 +16,6 @@ public interface SearchFilterRepository extends JpaRepository<Hotel, Integer>, J
     // No need for additional methods here unless you have specific custom queries
 
 
-    @Query("SELECT h FROM Hotel h JOIN h.rooms r WHERE r.pricePerNight BETWEEN :minPrice AND :maxPrice")
+    @Query("SELECT h FROM Hotel h JOIN Room r on h = r.hotel WHERE r.pricePerNight BETWEEN :minPrice AND :maxPrice")
     List<Hotel> findByPriceRange(@Param("minPrice") Double minPrice, @Param("maxPrice") Double maxPrice);
 }

@@ -87,6 +87,17 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
+    // Respond to review
+    @PatchMapping("/{id}")
+    public ResponseEntity<Review> respondToReview(@PathVariable int id, @RequestBody ReviewResponseRequest request) {
+        var user = userService.getUserByAuthentication()
+            .orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to login before you can respond to reviews")
+            );
+
+        return ResponseEntity.ok(reviewService.respondToReview(id, user, request));
+    }
+
     // Delete a Review
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReview(@PathVariable int id) {

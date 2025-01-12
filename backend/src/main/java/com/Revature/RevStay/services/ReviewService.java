@@ -47,6 +47,32 @@ public class ReviewService {
 
         return reviewRepository.save(model);
     }
+
+    public Review respondToReview(int reviewId, User owner, ReviewResponseRequest request){
+        var review = reviewRepository
+            .findById(reviewId)
+            .orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found")
+            );
+
+        if (review.getHotel().getOwner().getUserId() != owner.getUserId()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not owner of the hotel this user has reviewed");
+        }
+
+        if (review.getResponse() != null){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Review already has response");
+        }
+
+        var newResponse = new Review(
+            review.getReviewId(),
+            review.getUser(),
+            review.getHotel(),
+            review.getRating(),
+            review.getComment(),
+            request.getResponse()
+        );
+
+        return reviewRepository.save(newResponse);
     }
 
     // Find Review by ID

@@ -3,6 +3,8 @@ import AddRoomModal from './AddRoomModal';
 import { useParams } from 'react-router-dom';
 import { postman } from '../../postman';
 import RoomsTable from './RoomsTable';
+import EditRoomModal from './EditRoomModal';
+import { Room } from '../../interfaces/room-interface';
 
 import './rooms.css'
 
@@ -11,14 +13,11 @@ const Rooms = () => {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const { hotelId } = useParams<{ hotelId: string }>();
-
     const id = parseInt(hotelId as string);
-
-    console.log('Hotel ID:', id);
-    console.log(typeof hotelId);
-    console.log(typeof id);
 
     const fetchRooms = async () => {
         try {
@@ -40,14 +39,48 @@ const Rooms = () => {
         setIsAddRoomModalOpen(false);
     };
 
+    const handleEditClick = (room: Room) => {
+        setSelectedRoom(room);
+        setIsEditModalOpen(true);
+    };
+
+    const handleEditSuccess = () => {
+        fetchRooms(); // Refresh the list
+        setIsEditModalOpen(false);
+        setSelectedRoom(null);
+    };
+
     if (loading) return <div>Loading...</div>;
 
     return (
         <div>
-            <h1>All rooms</h1>
-            <button onClick={() => setIsAddRoomModalOpen(true)}>Add New Room</button>
+            <div className="rooms-header">
+                <h1>All rooms</h1>
+                <button
+                    className="add-room-button"
+                    onClick={() => setIsAddRoomModalOpen(true)}>
+                    Add New Room
+                </button>
+            </div>
 
-            <RoomsTable rooms={rooms} />
+            <RoomsTable
+                rooms={rooms}
+                onRoomDeleted={fetchRooms}
+                onEditClick={handleEditClick}
+            />
+
+            {selectedRoom && (
+                <EditRoomModal
+                    room={selectedRoom}
+                    hotelId={id}
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setSelectedRoom(null);
+                    }}
+                    onSuccess={handleEditSuccess}
+                />
+            )}
 
             {isAddRoomModalOpen && (
                 <AddRoomModal

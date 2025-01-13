@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react"
-import "../../postman"
+import { useParams } from 'react-router-dom';
 import { postman } from "../../postman"
-import AdminTable from "../admin_table/admin_table"
+import AdminTable from "../../components/admin_table/admin_table"
 
 
-interface BookingProp{
-    hotelId: number
-}
-
-export default function OwnersBooking(prop: BookingProp){
+export default function OwnersBooking(){
     const [bookings, setBookings] = useState<Booking[]>([])
     const [reviews, setReviews] = useState<Review[]>([])
 
+    const {hotelId} = useParams<{hotelId: string}>()
+
     const fetch = ()=>{
         const loadBookings = async ()=>{
-            const bookings: Booking[] = (await postman.get(`/bookings/hotel/${prop.hotelId}`)).data
+            const bookings: Booking[] = (await postman.get(`/bookings/hotel/${hotelId}`)).data
     
             bookings.sort((a, b)=>a.id - b.id)
     
@@ -22,7 +20,7 @@ export default function OwnersBooking(prop: BookingProp){
         }
 
         const loadReviews = async ()=>{
-            const reviews: Review[] = (await postman.get(`/reviews/hotel/${prop.hotelId}`)).data
+            const reviews: Review[] = (await postman.get(`/reviews/hotel/${hotelId}`)).data
     
             reviews.sort((a, b)=>a.reviewId - b.reviewId)
     

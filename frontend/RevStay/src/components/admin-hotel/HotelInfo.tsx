@@ -60,6 +60,14 @@ const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
         }
     }
 
+    const handleManageReviews = () => {
+        if (hotel && hotel.id) {
+            navigate(`/admin/hotels/${hotel.id}/reviews`);
+        } else {
+            console.error('Hotel ID is undefined');
+        }
+    }
+
     return (
         <div className="hotel-info">
             <div>
@@ -81,6 +89,7 @@ const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
                     <button onClick={handleUpdate}>Edit</button>
                     <button onClick={handleAddRooms}>Add Rooms</button>
                     <button onClick={handleManageReservations}>Manage Reservations</button>
+                    <button onClick={handleManageReviews}>Respond to Reviews</button>
                     <button
                         onClick={handleDelete}
                         disabled={deleteLoading === hotel.id}

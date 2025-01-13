@@ -88,6 +88,15 @@ export default function Navbar() {
                         </ListItemButton>
                     </ListItem>
                 </>}
+
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => navigate('/search-filter')}>
+                        <ListItemIcon>
+                            <BookIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Search Hotels' />
+                    </ListItemButton>
+                    </ListItem>
             </List>
         </Box>
     )

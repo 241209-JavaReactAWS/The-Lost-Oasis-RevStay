@@ -1,8 +1,0 @@
-.entry{
-    display: flex;
-    align-items: flex-start;
-}
-
-.entry input:first-child{
-    width: 10px;
-}

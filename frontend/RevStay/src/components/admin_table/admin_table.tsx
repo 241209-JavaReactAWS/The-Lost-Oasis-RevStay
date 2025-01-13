@@ -1,86 +1,189 @@
-import { useState, useReducer } from 'react'
+import { useState } from 'react'
 import "./admin_table.css"
 
-type Header<T> = keyof T & string
+
+type Getter<T> = (t: T)=>string
+
+type Setter<T> = (t: T, arg: string)=>(T|null)
+
+type Header<T> = {
+    [key: string]: [Getter<T>, Setter<T>|null]
+}
 
 type Action<T> = {
-    [key: string]: (oldT: T, newT:T)=>void
+    [key: string]: (anyChanges: boolean, newT:T)=>void
 }
 
 type TableProps<T> = {
-    headers: Header<T>[], 
+    headers: Header<T>, 
     objs: T[], 
     actions: Action<T>
 }
 export default function AdminTable<T extends object>(props: TableProps<T>){
+    if (props.objs.length === 0){
+        return <></>
+    }
+
     return <table>
         <thead>
         <tr>
             {
-                props.headers.map((h, i)=><th key={i}>{h}</th>)
+                Object.entries(props.headers)
+                    .map(([k, v], i)=>
+                        <th 
+                            key={i}
+                            children={k}
+                        />
+                    )
             }
-            <th key={props.headers.length} colSpan={Object.keys(props.actions).length}>Actions</th>
+            {
+                Object.entries(props.actions).length === 0
+                ?
+                <></>
+                :
+                <th 
+                    key={Object.entries(props.headers).length} 
+                    colSpan={Object.keys(props.actions).length}
+                    children="Actions"
+                />
+            }
         </tr>
         </thead>
-        <tbody>
-        {
+        <tbody>{
             props.objs.map((o, i)=> 
-                <Row key={i} headers={props.headers} actions={props.actions} obj={o}/>
+                <Row 
+                    key={i} 
+                    headers={props.headers} 
+                    actions={props.actions} 
+                    initObj={o}
+                />
             )
-        }
-        </tbody>
+        }</tbody>
     </table>
 }
 
 type RowProp<T> = {
-    headers: Header<T>[], 
+    headers: Header<T>, 
     actions: Action<T>, 
-    obj: T
+    initObj: T
 }
 function Row<T>(props: RowProp<T>){
-    const [currT, _] = useState({...props.obj})
-    const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const initEntries = Object
+        .values(props.headers)
+        .map(([getter, setter], _, __)=>{
+            return getter(props.initObj)
+        })
+    
+    const [currEntries, setEntryText] = useState(initEntries)
+
+    function createObj(){
+        return Object
+            .values(
+                props.headers
+            )
+            .reduce(
+                (acc, [getter, setter], i)=> {
+                    if (setter === null){
+                        return acc
+                    }
+                    const newT = setter(acc, currEntries[i])
+
+                    if (newT === null){
+                        return acc
+                    }
+
+                    return newT
+                },
+                props.initObj
+            )
+    }
     
     return <tr>
     {
-        props.headers.map((h, i)=>
-            <Entry
-                key={i}
-                initText={
-                    props.obj[h] as string
-                }
-                currText={
-                    currT[h] as string
-                }
-                setText={
-                    t=>{currT[h] = t as any;  forceUpdate();}
-                }
-            />
-        )
+        Object.entries(props.headers)
+            .map(([name, [getter, setter]], i)=>
+                <Entry
+                    key={i}
+                    currText={
+                        currEntries[i]
+                    }
+                    canEdit={
+                        setter !== null
+                    }
+                    setText={
+                        (newText)=>setEntryText(
+                            [...currEntries.slice(0, i), newText, ...currEntries.slice(i+1)]
+                        )
+                    }
+                    reset={()=>
+                        setEntryText(
+                            [...currEntries.slice(0, i), initEntries[i], ...currEntries.slice(i+1)]
+                        )
+                    }
+                    canReset={
+                        currEntries[i] !== getter(props.initObj)
+                    }
+                />
+            )
     }
     {
-        Object.entries(props.actions).map(([name, a], i)=>
-            <th key={props.headers.length+i}><input type="button" value={name} onClick={()=>a(props.obj, currT)}/></th>
-        )
+        Object.entries(props.actions)
+            .map(([name, action], i)=>
+                <th 
+                    key={
+                        Object.entries(props.headers).length+i
+                    }
+                    children = {
+                        <button
+                            onClick={()=>{
+                                const newObj = createObj()
+
+                                const anyChange = JSON.stringify(newObj) !== JSON.stringify(props.initObj)
+
+                                action(anyChange, newObj)
+                            }}
+                            children={name}
+                        />
+                    }
+                />
+            )
     }
     </tr>
 }
 
 
 type EntryProp = {
-    initText: string,
     currText: string,
+    canEdit: boolean,
     setText: (arg0: string)=>void
+    canReset: boolean,
+    reset: ()=>void,
 }
 function Entry(props: EntryProp){
-    return <th>
-        <span className="entry">
-            <input value="↻" onClick={()=>props.setText(props.initText)} disabled={props.currText==props.initText}/>
-            <input 
-                type="text" 
-                value={props.currText} 
-                onChange={e=>{props.setText(e.target.value); console.log(e.target.value)}}
-            />
-        </span>
-    </th>
+    if (!props.canEdit){
+        return <td>
+            {props.currText}
+        </td>
+    }
+
+    return <td>
+        <button
+            onClick={
+                ()=>props.reset()
+            } 
+            disabled={
+                !props.canReset
+            }
+            children="↺"
+        />
+        <input
+            type='text'
+            value={
+                props.currText
+            } 
+            onChange={e=>
+                props.setText!(e.target.value)
+            }
+        />
+    </td>
 }

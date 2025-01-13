@@ -1,276 +1,338 @@
-import { useState } from "react"
-import { Booking, Completed, InSession, Pending } from "./booking_type"
-import Table from "../admin_table/admin_table"
-import "./owners_booking.css"
-import axios from "axios"
-
-export default function OwnersBooking(){
-    axios(
-        {
-            url: "/login",
-            method: "get",
-            params: {
-                firstName: "",
-                lastName: "",
-                email: "owner1@gmail.com",
-                password: "password",
-                phone: "",
-                role: "OWNER"
-            }
-        }
-    )
-    .then(response=>{
-        if (response.status != 200){
-            throw "NOT OK!"
-        }
-        else {
-            console.log("login ok")
-        }
-    })
-
-    axios(
-        {
-            url: "/bookings/hotel/0",
-            method: "get",
-        }
-    )
-    .then(response=>{
-        console.log(response)
-    })
-
-    return (
-        <div className="bookings">
-            <h1>My Bookings</h1>
-
-            <Entry<Pending>
-                name = "Pending"
-
-                headers={
-                    ["hotelName", "room", "username", "dateIn"]
-                }
-
-                objs={
-                    [
-                        {
-                          type: "pending",
-                          hotelName: "Hotel Mario",
-                          room: "123",
-                          username: "mario",
-                          dateIn: "12/12/12",
-                          cost: "100",
-                        },
-                        {
-                          type: "pending",
-                          hotelName: "Overlook Hotel",
-                          room: "237",
-                          username: "jack",
-                          dateIn: "12/12/12",
-                          cost: "100",
-                        },
-                    ]
-                }
-
-                extraActions={
-                    {
-                        "accept": ()=>{},
-                        "deny": ()=>{},
-                    }
-                }
-
-                edit={
-                    ()=>{}
-                }
-
-                delete={
-                    ()=>{}
-                }
-            />
+import { useEffect, useState } from "react"
+import "../../postman"
+import { postman } from "../../postman"
+import AdminTable from "../admin_table/admin_table"
 
 
-            <Entry<InSession>
-                name = "Needs Response"
-
-                headers={
-                    ["hotelName", "room", "username", "dateIn"]
-                }
-
-                objs={
-                    [
-                        {
-                          type: "inSession",
-                          hotelName: "Hotel Mario",
-                          room: "123",
-                          username: "mario",
-                          dateIn: "12/12/12",
-                          cost: "100",
-                        },
-                        {
-                          type: "inSession",
-                          hotelName: "Overlook Hotel",
-                          room: "237",
-                          username: "jack",
-                          dateIn: "12/12/12",
-                          cost: "100",
-                        },
-                    ]
-                }
-
-                extraActions={
-                    {
-                        respond: ()=>{},
-                        ignore: ()=>{}
-                    }
-                }
-
-                edit={
-                    ()=>{}
-                }
-
-                delete={
-                    ()=>{}
-                }
-            />
-            
-            <Entry<InSession>
-                name = "In Session"
-
-                headers={
-                    ["hotelName", "room", "username", "dateIn"]
-                }
-
-                objs={
-                    [
-                        {
-                          type: "inSession",
-                          hotelName: "Hotel Mario",
-                          room: "123",
-                          username: "mario",
-                          dateIn: "12/12/12",
-                          cost: "100",
-                        },
-                        {
-                          type: "inSession",
-                          hotelName: "Overlook Hotel",
-                          room: "237",
-                          username: "jack",
-                          dateIn: "12/12/12",
-                          cost: "100",
-                        },
-                    ]
-                }
-
-                extraActions={
-                    {}
-                }
-
-                edit={
-                    ()=>{}
-                }
-
-                delete={
-                    ()=>{}
-                }
-            />
-
-            <Entry<Completed>
-                name = "Completed"
-
-                headers={
-                    ["hotelName", "room", "username", "dateIn"]
-                }
-
-                objs={
-                    [
-                        {
-                          type: "completed",
-                          hotelName: "Hotel Mario",
-                          room: "123",
-                          username: "mario",
-                          dateIn: "12/12/12",
-                          dateOut: "12/30/12",
-                          cost: "100",
-                        },
-                        {
-                          type: "completed",
-                          hotelName: "Overlook Hotel",
-                          room: "237",
-                          username: "jack",
-                          dateIn: "12/12/12",
-                          dateOut: "12/30/12",
-                          cost: "100",
-                        },
-                    ]
-                }
-
-                extraActions={
-                    {}
-                }
-
-                edit={
-                    ()=>{}
-                }
-
-                delete={
-                    ()=>{}
-                }
-            />
-        </div>
-
-        
-    )
+interface BookingProp{
+    hotelId: number
 }
 
+export default function OwnersBooking(prop: BookingProp){
+    const [bookings, setBookings] = useState<Booking[]>([])
+    const [reviews, setReviews] = useState<Review[]>([])
 
-type EntryProps<T extends Booking> = {
+    const fetch = ()=>{
+        const loadBookings = async ()=>{
+            const bookings: Booking[] = (await postman.get(`/bookings/hotel/${prop.hotelId}`)).data
+    
+            bookings.sort((a, b)=>a.id - b.id)
+    
+            setBookings(bookings)
+        }
+
+        const loadReviews = async ()=>{
+            const reviews: Review[] = (await postman.get(`/reviews/hotel/${prop.hotelId}`)).data
+    
+            reviews.sort((a, b)=>a.reviewId - b.reviewId)
+    
+            setReviews(reviews)
+        }
+
+        loadBookings()
+        loadReviews()
+    }
+
+    useEffect(()=>{
+            fetch()
+            setInterval(fetch, 1000)
+        }, 
+        []
+    )
+
+    const tables = {
+        "Needs Confirmation Or Rejection": (
+            <BookingTable
+                objs={
+                    bookings.filter(b=>b.status === "PENDING")
+                }
+
+                extraActions={{
+                    "Confirm": (anyChanges, b)=>{
+                        console.log(
+                            {
+                                ...b,
+                                status: "ACCEPTED"
+                            }
+                        )
+
+                        postman.patch(
+                            `/bookings`, 
+                            {
+                                ...b,
+                                status: "CONFIRMED"
+                            }
+                        )
+                    },
+                    "Reject": (anyChanges, b)=>{
+                        postman.patch(
+                            `/bookings`, 
+                            {
+                                ...b,
+                                status: "REJECTED"
+                            }
+                        )
+                    },
+                }}
+            />
+        ),
+        "Needs Response": (
+            <ReviewTable
+                objs={
+                    reviews.filter(r=>r.response === null && r.comment.length > 0)
+                }            
+                extraActions={{
+                    "IGNORE": (anyChange, newR)=>{
+                        postman.patch(
+                            `/reviews/${newR.reviewId}`, 
+                            {response: ""}
+                        )
+                    },
+                    "RESPOND": (anyChange, newR)=>{
+                        if (newR.response == null || newR.response!.length === 0){
+                            alert("Please enter a response")
+                            return
+                        }
+
+                        postman.patch(
+                            `/reviews/${newR.reviewId}`, 
+                            {response: newR.response}
+                        )
+                    }
+                }}
+            />
+        ),
+        "Confirmed": (
+            <BookingTable
+                objs={
+                    bookings.filter(b=>b.status === "CONFIRMED")
+                }
+
+                extraActions={{
+                    "Cancel": (anyChanges, b)=>{
+                        if (anyChanges){
+                            alert("there are unsaved changes")
+                            return
+                        }
+
+                        postman.patch(
+                            `/bookings`, 
+                            {
+                                ...b,
+                                status: "OWNER_CANCELED"
+                            }
+                        )
+                    }
+                }}
+            />
+        ),
+        "Owner Cancelled": (
+            <BookingTable
+                objs={
+                    bookings.filter(b=>b.status === "OWNER_CANCELED")
+                }
+
+                extraActions={{  
+                }}
+            />
+        ),
+        "User Cancelled": (
+            <BookingTable
+                objs={
+                    bookings.filter(b=>b.status === "USER_CANCELED")
+                }
+
+                extraActions={{  
+                }}
+            />
+        ),
+        "Rejected": (
+            <BookingTable
+                objs={
+                    bookings.filter(b=>b.status === "REJECTED")
+                }
+                extraActions={{
+                }}
+            />
+        ),
+        "All Reviews": (
+            <ReviewTable
+                objs={
+                    reviews
+                }            
+
+                extraActions={{}}
+            />
+        ),
+    }
+
+    const wrappedTables = Object.entries(tables)
+        .map(([name, table], i)=>(
+                <TableWrapper 
+                    key={i} 
+                    name={name}
+                    children={table}
+                />
+            )
+        )
+
+    return wrappedTables
+}
+
+interface TableWrapperProps{
     name: string,
-    headers: (keyof T & string)[]
-    objs: T[],
-    edit: (arg0: T)=>void,
-    delete: (arg0: T)=>void
-    extraActions: {
-        [key: string]: (arg0: T)=>void
-    } 
+    children: any,
 }
-function Entry<T extends Booking>(props: EntryProps<T>){
-    let [isHidden, setHidden] = useState(true)
+function TableWrapper(props: TableWrapperProps){
+    const [isHidden, setHidden] = useState(true)
 
     return (
         <div>
             <div>
                 <label>{props.name}</label>
-                <input 
-                    type="button" 
-                    value={isHidden ? "reveal" : "hide"} 
+                <button
                     onClick={()=>setHidden(!isHidden)}
+                    children={isHidden ? "reveal" : "hide"} 
                 />
             </div>
             <div style={isHidden? {display: "none"} : {}}>
-                <Table
-                    headers={props.headers}
-                    objs={props.objs}
-                    actions={
-                        {
-                            "edit": (oldT, newT)=>{
-                                if (JSON.stringify(oldT) === JSON.stringify(newT)){
-                                    alert("there are no changes")
-                                }
-                                else {
-                                    props.edit(newT)
-                                }
-                            },
-                            "delete": (oldT, newT)=>{
-                                if (JSON.stringify(oldT) !== JSON.stringify(newT)){
-                                    alert("there are unsaved changes")
-                                }
-                                else {
-                                    props.delete(newT)
-                                }
-                            },
-                            ...props.extraActions,
-                        }
-                    }
-                />
+                {props.children}
             </div>
         </div>
     )
+}
+
+type BookingTableProps = {
+    objs: Booking[],
+    extraActions: {
+        [key: string]: (anyChanges: boolean, b: Booking)=>void
+    } 
+}
+function BookingTable(props: BookingTableProps){
+    return (
+        <AdminTable<Booking>
+            objs={props.objs}
+            headers={
+                {
+                    "Id": [
+                        t=>t.id.toString(),
+                        null
+                    ],
+                    "Customer": [
+                        t=> t.customer.userId + " " + t.customer.firstName + " " + t.customer.lastName + " " + t.customer.email,
+                        null
+                    ],
+                    "Check-in Date": [
+                        t=>t.checkIn, 
+                        (t, arg)=>{ 
+                            return {...t, checkIn: arg}
+                        }
+                    ],
+                    "Check-out Date": [
+                        t=>t.checkOut, 
+                        (t, arg)=>{ 
+                            return {...t, checkOut: arg}
+                        }
+                    ],
+                    "Room ID": [
+                        t=>t.room.id.toString(), 
+                        (t, arg)=>{ 
+                            return {...t, room: {...t.room, id: parseInt(arg)}}
+                        }
+                    ],
+                    "Room Number": [
+                        t=>t.room.roomNumber,
+                        null
+                    ],
+                    "Number of Guests": [
+                        t=>t.numGuests.toString(), 
+                        (t, arg)=>{ 
+                            return {...t, numGuests: parseInt(arg)}
+                        }
+                    ],
+                    "Price": [
+                        t=>t.totalPrice.toString(), 
+                        (t, arg)=>{ 
+                            return {...t, totalPrice: parseFloat(arg)}
+                        }
+                    ],
+                }
+            }
+            actions={
+                {
+                    "EDIT": (anyChange, newB)=>{
+                        if (!anyChange){
+                            alert("there are no changes")
+                        }
+                        else {
+                            postman.patch(`bookings`, newB)
+                        }
+                    },
+                    ...props.extraActions,
+                }
+            }
+        />
+    )
+}
+
+type ReviewTableProps = {
+    objs: Review[],
+    extraActions: {
+        [key: string]: (anyChanges: boolean, b: Review)=>void
+    } 
+}
+function ReviewTable(props: ReviewTableProps){
+    return (
+        <AdminTable<Review>
+            objs={props.objs}
+            headers={{
+                "Id": [
+                    t=>t.reviewId.toString(),
+                    null
+                ],
+                "Customer": [
+                    t=> t.user.userId + " " + t.user.firstName + " " + t.user.lastName + " " + t.user.email,
+                    null
+                ],
+                "Rating": [
+                    t=>t.rating.toString(),
+                    null
+                ],
+                "Comment": [
+                    t=>t.comment,
+                    null
+                ],
+                "Response": [
+                    t=>String(t.response),
+                    (t, arg)=>{
+                        return {...t, response: arg}
+                    }
+                ]
+            }}
+            actions={
+                {
+                    ...props.extraActions,
+                }
+            }
+        />
+    )
+}
+
+interface Booking {
+    id: number,
+    customer: {userId: number, firstName: string, lastName: string, email: string},
+    room: {id: number, roomNumber: string},
+    checkIn: string,
+    checkOut: string,
+    numGuests: number,
+    totalPrice: number,
+    status: "PENDING"|"CONFIRMED"|"REJECTED"|"USER_CANCELED"|"OWNER_CANCELED"
+}
+
+interface Review{
+    reviewId: number,
+    user: {userId: number, firstName: string, lastName: string, email: string},
+    rating: number,
+    comment: string
+    response: string|null
 }

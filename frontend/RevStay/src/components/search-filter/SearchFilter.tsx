@@ -135,10 +135,26 @@ function SearchFilter() {
                                         </div>
                                         <div>
                                             <h3>{hotel.name}</h3>
-                                            <p>Location: {hotel.city}, {hotel.state}</p>
-                                            <p>Rating: {hotel.rating}</p>
-                                            <p>Description: {hotel.description}</p>
-                                            <p>Amenities: {hotel.amenities}</p>
+                                            <p>
+                                                <strong>Location:</strong>
+                                                <br />
+                                                {hotel.city}, {hotel.state}
+                                            </p>
+                                            <p>
+                                                <strong>Rating:</strong>
+                                                <br />
+                                                {hotel.rating}
+                                            </p>
+                                            <p>
+                                                <strong>Description:</strong>
+                                                <br />
+                                                {hotel.description}
+                                            </p>
+                                            <p>
+                                                <strong>Amenities:</strong>
+                                                <br />
+                                                {hotel.amenities}
+                                            </p>
                                             <button className="more-info-button" onClick={() => handleMoreInfo(hotel.id)}>More Info</button>
 
                                         </div>

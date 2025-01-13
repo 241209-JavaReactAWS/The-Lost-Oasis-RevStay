@@ -63,7 +63,7 @@ export default function Hotel() {
                             <NavigateBeforeIcon />
                         </IconButton>
                     </Box>
-                    <img style={{margin: '0 auto'}} width={600} src={hotel.images.length === 0 ? hotelPlaceholderImage : hotel.images[imageIndex]} alt='Hotel Image' />
+                    <img height={350} style={{margin: '0 auto'}} width={600} src={hotel.images.length === 0 ? hotelPlaceholderImage : hotel.images[imageIndex]} alt='Hotel Image' />
                     <Box>
                         <IconButton onClick={() => cycleImages(-1)}>
                             <NavigateNextIcon />

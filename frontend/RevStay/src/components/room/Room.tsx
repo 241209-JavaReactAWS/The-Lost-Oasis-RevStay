@@ -13,6 +13,9 @@ export default function Room(props: Props) {
     return <Box sx={{border: '1px solid black', borderRadius: 5, p: 2, '&:hover': {backgroundColor: '#F0F8FF'}, height: '90px'}}>
         <Stack direction='row' sx={{height: 1}}>
             <Box>
+                <img height={90} width={150} src={props.images[0]} alt='Room image' />
+            </Box>
+            <Box sx={{ml: 1}}>
                 <Typography variant='h5'>{props.roomType}</Typography>
                 <Typography variant='subtitle1'>Room #{props.roomNumber}</Typography>
                 <Typography variant='subtitle1'>Price: ${props.pricePerNight} / night</Typography>

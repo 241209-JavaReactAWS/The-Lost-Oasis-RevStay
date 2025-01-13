@@ -29,7 +29,7 @@ const LoginForm = () => {
             if (user.role === 'OWNER') {
                 navigate('/owner-dashboard');
             } else if (user.role === 'CUSTOMER') {
-                navigate('/customer-dashboard');
+                navigate('/');
             }
 
         } catch (err) {

@@ -80,6 +80,7 @@ export default function BookingForm(props: Props) {
         </Stack>
         <Stack gap={1}>
             <Typography sx={{mt: 3}} variant='h5'>Rooms</Typography>
+            {props.hotel.rooms && props.hotel.rooms.length === 0 && <Typography>No rooms available.</Typography>}
             {props.hotel.rooms.map((room) => <Room key={room.id} numDays={days} reserveButtonDisabled={reserveButtonDisabled} {...room} onSelected={() => reserve(room)} />)}
         </Stack>
         <Snackbar anchorOrigin={{vertical: 'bottom', horizontal: 'right'}} open={error} autoHideDuration={6000} onClose={() => setError(false)}>

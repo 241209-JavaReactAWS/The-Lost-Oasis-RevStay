@@ -22,9 +22,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
-
     private final NotificationService notificationService;
-
+	
     @Autowired
     public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, HotelRepository hotelRepository, NotificationService notificationService) {
         this.reviewRepository = reviewRepository;
@@ -35,32 +34,24 @@ public class ReviewService {
 
     // Create or Save a Review
     public Review createReview(User user, ReviewRequest request) {
-        var hotel = hotelRepository
-            .findById(request.getHotelId())
-            .orElseThrow(
-                ()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "hotel not found")
-            );
+        var hotel = hotelRepository.findById(request.getHotelId())
+                                   .orElseThrow(() -> new ResponseStatusException(
+                                       HttpStatus.BAD_REQUEST,
+                                       "hotel not found"
+                                   ));
 
-        var review = new Review(
-            0,
-            user,
-            hotel,
-            request.getRating(),
-            request.getComment(),
-            null
+        var review = new Review(0, user, hotel, request.getRating(), request.getComment(), null);
+
+        notificationService.sendNotification(hotel.getOwner(),
+                 "review",
+                 "%s has posted a review with %d stars and with comment: %s".formatted(
+                     review.getUser().getEmail(),
+                     review.getRating(),
+                     review.getComment()
+                 )
         );
 
-        notificationService.sendNotification(
-            hotel.getOwner(),
-            "review",
-            "%s has posted a review with %d stars and with comment: %s".formatted(
-                review.getUser().getEmail(),
-                review.getRating(),
-                review.getComment()
-            )
-        );
-
-        return reviewRepository.save(review);
+        return review;
     }
 
     public Review respondToReview(int reviewId, User owner, ReviewResponseRequest request){

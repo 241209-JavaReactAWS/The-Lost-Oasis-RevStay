@@ -295,7 +295,7 @@ public class BookingService {
         emailService.sendEmail(customer.getEmail(), subject, message);
     }
     private void sendCanceledEmail(User customer, Booking booking) {
-        String subject = "Booking Updated - RevStay";
+        String subject = "Booking Canceled - RevStay";
         String message = String.format("Dear %s %s,\n\nYour booking has been canceled!\n\nUpdated Details:\nHotel: %s\nRoom: %s\nCheck-in: %s\nCheck-out: %s\nTotal Price: $%.2f\n\nThank you for choosing RevStay!",
                 customer.getFirstName(),
                 customer.getLastName(),

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,9 @@ public class NotificationService {
     }
 
     public List<Notification> getAllUserNotifications(String email) {
-        return this.notificationRepository.findAllByUserEmail(email);
+        List<Notification> notifications = this.notificationRepository.findAllByUserEmail(email);
+        notifications.sort(Comparator.comparing(Notification::getTimestamp).reversed());
+        return notifications;
     }
 
     public void markNotificationAsRead(Integer notificationId) {

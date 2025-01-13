@@ -3,6 +3,7 @@ package com.Revature.RevStay.controllers;
 import com.Revature.RevStay.models.Booking;
 import com.Revature.RevStay.models.BookingRequest;
 import com.Revature.RevStay.services.BookingService;
+import com.Revature.RevStay.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,12 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class BookingController {
     private final BookingService bookingService;
+    private final UserService userService;
 
     @Autowired
-    public BookingController(BookingService bookingService) {
+    public BookingController(BookingService bookingService, UserService userService) {
         this.bookingService = bookingService;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -40,6 +43,17 @@ public class BookingController {
     @GetMapping("/hotel/{id}")
     public ResponseEntity<List<Booking>> getAllBookingsForHotel(@PathVariable Integer id) {
         return ResponseEntity.ok(this.bookingService.getAllHotelBookings(id));
+    }
+
+    @PatchMapping()
+    public ResponseEntity<Booking> editBooking(@RequestBody Booking booking) {
+        var user = userService.getUserByAuthentication()
+                              .orElseThrow(() -> new ResponseStatusException(
+                                  HttpStatus.UNAUTHORIZED,
+                                  "you need to be logged in to perform this action"
+                              ));
+
+        return ResponseEntity.ok(this.bookingService.updateBooking(user, booking));
     }
 
     @DeleteMapping("/{id}")

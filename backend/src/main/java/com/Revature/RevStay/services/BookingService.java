@@ -119,10 +119,32 @@ public class BookingService {
         else return this.bookingRepository.findAllByCustomer(customer);
     }
 
+    public Booking updateBooking(User user, Booking request) {
+        var booking = bookingRepository.findById(request.getId())
+               .orElseThrow(() -> new ResponseStatusException(
+                   HttpStatus.NOT_FOUND,
+                   "Booking not found"
+               ));
+
+        if (user.getUserId() != booking.getHotel().getOwner().getUserId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not owner of this booking's hotel");
+        }
+
+        booking.setCheckIn(request.getCheckIn());
+        booking.setCheckOut(request.getCheckOut());
+        booking.setNumGuests(request.getNumGuests());
+        booking.setTotalPrice(request.getTotalPrice());
+        booking.setStatus(request.getStatus());
+
+        return bookingRepository.save(booking);
+    }
+
     public void cancelBooking(Integer id) {
         Booking booking = this.bookingRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
         booking.setStatus(BookingStatus.USER_CANCELED);
+        //send cancellation email
+        sendCanceledEmail(booking.getCustomer(), booking);
         this.bookingRepository.save(booking);
         this.notificationService.sendNotification(booking.getHotel().getOwner(), "Booking Canceled",
                 "A booking for your hotel has been canceled for dates %s through %s.".formatted(
@@ -286,6 +308,19 @@ public class BookingService {
     private void sendBookingUpdateEmail(User customer, Booking booking) {
         String subject = "Booking Updated - RevStay";
         String message = String.format("Dear %s %s,\n\nYour booking has been updated!\n\nUpdated Details:\nHotel: %s\nRoom: %s\nCheck-in: %s\nCheck-out: %s\nTotal Price: $%.2f\n\nThank you for choosing RevStay!",
+                customer.getFirstName(),
+                customer.getLastName(),
+                booking.getHotel().getName(),
+                booking.getRoom().getRoomType(),
+                booking.getCheckIn().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getTotalPrice());
+
+        emailService.sendEmail(customer.getEmail(), subject, message);
+    }
+    private void sendCanceledEmail(User customer, Booking booking) {
+        String subject = "Booking Canceled - RevStay";
+        String message = String.format("Dear %s %s,\n\nYour booking has been canceled!\n\nUpdated Details:\nHotel: %s\nRoom: %s\nCheck-in: %s\nCheck-out: %s\nTotal Price: $%.2f\n\nThank you for choosing RevStay!",
                 customer.getFirstName(),
                 customer.getLastName(),
                 booking.getHotel().getName(),

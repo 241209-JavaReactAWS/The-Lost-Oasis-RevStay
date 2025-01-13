@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 import "./review.css"
 import { postman } from '../../postman'
 
@@ -34,7 +33,6 @@ export default function ReviewPopup(props: ReviewProps){
                     onMouseOut={
                         ()=>setSuggestedRating(0)
                     }
-
                 />
             )
         }
@@ -44,7 +42,10 @@ export default function ReviewPopup(props: ReviewProps){
         <input 
             type="submit" 
             value="Submit" 
-            onClick={()=>submit(props.hotelId, rating, text)}
+            onClick={e=>{
+                submit(props.hotelId, rating, text)
+                setHidden(true)
+            }}
         />
     </div>
 }

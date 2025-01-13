@@ -24,7 +24,7 @@ export default function AdminTable<T extends object>(props: TableProps<T>){
         return <></>
     }
 
-    return <table>
+    return <table className="adminTable">
         <thead>
         <tr>
             {

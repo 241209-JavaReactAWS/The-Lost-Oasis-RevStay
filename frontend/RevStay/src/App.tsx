@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Navbar from './components/navbar/Navbar.tsx'
@@ -12,13 +12,14 @@ import Hotel from './views/hotel/Hotel.tsx'
 import Payment from './components/payment/Payment';
 import {AuthProvider} from './hooks/AuthProvider.tsx'
 import ManageReservations from './views/reservations/ManageReservations.tsx'
+import SearchFilter from './components/search-filter/SearchFilter.tsx';
 
 function App() {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <AuthProvider>
                 <div id='App'>
-                    <BrowserRouter>
+                    <Router>
                         <Navbar />
                         <Routes>
                             <Route path='/payment' element={<Payment />} />
@@ -29,8 +30,9 @@ function App() {
                             <Route path='/owner-dashboard' element={<AdminHotelList />} />
                             <Route path='/hotel/:id' element={<Hotel />} />
                             <Route path='/reservations' element={<ManageReservations />} />
+                            <Route path='/' element={<SearchFilter />} />
                         </Routes>
-                    </BrowserRouter>
+                    </Router>
                 </div>
             </AuthProvider>
         </LocalizationProvider>

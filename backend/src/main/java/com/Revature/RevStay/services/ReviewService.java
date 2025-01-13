@@ -3,33 +3,82 @@ package com.Revature.RevStay.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.Revature.RevStay.daos.HotelRepository;
 import com.Revature.RevStay.daos.UserRepository;
+import com.Revature.RevStay.dtos.ReviewRequest;
+import com.Revature.RevStay.dtos.ReviewResponseRequest;
 import com.Revature.RevStay.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Revature.RevStay.models.Review;
 import com.Revature.RevStay.daos.ReviewRepository;
 
 
-
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 @Service
 public class ReviewService {
-
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final HotelRepository hotelRepository;
     private final NotificationService notificationService;
-
+	
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, NotificationService notificationService) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, HotelRepository hotelRepository, NotificationService notificationService) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+        this.hotelRepository = hotelRepository;
         this.notificationService = notificationService;
     }
 
     // Create or Save a Review
-    public Review createReview(Review review) {
-        this.notificationService.sendNotification(review.getHotel().getOwner(), "New Review", "A new review has been posted for your hotel.");
-        return reviewRepository.save(review);
+    public Review createReview(User user, ReviewRequest request) {
+        var hotel = hotelRepository.findById(request.getHotelId())
+                                   .orElseThrow(() -> new ResponseStatusException(
+                                       HttpStatus.BAD_REQUEST,
+                                       "hotel not found"
+                                   ));
+
+        var review = new Review(0, user, hotel, request.getRating(), request.getComment(), null);
+
+        notificationService.sendNotification(hotel.getOwner(),
+                 "review",
+                 "%s has posted a review with %d stars and with comment: %s".formatted(
+                     review.getUser().getEmail(),
+                     review.getRating(),
+                     review.getComment()
+                 )
+        );
+
+        return review;
+    }
+
+    public Review respondToReview(int reviewId, User owner, ReviewResponseRequest request){
+        var review = reviewRepository
+            .findById(reviewId)
+            .orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found")
+            );
+
+        if (review.getHotel().getOwner().getUserId() != owner.getUserId()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not owner of the hotel this user has reviewed");
+        }
+
+        if (review.getResponse() != null){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Review already has response");
+        }
+
+        var newResponse = new Review(
+            review.getReviewId(),
+            review.getUser(),
+            review.getHotel(),
+            review.getRating(),
+            review.getComment(),
+            request.getResponse()
+        );
+
+        return reviewRepository.save(newResponse);
     }
 
     // Find Review by ID

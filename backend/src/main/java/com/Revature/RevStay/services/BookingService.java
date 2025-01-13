@@ -119,6 +119,26 @@ public class BookingService {
         else return this.bookingRepository.findAllByCustomer(customer);
     }
 
+    public Booking updateBooking(User user, Booking request) {
+        var booking = bookingRepository.findById(request.getId())
+               .orElseThrow(() -> new ResponseStatusException(
+                   HttpStatus.NOT_FOUND,
+                   "Booking not found"
+               ));
+
+        if (user.getUserId() != booking.getHotel().getOwner().getUserId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not owner of this booking's hotel");
+        }
+
+        booking.setCheckIn(request.getCheckIn());
+        booking.setCheckOut(request.getCheckOut());
+        booking.setNumGuests(request.getNumGuests());
+        booking.setTotalPrice(request.getTotalPrice());
+        booking.setStatus(request.getStatus());
+
+        return bookingRepository.save(booking);
+    }
+
     public void cancelBooking(Integer id) {
         Booking booking = this.bookingRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));

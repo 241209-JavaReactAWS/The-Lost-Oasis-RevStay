@@ -1,9 +1,13 @@
 package com.Revature.RevStay.controllers;
 
+import com.Revature.RevStay.dtos.ReviewRequest;
+import com.Revature.RevStay.dtos.ReviewResponseRequest;
 import com.Revature.RevStay.services.ReviewService;
 import com.Revature.RevStay.services.ReviewService.ReviewNotFoundException;
 
+import com.Revature.RevStay.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +18,7 @@ import java.util.Optional;
 import com.Revature.RevStay.models.Review;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 /*
 
@@ -31,15 +36,28 @@ DELETE /reviews/{id}: Delete a review by its ID.
 @RequestMapping("/reviews")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ReviewController {
+    private final ReviewService reviewService;
+    private final UserService userService;
 
     @Autowired
-    private ReviewService reviewService;
+    public ReviewController(ReviewService reviewService, UserService userService) {
+        this.reviewService = reviewService;
+        this.userService = userService;
+    }
 
     // Create a Review
     @PostMapping
-    public ResponseEntity<Review> createReview(@RequestBody Review review) {
-        Review createdReview = reviewService.createReview(review);
-        return ResponseEntity.ok(createdReview);
+    public ResponseEntity<Review> createReview(@RequestBody ReviewRequest reviewRequest) {
+        return userService.getUserByAuthentication()
+            .map(
+                user-> reviewService.createReview(user, reviewRequest)
+            )
+            .map(
+                review-> ResponseEntity.ok(review)
+            )
+            .orElse(
+                ResponseEntity.badRequest().build()
+            );
     }
 
     // Get Review by ID
@@ -69,6 +87,17 @@ public class ReviewController {
     public ResponseEntity<List<Review>> getAllReviews() {
         List<Review> reviews = reviewService.getAllReviews();
         return ResponseEntity.ok(reviews);
+    }
+
+    // Respond to review
+    @PatchMapping("/{id}")
+    public ResponseEntity<Review> respondToReview(@PathVariable int id, @RequestBody ReviewResponseRequest request) {
+        var user = userService.getUserByAuthentication()
+            .orElseThrow(
+                ()->new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You need to login before you can respond to reviews")
+            );
+
+        return ResponseEntity.ok(reviewService.respondToReview(id, user, request));
     }
 
     // Delete a Review

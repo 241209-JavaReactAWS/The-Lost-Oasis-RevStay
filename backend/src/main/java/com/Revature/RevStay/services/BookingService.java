@@ -123,6 +123,8 @@ public class BookingService {
         Booking booking = this.bookingRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
         booking.setStatus(BookingStatus.USER_CANCELED);
+        //send cancellation email
+        sendCanceledEmail(booking.getCustomer(), booking);
         this.bookingRepository.save(booking);
     }
 
@@ -282,6 +284,19 @@ public class BookingService {
     private void sendBookingUpdateEmail(User customer, Booking booking) {
         String subject = "Booking Updated - RevStay";
         String message = String.format("Dear %s %s,\n\nYour booking has been updated!\n\nUpdated Details:\nHotel: %s\nRoom: %s\nCheck-in: %s\nCheck-out: %s\nTotal Price: $%.2f\n\nThank you for choosing RevStay!",
+                customer.getFirstName(),
+                customer.getLastName(),
+                booking.getHotel().getName(),
+                booking.getRoom().getRoomType(),
+                booking.getCheckIn().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                booking.getTotalPrice());
+
+        emailService.sendEmail(customer.getEmail(), subject, message);
+    }
+    private void sendCanceledEmail(User customer, Booking booking) {
+        String subject = "Booking Updated - RevStay";
+        String message = String.format("Dear %s %s,\n\nYour booking has been canceled!\n\nUpdated Details:\nHotel: %s\nRoom: %s\nCheck-in: %s\nCheck-out: %s\nTotal Price: $%.2f\n\nThank you for choosing RevStay!",
                 customer.getFirstName(),
                 customer.getLastName(),
                 booking.getHotel().getName(),

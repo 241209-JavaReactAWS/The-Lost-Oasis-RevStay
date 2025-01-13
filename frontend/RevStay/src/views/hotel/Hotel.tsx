@@ -9,6 +9,7 @@ import BookingForm from '../../components/booking-form/BookingForm.tsx';
 import { useParams } from 'react-router';
 import IHotel from './IHotel.ts'
 import {postman} from '../../postman.ts'
+import Reviews from '../../components/reviews/Reviews.tsx'
 
 export default function Hotel() {
     const { id } = useParams()
@@ -91,6 +92,7 @@ export default function Hotel() {
                     </Stack>
                 </Grid>
             </Grid>
+            <Reviews hotelId={hotel.id} />
             <BookingForm hotel={hotel} />
         </Stack>
     </Box>

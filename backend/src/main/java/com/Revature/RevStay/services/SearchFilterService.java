@@ -29,10 +29,13 @@ public class SearchFilterService {
                 .and(HotelFilterSpecification.hasState(state))
                 .and(HotelFilterSpecification.hasMinPrice(minPrice))
                 .and(HotelFilterSpecification.hasMaxPrice(maxPrice))
-                .and(HotelFilterSpecification.hasAmenities(amenities))
-                .and(HotelFilterSpecification.hasMinRating(minRating));
+                .and(HotelFilterSpecification.hasAmenities(amenities));
 
-        return searchFilterRepository.findAll(spec);
+        List<Hotel> results = searchFilterRepository.findAll(spec);
+        if (minRating != null) {
+            results.removeIf(hotel -> hotel.getRating() < minRating);
+        }
+        return results;
     }
 
     public List<Hotel> findHotelsByPriceRange(Double minPrice, Double maxPrice) {

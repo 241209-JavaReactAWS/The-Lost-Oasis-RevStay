@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "rooms")
 @Data
@@ -22,77 +25,21 @@ public class Room {
     private Hotel hotel;
 
     private String roomNumber;
-    private String roomType;
+
+    @Enumerated(EnumType.STRING)
+    private RoomType roomType;
+
     private Double pricePerNight;
     private Boolean isAvailable;
 
-    private Integer totalRooms; // Total number of this type of room.
-    private Integer availableRooms; // Number of rooms currently available.
+    private Integer totalRooms;
+    private Integer availableRooms;
 
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
 
-    public Integer getId() {
-        return id;
-    }
+    @ElementCollection
+    @Column(columnDefinition = "TEXT")
+    private List<String> images = new ArrayList<>();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Hotel getHotel() {
-        return hotel;
-    }
-
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
-    }
-
-    public String getRoomType() {
-        return roomType;
-    }
-
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
-    public Double getPricePerNight() {
-        return pricePerNight;
-    }
-
-    public void setPricePerNight(Double pricePerNight) {
-        this.pricePerNight = pricePerNight;
-    }
-
-    public Boolean getAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
-    }
-
-    public Integer getTotalRooms() {
-        return totalRooms;
-    }
-
-    public void setTotalRooms(Integer totalRooms) {
-        this.totalRooms = totalRooms;
-    }
-
-    public Integer getAvailableRooms() {
-        return availableRooms;
-    }
-
-    public void setAvailableRooms(Integer availableRooms) {
-        this.availableRooms = availableRooms;
-    }
-
-    public RoomStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RoomStatus status) {
-        this.status = status;
-    }
 }

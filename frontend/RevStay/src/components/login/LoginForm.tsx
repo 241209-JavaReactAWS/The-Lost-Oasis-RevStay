@@ -1,33 +1,37 @@
-import axios from 'axios';
+import {postman as axios } from '../../postman';
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
+import {useNavigate} from 'react-router'
+import {useAuth} from '../../hooks/useAuth.tsx'
 
 const LoginForm = () => {
+    const navigate = useNavigate();
+    const auth = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [user, setUser] = useState(null);
     const [error, setError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8080/login', {
+            const response = await axios.post('/login', {
                 email,
                 password,
             });
 
             const { token, user } = response.data;
-            localStorage.setItem('token', token);
-            setUser(user);
+            sessionStorage.setItem('token', token);
+            sessionStorage.setItem('userId', user.id);
             console.log('User logged in:', user);
-
+            auth.setAuthenticated(true)
+            auth.setRole(user.role)
             if (user.role === 'OWNER') {
-                window.location.href = '/owner-dashboard';
+                navigate('/owner-dashboard');
             } else if (user.role === 'CUSTOMER') {
-                window.location.href = '/customer-dashboard';
+                navigate('/customer-dashboard');
             }
-            
+
         } catch (err) {
             console.error('Login failed:', err);
             setError('Invalid credentials. Please try again.');

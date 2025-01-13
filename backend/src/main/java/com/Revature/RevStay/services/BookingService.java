@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,6 +43,12 @@ public class BookingService {
     private final S3Client S3Client;
     private final EmailService emailService;
     private final NotificationService notificationService;
+
+    @Value("${aws.bucket.name}")
+    private String bucketName;
+
+    @Value("${aws.bucket.url}")
+    private String bucketURL;
 
     @Autowired
     public BookingService(UserRepository userRepository, HotelRepository hotelRepository,
@@ -113,13 +120,13 @@ public class BookingService {
     }
 
     public Booking updateBooking(User user, Booking request) {
-        var booking = bookingRepository
-            .findById(request.getId())
-            .orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found")
-            );
+        var booking = bookingRepository.findById(request.getId())
+               .orElseThrow(() -> new ResponseStatusException(
+                   HttpStatus.NOT_FOUND,
+                   "Booking not found"
+               ));
 
-        if (user.getUserId() != booking.getHotel().getOwner().getUserId()){
+        if (user.getUserId() != booking.getHotel().getOwner().getUserId()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not owner of this booking's hotel");
         }
 
@@ -130,6 +137,13 @@ public class BookingService {
         booking.setStatus(request.getStatus());
 
         return bookingRepository.save(booking);
+    }
+
+    public void cancelBooking(Integer id) {
+        Booking booking = this.bookingRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
+        booking.setStatus(BookingStatus.USER_CANCELED);
+        this.bookingRepository.save(booking);
     }
 
     public Booking updateBooking(Integer bookingId, BookingRequest updatedRequest) {
@@ -198,7 +212,8 @@ public class BookingService {
             List<String> hotelImages = booking.getHotel().getImages();
             if (!hotelImages.isEmpty()) {
                 GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                        .key(hotelImages.get(0))
+                        .bucket(bucketName)
+                        .key(hotelImages.get(0).replace("%s/".formatted(bucketURL), ""))
                         .build();
                 ResponseBytes<GetObjectResponse> getObjectResponse = this.S3Client.getObject(getObjectRequest, ResponseTransformer.toBytes());
                 byte[] data = getObjectResponse.asByteArray();
@@ -234,7 +249,7 @@ public class BookingService {
             stream.setFont(MW_BOLD, 16);
             stream.showText("Room: ");
             stream.setFont(MW_REGULAR, 16);
-            stream.showText(booking.getRoom().getRoomType());
+            stream.showText(String.valueOf(booking.getRoom().getRoomType()));
             stream.newLine();
             stream.newLine();
             stream.setFont(MW_BOLD, 16);

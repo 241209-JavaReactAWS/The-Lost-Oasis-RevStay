@@ -1,75 +1,95 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AddRoomModal from './AddRoomModal';
+import { useParams } from 'react-router-dom';
+import { postman } from '../../postman';
+import RoomsTable from './RoomsTable';
+import EditRoomModal from './EditRoomModal';
+import { Room } from '../../interfaces/room-interface';
 
 import './rooms.css'
 
 const Rooms = () => {
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [rooms, setRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    const handleAddRoom = (room: { name: string; capacity: number; amenities: string }) => {
+    const { hotelId } = useParams<{ hotelId: string }>();
+    const id = parseInt(hotelId as string);
 
-        console.log('New room details:', room);
+    const fetchRooms = async () => {
+        try {
+            const response = await postman.get(`/api/v1/hotels/${id}/rooms`);
+            setRooms(response.data);
+        } catch (error) {
+            console.error('Error fetching hotels:', error);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    useEffect(() => {
+        fetchRooms();
+    }, [hotelId]);
+
+    const handleRoomAdded = () => {
+        fetchRooms(); // Refresh the list
+        setIsAddRoomModalOpen(false);
+    };
+
+    const handleEditClick = (room: Room) => {
+        setSelectedRoom(room);
+        setIsEditModalOpen(true);
+    };
+
+    const handleEditSuccess = () => {
+        fetchRooms(); // Refresh the list
+        setIsEditModalOpen(false);
+        setSelectedRoom(null);
+    };
+
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div>
-            <h1>All rooms</h1>
-            <button onClick={() => setIsModalOpen(true)}>Add New Room</button>
+            <div className="rooms-header">
+                <h1>All rooms</h1>
+                <button
+                    className="add-room-button"
+                    onClick={() => setIsAddRoomModalOpen(true)}>
+                    Add New Room
+                </button>
+            </div>
 
-            <AddRoomModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onAddRoom={handleAddRoom}
+            <RoomsTable
+                rooms={rooms}
+                onRoomDeleted={fetchRooms}
+                onEditClick={handleEditClick}
             />
-            <table className="rooms-table">
-                <thead className="">
-                    <tr className="rooms-table-header">
-                        <th></th>
-                        <th>Room Number</th>
-                        <th>Type</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr className="rooms-table-header">
-                        <td>
-                            <img src="https://t3.ftcdn.net/jpg/02/71/08/28/240_F_271082810_CtbTjpnOU3vx43ngAKqpCPUBx25udBrg.jpg" alt="" />
-                        </td>
-                        <td>101</td>
-                        <td>Single</td>
-                        <td>$100</td>
-                        <td>
-                            <button className="book-room">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp4CULCWWaUzxMP5rGxTBVS2kwwKocDDsbXQ&s" alt="" />
-                        </td>
-                        <td>102</td>
-                        <td>Double</td>
-                        <td>$150</td>
-                        <td>
-                            <button className="book-room">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <img src="https://www.choicehotels.com/hotelmedia/US/NC/charlotte/NC319/480/NC319SHNK77_1.webp" alt="" />
-                        </td>
-                        <td>103</td>
-                        <td>Suite</td>
-                        <td>$200</td>
-                        <td>
-                            <button className="book-room">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
 
+            {selectedRoom && (
+                <EditRoomModal
+                    room={selectedRoom}
+                    hotelId={id}
+                    isOpen={isEditModalOpen}
+                    onClose={() => {
+                        setIsEditModalOpen(false);
+                        setSelectedRoom(null);
+                    }}
+                    onSuccess={handleEditSuccess}
+                />
+            )}
 
+            {isAddRoomModalOpen && (
+                <AddRoomModal
+                    hotelId={id}
+                    isOpen={isAddRoomModalOpen}
+                    onClose={() => setIsAddRoomModalOpen(false)}
+                    onSuccess={handleRoomAdded}
+                />
+            )}
         </div>
 
     )

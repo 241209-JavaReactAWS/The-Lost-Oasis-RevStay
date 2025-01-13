@@ -1,37 +1,43 @@
 import React, { useState } from 'react';
 import './AddHotelModal.css';
+import { postman } from '../../postman';
 
 interface HotelData {
     name: string;
     address: string;
-    rating: number;
+    city: string;
+    state: string;
     description: string;
+    amenities: string;
+    rooms: any[];
     images: File[];
+    rating: number;
 }
 
 interface AddHotelModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onAddHotel: (hotel: HotelData) => void;
+    onSuccess?: () => void;
 }
 
-const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHotel }) => {
+const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onSuccess }) => {
     const [hotel, setHotel] = useState<HotelData>({
         name: '',
         address: '',
-        rating: 0,
+        city: '',
+        state: '',
         description: '',
+        amenities: '',
+        rooms: [],
         images: [],
+        rating: 0
     });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setHotel(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const rating = Math.min(5, Math.max(0, Number(e.target.value)));
-        setHotel(prev => ({ ...prev, rating }));
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,11 +46,64 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHot
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        onAddHotel(hotel);
-        setHotel({ name: '', address: '', rating: 0, description: '', images: [] });
-        onClose();
+        setLoading(true);
+        setError(null);
+
+        try {
+            // Create FormData
+            const formData = new FormData();
+
+            // Add hotel data as JSON
+            const hotelData = {
+                name: hotel.name,
+                address: hotel.address,
+                city: hotel.city,
+                state: hotel.state,
+                description: hotel.description,
+                amenities: hotel.amenities,
+                // rating: hotel.rating
+            };
+            formData.append('data', JSON.stringify(hotelData));
+
+            // Add images
+            hotel.images.forEach((image) => {
+                formData.append('images', image);
+            });
+
+            const response = await postman.post('/api/v1/hotels', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+
+            if (response.status === 200 || response.status === 201) {
+                // Reset form
+                setHotel({
+                    name: '',
+                    address: '',
+                    city: '',
+                    state: '',
+                    description: '',
+                    amenities: '',
+                    rooms: [],
+                    images: [],
+                    rating: 0
+                });
+
+                if (onSuccess) {
+                    onSuccess();
+                }
+
+                onClose();
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to create hotel');
+            console.error('Error creating hotel:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (!isOpen) return null;
@@ -53,6 +112,7 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHot
         <div className="modal-overlay">
             <div className="modal-content">
                 <h2>Add New Hotel</h2>
+                {error && <div className="error-message">{error}</div>}
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="name">Hotel Name:</label>
@@ -77,16 +137,24 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHot
                         />
                     </div>
                     <div>
-                        <label htmlFor="rating">Rating:</label>
+                        <label htmlFor="city">City:</label>
                         <input
-                            type="number"
-                            id="rating"
-                            name="rating"
-                            min="0"
-                            max="5"
-                            step="0.1"
-                            value={hotel.rating}
-                            onChange={handleRatingChange}
+                            type="text"
+                            id="city"
+                            name="city"
+                            value={hotel.city}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="state">State:</label>
+                        <input
+                            type="text"
+                            id="state"
+                            name="state"
+                            value={hotel.state}
+                            onChange={handleInputChange}
                             required
                         />
                     </div>
@@ -101,6 +169,17 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHot
                         />
                     </div>
                     <div>
+                        <label htmlFor="amenities">Amenities:</label>
+                        <textarea
+                            id="amenities"
+                            name="amenities"
+                            value={hotel.amenities}
+                            onChange={handleInputChange}
+                            placeholder="Enter amenities separated by commas"
+                            required
+                        />
+                    </div>
+                    <div>
                         <label htmlFor="images">Images:</label>
                         <input
                             type="file"
@@ -109,11 +188,16 @@ const AddHotelModal: React.FC<AddHotelModalProps> = ({ isOpen, onClose, onAddHot
                             accept="image/*"
                             multiple
                             onChange={handleImageUpload}
+                            required
                         />
                     </div>
                     <div className="modal-actions">
-                        <button type="submit">Add Hotel</button>
-                        <button type="button" onClick={onClose}>Cancel</button>
+                        <button type="submit" disabled={loading}>
+                            {loading ? 'Adding Hotel...' : 'Add Hotel'}
+                        </button>
+                        <button type="button" onClick={onClose} disabled={loading}>
+                            Cancel
+                        </button>
                     </div>
                 </form>
             </div>

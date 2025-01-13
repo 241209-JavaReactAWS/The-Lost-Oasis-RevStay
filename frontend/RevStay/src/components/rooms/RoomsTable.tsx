@@ -51,8 +51,8 @@ const RoomsTable = ({ rooms, onRoomDeleted, onEditClick }: RoomsTableProps) => {
                         <th>Type</th>
                         <th>Price</th>
                         <th>Status</th>
-                        <th>Total Rooms</th>
-                        <th>Available Rooms</th>
+                        {/* <th>Total Rooms</th>
+                        <th>Available Rooms</th> */}
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -76,8 +76,8 @@ const RoomsTable = ({ rooms, onRoomDeleted, onEditClick }: RoomsTableProps) => {
                                     {room.status.replace('_', ' ')}
                                 </span>
                             </td>
-                            <td>{room.totalRooms}</td>
-                            <td>{room.availableRooms}</td>
+                            {/* <td>{room.totalRooms}</td>
+                            <td>{room.availableRooms}</td> */}
                             <td>
                                 <button
                                     className="edit-button"

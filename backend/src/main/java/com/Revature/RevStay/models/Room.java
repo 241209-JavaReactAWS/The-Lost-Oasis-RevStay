@@ -32,8 +32,8 @@ public class Room {
     private Double pricePerNight;
     private Boolean isAvailable;
 
-    private Integer totalRooms;
-    private Integer availableRooms;
+//    private Integer totalRooms;
+//    private Integer availableRooms;
 
     @Enumerated(EnumType.STRING)
     private RoomStatus status;

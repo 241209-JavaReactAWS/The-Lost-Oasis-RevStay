@@ -38,7 +38,7 @@ export default function ManageReservations() {
         <Box sx={{p: 5}}>
             <Typography variant='h4'>Reservations</Typography>
             {bookings.length === 0 ? <Typography sx={{mt: 2}}>No reservations available to show.</Typography> :
-            <Stack gap={2} sx={{mt: 2}}>
+            <Stack gap={2} sx={{mt: 2}} direction='row'>
                 {bookings.map((booking) => <ReservationCard key={booking.id} {...booking} onRefresh={getBookings} showMessage={showMessage} />)}
             </Stack>}
             <Snackbar open={Boolean(snackbar)} autoHideDuration={6000} onClose={() => setSnackbar('')}>

@@ -104,7 +104,7 @@ function SearchFilter() {
                 </label>
             </div>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <button onClick={handleSearch} disabled={loading}>
+            <button className="search-hotel" onClick={handleSearch} disabled={loading}>
                 {loading ? 'Searching...' : 'Search'}
             </button>
             <div className="results">
@@ -119,7 +119,7 @@ function SearchFilter() {
                                 <p>Location: {hotel.city}, {hotel.state}</p>
                                 <p>Rating: {hotel.rating}</p>
                                 <img src={hotel.image} alt={hotel.name} width="100" />
-                                <button onClick={() => handleMoreInfo(hotel.id)}>More Info</button>
+                                <button className="more-info-button" onClick={() => handleMoreInfo(hotel.id)}>More Info</button>
                             </li>
                         ))}
                     </ul>

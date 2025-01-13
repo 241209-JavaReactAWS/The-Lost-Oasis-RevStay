@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.Revature</groupId>
 	<artifactId>RevStay</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>RevStay</name>
 	<description>Project for Hotel Managment</description>
 	<url/>
@@ -123,6 +123,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>RevStay</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

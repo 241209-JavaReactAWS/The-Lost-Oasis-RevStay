@@ -68,7 +68,7 @@ export default function Navbar() {
         <Box sx={{ width: 250 }} role="presentation" onClick={() => setDrawerOpen(false)}>
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton onClick={() => navigate('/search-filter')}>
+                    <ListItemButton onClick={() => navigate('/')}>
                         <ListItemIcon>
                             <SearchIcon />
                         </ListItemIcon>

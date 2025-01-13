@@ -55,11 +55,11 @@
   background-color: #2563eb;
 }
 
-.button-group button:nth-child(3) {
+.button-group button:last-child {
   background-color: grey;
 }
 
-.button-group button:nth-child(3):hover {
+.button-group button:last-child:hover {
   background-color: rgb(109, 106, 106);
 }
 

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Box, Button, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import {postman} from '../../postman.ts'
 import {useNavigate} from 'react-router'
-
+import '../../assets/7-1.png'
 const Payment = () => {
     const navigate = useNavigate()
     const location = useLocation();
@@ -48,6 +48,19 @@ const Payment = () => {
     };
 
     return (
+
+        <Box
+        sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '100vh',
+            backgroundImage: 'url(https://cdn-bnokp.nitrocdn.com/QNoeDwCprhACHQcnEmHgXDhDpbEOlRHH/assets/images/optimized/rev-6d59c08/www.decorilla.com/online-decorating/wp-content/uploads/2019/01/Luxury-boutique-interior-design-before-and-after-by-Decorilla-1.jpg)', 
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+        }}
+    >
         <Box
             sx={{
                 display: 'flex',
@@ -55,10 +68,10 @@ const Payment = () => {
                 gap: 2,
                 width: '50%',
                 margin: '0 auto',
-                marginTop: '2rem',
                 padding: '1rem',
                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
                 borderRadius: '8px',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)', 
             }}
         >
             <Typography variant="h4" sx={{ textAlign: 'center' }}>
@@ -136,6 +149,7 @@ const Payment = () => {
             >
                 Confirm Payment
             </Button>
+        </Box>
         </Box>
     );
 };

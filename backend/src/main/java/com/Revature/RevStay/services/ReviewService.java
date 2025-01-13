@@ -28,7 +28,7 @@ public class ReviewService {
 
     // Create or Save a Review
     public Review createReview(Review review) {
-        this.notificationService.sendNotification(review.getHotel().getOwner(), "New Review", "A new review has been posted for your hotel");
+        this.notificationService.sendNotification(review.getHotel().getOwner(), "New Review", "A new review has been posted for your hotel.");
         return reviewRepository.save(review);
     }
 

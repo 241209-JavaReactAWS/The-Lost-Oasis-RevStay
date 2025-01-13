@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Box, Button, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import {postman} from '../../postman.ts'
 import {useNavigate} from 'react-router'
-import '../../assets/7-1.png'
+
 const Payment = () => {
     const navigate = useNavigate()
     const location = useLocation();

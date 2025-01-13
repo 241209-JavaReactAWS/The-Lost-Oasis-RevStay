@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import {useCallback, useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom';
 import { postman } from "../../postman"
 import AdminTable from "../../components/admin_table/admin_table"
@@ -10,33 +10,35 @@ export default function OwnersBooking(){
 
     const {hotelId} = useParams<{hotelId: string}>()
 
-    const fetch = ()=>{
+    const fetch = useCallback(() => {
         const loadBookings = async ()=>{
             const bookings: Booking[] = (await postman.get(`/bookings/hotel/${hotelId}`)).data
-    
+
             bookings.sort((a, b)=>a.id - b.id)
-    
+
             setBookings(bookings)
         }
 
         const loadReviews = async ()=>{
             const reviews: Review[] = (await postman.get(`/reviews/hotel/${hotelId}`)).data
-    
+
             reviews.sort((a, b)=>a.reviewId - b.reviewId)
-    
+
             setReviews(reviews)
         }
 
         loadBookings()
         loadReviews()
-    }
+    }, [hotelId])
 
     useEffect(()=>{
-            fetch()
-            setInterval(fetch, 1000)
-        }, 
-        []
-    )
+        fetch()
+        const interval = setInterval(fetch, 5000)
+
+        return () => {
+            clearInterval(interval)
+        }
+    }, [fetch])
 
     const tables = {
         "Needs Confirmation Or Rejection": (

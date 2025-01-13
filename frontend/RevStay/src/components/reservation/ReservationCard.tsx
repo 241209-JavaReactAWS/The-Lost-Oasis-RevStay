@@ -5,6 +5,8 @@ import dayjs from 'dayjs'
 import {postman} from '../../postman.ts'
 import {OverridableStringUnion} from '@mui/types'
 import {AlertColor, AlertPropsColorOverrides} from '@mui/material/Alert/Alert'
+import ReviewPopup from '../review_popup/review_popup.tsx'
+import {useState} from 'react'
 
 interface P {
     onRefresh: () => void,
@@ -14,6 +16,8 @@ interface P {
 type Props = Booking & P
 
 export default function ReservationCard(props: Props) {
+    const [showReviewPopup, setShowReviewPopup] = useState<boolean>(false)
+
     const cancelReservation = () => {
         postman.delete(`/bookings/${props.id}`)
             .then(() => {
@@ -47,6 +51,8 @@ export default function ReservationCard(props: Props) {
         <CardActions>
             <Button size='small' variant='outlined' onClick={viewInvoice}>View Invoice</Button>
             {props.status !== 'USER_CANCELED' && props.status !== 'OWNER_CANCELED' && <Button size='small' variant='outlined' onClick={cancelReservation}>Cancel Reservation</Button>}
+            <Button size='small' variant='outlined' onClick={() => setShowReviewPopup(true)}>Write a Review</Button>
         </CardActions>
+        <ReviewPopup hotelId={props.hotel.id} isHidden={!showReviewPopup} setHidden={(hidden) => setShowReviewPopup(!hidden)}/>
     </Card>
 }

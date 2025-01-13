@@ -124,6 +124,10 @@ public class BookingService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
         booking.setStatus(BookingStatus.USER_CANCELED);
         this.bookingRepository.save(booking);
+        this.notificationService.sendNotification(booking.getHotel().getOwner(), "Booking Canceled",
+                "A booking for your hotel has been canceled for dates %s through %s.".formatted(
+                        booking.getCheckIn().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")),
+                        booking.getCheckOut().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))));
     }
 
     public Booking updateBooking(Integer bookingId, BookingRequest updatedRequest) {

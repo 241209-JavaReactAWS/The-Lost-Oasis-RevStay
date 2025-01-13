@@ -17,15 +17,18 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, NotificationService notificationService) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     // Create or Save a Review
     public Review createReview(Review review) {
+        this.notificationService.sendNotification(review.getHotel().getOwner(), "New Review", "A new review has been posted for your hotel");
         return reviewRepository.save(review);
     }
 

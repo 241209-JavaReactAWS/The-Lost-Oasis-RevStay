@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { CSSProperties, useState } from 'react'
 import "./admin_table.css"
 
 
@@ -129,7 +129,7 @@ function Row<T>(props: RowProp<T>){
     {
         Object.entries(props.actions)
             .map(([name, action], i)=>
-                <th 
+                <td 
                     key={
                         Object.entries(props.headers).length+i
                     }
@@ -167,23 +167,62 @@ function Entry(props: EntryProp){
     }
 
     return <td>
-        <button
-            onClick={
-                ()=>props.reset()
-            } 
-            disabled={
-                !props.canReset
-            }
-            children="↺"
-        />
-        <input
-            type='text'
-            value={
-                props.currText
-            } 
-            onChange={e=>
-                props.setText!(e.target.value)
-            }
+        {
+            <input
+                type='button'
+                onClick={props.reset}
+                disabled={!props.canReset}
+                style={{ padding: "0px", width: "20px"}}
+                value={"↺"}
+            />
+        }
+        <TextBox 
+            currText = {props.currText}
+            onChange = {props.setText}
         />
     </td>
+}
+
+
+interface TextProp{
+    currText: string,
+    onChange: (_: string)=>void
+}
+function TextBox(props: TextProp){
+    const outerSpanStyle: CSSProperties = {
+        display: "inline-block",
+        position: "relative",
+        minWidth: "2em", 
+        minHeight: ".9em"
+    }
+
+    const innerSpanStyle: CSSProperties = {
+        whiteSpace: "pre"
+    }
+
+    const inputStyle: CSSProperties = {
+        padding: 0,
+        margin: 0,
+        border: "1px solid black",
+        fontFamily: "inherit",
+        fontSize: "inherit",
+        position: "absolute",
+        verticalAlign: "top",
+        top: 0,
+        left: 0,
+        width: "100%",
+        background: "white"
+    }
+
+    return (
+        <span style={outerSpanStyle}>
+            <span style={innerSpanStyle}>{props.currText}</span>
+            <input
+                style={inputStyle}
+                type="text"
+                value={props.currText}
+                onChange={(event) =>props.onChange(event.target.value)}
+            />
+        </span>
+    )
 }

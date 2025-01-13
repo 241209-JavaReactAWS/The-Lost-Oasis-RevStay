@@ -12,8 +12,9 @@ import Hotel from './views/hotel/Hotel.tsx'
 import Payment from './components/payment/Payment';
 import {AuthProvider} from './hooks/AuthProvider.tsx'
 import ManageReservations from './views/reservations/ManageReservations.tsx'
-import OwnersBooking from './views/owners_booking/owners_booking.tsx';
+import OwnersBooking from './views/owners-booking/owners_booking.tsx';
 import SearchFilter from './components/search-filter/SearchFilter.tsx';
+import OwnersReview from './views/owners-reviews/owners_review.tsx';
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
                             <Route path='/register' element={<RegisterPage />}></Route>
                             <Route path='admin/hotels/:hotelId/rooms' element={<Rooms />} />
                             <Route path='/admin/hotels/:hotelId/bookings' element={<OwnersBooking />} />
+                            <Route path='/admin/hotels/:hotelId/reviews' element={<OwnersReview />} />
                             <Route path='/owner-dashboard' element={<AdminHotelList />} />
                             <Route path='/hotel/:id' element={<Hotel />} />
                             <Route path='/reservations' element={<ManageReservations />} />

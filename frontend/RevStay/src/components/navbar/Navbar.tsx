@@ -14,6 +14,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu'
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookIcon from '@mui/icons-material/Book';
+import SearchIcon from '@mui/icons-material/Search';
 import {useNavigate} from 'react-router'
 import {useEffect, useState} from 'react'
 import {postman} from '../../postman.ts'
@@ -67,15 +68,23 @@ export default function Navbar() {
         <Box sx={{ width: 250 }} role="presentation" onClick={() => setDrawerOpen(false)}>
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton onClick={redirectToDashboard}>
+                    <ListItemButton onClick={() => navigate('/search-filter')}>
                         <ListItemIcon>
-                            <DashboardIcon />
+                            <SearchIcon />
                         </ListItemIcon>
-                        <ListItemText primary='Dashboard' />
+                        <ListItemText primary='Search Hotels' />
                     </ListItemButton>
                 </ListItem>
                 {auth.role === 'OWNER' && <>
                     {/* Add Owner functions here */}
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={redirectToDashboard}>
+                            <ListItemIcon>
+                                <DashboardIcon />
+                            </ListItemIcon>
+                            <ListItemText primary='Dashboard' />
+                        </ListItemButton>
+                    </ListItem>
                 </>}
                 {auth.role === 'CUSTOMER' && <>
                     {/* Add Customer functions here */}
@@ -88,15 +97,6 @@ export default function Navbar() {
                         </ListItemButton>
                     </ListItem>
                 </>}
-
-                <ListItem disablePadding>
-                    <ListItemButton onClick={() => navigate('/search-filter')}>
-                        <ListItemIcon>
-                            <BookIcon />
-                        </ListItemIcon>
-                        <ListItemText primary='Search Hotels' />
-                    </ListItemButton>
-                    </ListItem>
             </List>
         </Box>
     )

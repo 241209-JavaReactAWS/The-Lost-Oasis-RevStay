@@ -30,6 +30,7 @@ export default function ReservationCard(props: Props) {
             window.open(_url, "_blank")
         }).catch((err) => {
             console.log(err)
+            props.showMessage('Unable to generate invoice.', 'error')
         })
     }
 

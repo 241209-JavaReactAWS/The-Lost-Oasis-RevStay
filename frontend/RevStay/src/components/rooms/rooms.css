@@ -1,32 +1,7 @@
-.rooms-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.rooms-table th,
-.rooms-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-.rooms-table th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-.rooms-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.rooms-table tr:hover {
-  background-color: #ddd;
-}
-
-.rooms-table img {
-  width: 150px;
-  height: 100px;
-  object-fit: cover;
+.rooms-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
 }
 
 .error-message {
@@ -37,71 +12,12 @@
   margin-bottom: 15px;
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.edit-button,
-.add-room-button {
-  background-color: #3b82f6;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 4px;
-  margin-right: 8px;
-  border: none;
-  cursor: pointer;
-}
-
-.edit-button:hover,
-.add-room-button:hover {
-  background-color: #2563eb;
-}
-
-.delete-button {
-  background-color: #ef4444;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-}
-
-.delete-button:hover {
-  background-color: #dc2626;
-}
-
-.delete-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .error-message {
   color: #dc2626;
   background-color: #fee2e2;
   padding: 10px;
   border-radius: 4px;
   margin-bottom: 15px;
-}
-
-.rooms-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.rooms-table th,
-.rooms-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-.rooms-table img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
 }
 
 .edit-button {
@@ -171,4 +87,15 @@ button:disabled {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.rooms-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.rooms-table td:first-child {
+  width: 150px;
+  padding: 8px;
 }

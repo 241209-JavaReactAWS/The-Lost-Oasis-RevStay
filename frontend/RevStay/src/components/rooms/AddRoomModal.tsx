@@ -1,4 +1,4 @@
-// AddRoomModal.tsx
+
 import React, { useState } from 'react';
 import { postman } from '../../postman';
 import './AddRoomModal.css';
@@ -192,18 +192,6 @@ const AddRoomModal: React.FC<AddRoomModalProps> = ({ hotelId, isOpen, onClose, o
                                 <option key={status} value={status}>{status.replace('_', ' ')}</option>
                             ))}
                         </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label>
-                            <input
-                                type="checkbox"
-                                name="isAvailable"
-                                checked={formData.isAvailable}
-                                onChange={handleInputChange}
-                            />
-                            Available for Booking
-                        </label>
                     </div>
 
                     <div className="form-group">

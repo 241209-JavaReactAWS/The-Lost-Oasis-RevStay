@@ -53,7 +53,7 @@ const Rooms = () => {
     if (loading) return <div>Loading...</div>;
 
     return (
-        <div>
+        <div className="rooms-container">
             <div className="rooms-header">
                 <h1>All rooms</h1>
                 <button

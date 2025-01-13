@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router'
+import ImageCarousel from '../rooms/ImageCarousel';
 import './HotelInfo.css';
 
 interface HotelData {
@@ -10,7 +11,6 @@ interface HotelData {
     state: string;
     description: string;
     amenities: string;
-    // owner?: User;
     rooms: any[];
     images: string[];
     rating: number;
@@ -41,22 +41,6 @@ const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
         }
     }
 
-    const viewBookings = () => {
-        if (hotel && hotel.id) {
-            navigate(`/admin/hotels/${hotel.id}/bookings`);
-        } else {
-            console.error('Hotel ID is undefined');
-        }
-    }
-
-    const viewReviews = () => {
-        if (hotel && hotel.id) {
-            navigate(`/admin/hotels/${hotel.id}/reviews`);
-        } else {
-            console.error('Hotel ID is undefined');
-        }
-    }
-
     const handleDelete = () => {
 
         onDelete(hotel.id);
@@ -68,28 +52,56 @@ const HotelInfo: React.FC<HotelInfoProps> = ({ hotel, onUpdate, onDelete }) => {
         setIsEditing(false);
     }
 
+    const handleManageReservations = () => {
+        if (hotel && hotel.id) {
+            navigate(`/admin/hotels/${hotel.id}/bookings`);
+        } else {
+            console.error('Hotel ID is undefined');
+        }
+    }
+
+    const handleManageReviews = () => {
+        if (hotel && hotel.id) {
+            navigate(`/admin/hotels/${hotel.id}/reviews`);
+        } else {
+            console.error('Hotel ID is undefined');
+        }
+    }
+
     return (
         <div className="hotel-info">
-            <img src={hotel.images[0]} alt="" />
-            <h2>{hotel.name}</h2>
-            <p><strong>Address:</strong> {hotel.address}</p>
-            <p><strong>Rating:</strong> {hotel.rating} / 5</p>
-            <p><strong>Description:</strong> {hotel.description}</p>
-            <div className="button-group">
-                <button onClick={handleUpdate}>Edit</button>
-                <button
-                    onClick={handleDelete}
-                    disabled={deleteLoading === hotel.id}
-                >
-                    Delete
-                </button>
-                <button onClick={handleAddRooms}>Add Rooms</button>
-                <button onClick={viewBookings}>Bookings</button>
-                <button onClick={viewReviews}>Reviews</button>
+            <div>
+                <ImageCarousel
+                    images={hotel.images}
+                    altText={`Hotel ${hotel.name}`}
+                    variant="detail"
+                />
             </div>
-            {deleteError && deleteLoading === hotel.id && (
-                <div className="error-message">{deleteError}</div>
-            )}
+            <div>
+                <h2>{hotel.name}</h2>
+                <p><strong>Address:</strong> {hotel.address}</p>
+                <p><strong>City:</strong> {hotel.city}</p>
+                <p><strong>State:</strong> {hotel.state}</p>
+                <p><strong>Rating:</strong> {hotel.rating} / 5</p>
+                <p><strong>Amenities:</strong> {hotel.amenities}</p>
+                <p><strong>Description:</strong> {hotel.description}</p>
+                <div className="button-group">
+                    <button onClick={handleUpdate}>Edit</button>
+                    <button onClick={handleAddRooms}>Add Rooms</button>
+                    <button onClick={handleManageReservations}>Manage Reservations</button>
+                    <button onClick={handleManageReviews}>Respond to Reviews</button>
+                    <button
+                        onClick={handleDelete}
+                        disabled={deleteLoading === hotel.id}
+                    >
+                        Delete
+                    </button>
+                </div>
+                {deleteError && deleteLoading === hotel.id && (
+                    <div className="error-message">{deleteError}</div>
+                )}
+
+            </div>
         </div>
     );
 };

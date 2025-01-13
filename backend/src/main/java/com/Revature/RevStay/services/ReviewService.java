@@ -40,10 +40,10 @@ public class ReviewService {
                                        "hotel not found"
                                    ));
 
-        var review = new Review(0, user, hotel, request.getRating(), request.getComment(), null);
+        var review = new Review(null, user, hotel, request.getRating(), request.getComment(), null);
 
         notificationService.sendNotification(hotel.getOwner(),
-                 "review",
+                 "New Review",
                  "%s has posted a review with %d stars and with comment: %s".formatted(
                      review.getUser().getEmail(),
                      review.getRating(),
@@ -51,6 +51,9 @@ public class ReviewService {
                  )
         );
 
+        review = this.reviewRepository.save(review);
+        hotel.getReviews().add(review);
+        this.hotelRepository.save(hotel);
         return review;
     }
 

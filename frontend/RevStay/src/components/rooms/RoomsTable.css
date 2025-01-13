@@ -1,0 +1,170 @@
+.rooms-table-container {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rooms-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: #ffffff;
+}
+
+.rooms-table th {
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.rooms-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+/* Image cell styling */
+.rooms-table td img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-available {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-occupied {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-under_maintenance {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+
+.edit-button:hover {
+  background-color: #2563eb;
+}
+
+.delete-button {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+}
+
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Price formatting */
+.price {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Room type and number styling */
+.room-number {
+  font-weight: 500;
+  color: #111;
+}
+
+.room-type {
+  color: #4b5563;
+  font-weight: 500;
+}
+
+/* Room counts */
+.room-count {
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Error message */
+.error-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+/* Hover effect on rows */
+.rooms-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .rooms-table {
+    font-size: 0.875rem;
+  }
+
+  .rooms-table td img {
+    width: 100px;
+    height: 70px;
+  }
+
+  .status-badge {
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rooms-table-container {
+    padding: 10px;
+  }
+
+  .rooms-table th,
+  .rooms-table td {
+    padding: 8px;
+  }
+
+  .edit-button,
+  .delete-button {
+    padding: 6px 12px;
+  }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import {useCallback, useEffect, useState} from 'react'
 import { useParams } from 'react-router-dom';
 import { postman } from "../../postman"
 import AdminTable from "../../components/admin_table/admin_table"
@@ -15,32 +15,30 @@ export default function OwnersBooking(){
     const [success, setSuccess] = useState<string|null>(null)
     const [error, setError] = useState<string|null>(null)
 
-    const fetch = ()=>{
-        const loadBookings = async ()=>{
-            postman.get(`/bookings/hotel/${hotelId}`, {timeout: 1000})
-                .then(
-                    it=>it.data as Booking[]
-                )
-                .then(
-                    it=>it.sort((a, b)=>a.id - b.id)
-                )
-                .then(
-                    it=>setBookings(it)
-                )
-                .catch(
-                    ()=>setError("Error while fetching books")
-                )
-        }
-
-        loadBookings()
+    const fetch = () => {
+        postman.get(`/bookings/hotel/${hotelId}`, {timeout: 1000})
+            .then(
+                it=>it.data as Booking[]
+            )
+            .then(
+                it=>it.sort((a, b)=>a.id - b.id)
+            )
+            .then(
+                it=>setBookings(it)
+            )
+            .catch(
+                ()=>setError("Error while fetching books")
+            )
     }
 
     useEffect(()=>{
-            fetch()
-            setInterval(fetch, 1000)
-        }, 
-        []
-    )
+        fetch()
+        const interval = setInterval(fetch, 5000)
+
+        return () => {
+            clearInterval(interval)
+        }
+    }, [fetch])
 
     const runTempError = (message: string)=>{
         setError(message)

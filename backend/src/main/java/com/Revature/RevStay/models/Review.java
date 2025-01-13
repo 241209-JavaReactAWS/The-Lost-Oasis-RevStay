@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Table(name = "reviews") // Use plural naming convention for the table
 @NoArgsConstructor
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewId;
+    private Integer reviewId;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)

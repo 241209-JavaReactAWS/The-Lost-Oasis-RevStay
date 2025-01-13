@@ -27,6 +27,7 @@
 
 .modal-content form > div {
   margin-bottom: 15px;
+  padding: 0 10px 0 10px;
 }
 
 .modal-content label {

@@ -4,22 +4,23 @@ import { postman } from '../../postman'
 
 
 interface ReviewProps{
-    hotelId: number
+    hotelId: number,
+    isHidden: boolean,
+    setHidden: (val: boolean) => void,
 }
 
 export default function ReviewPopup(props: ReviewProps){
     const [rating, setRating] = useState(0)
     const [suggestedRating, setSuggestedRating] = useState(0)
-    const [isHidden, setHidden] = useState(false)
     const [text, setText] = useState("")
 
-    return <div className = {"review_popup" + (isHidden ? " hidden" : "")} >
-        <Close setHidden={()=>setHidden(true)}/>
+    return <div className = {"review_popup" + (props.isHidden ? " hidden" : "")} >
+        <Close setHidden={()=>props.setHidden(true)}/>
         <label>Stars</label>
         <div id="stars">
         {
             [1,2,3,4,5].map(i=>
-                <Star 
+                <Star
                     key={i}
                     shouldDisplay={
                         (suggestedRating == 0) ? i <= rating : i <= suggestedRating
@@ -39,12 +40,12 @@ export default function ReviewPopup(props: ReviewProps){
         </div>
         <label>Description</label>
         <textarea onChange={e=>setText(e.target.value)}/>
-        <input 
-            type="submit" 
-            value="Submit" 
+        <input
+            type="submit"
+            value="Submit"
             onClick={e=>{
                 submit(props.hotelId, rating, text)
-                setHidden(true)
+                props.setHidden(true)
             }}
         />
     </div>

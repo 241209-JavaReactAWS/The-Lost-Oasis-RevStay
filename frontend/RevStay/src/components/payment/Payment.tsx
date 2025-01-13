@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Button, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import {postman} from '../../postman.ts'
+import {useNavigate} from 'react-router'
 
 const Payment = () => {
+    const navigate = useNavigate()
     const location = useLocation();
     const { state } = location; // Get state passed from Hotel.tsx
     const { hotelName, room, totalAmount } = state; // Extract hotel name and totalAmount
@@ -38,7 +40,7 @@ const Payment = () => {
 
             console.log('Payment successful:', response.data);
             alert('Payment successful!');
-
+            setTimeout(() => navigate('/'), 2000)
         } catch (err) {
             console.error('Payment failed:', err);
             setError('Failed to process the payment. Please try again.');

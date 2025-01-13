@@ -19,33 +19,48 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ReviewService {
-
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
 
+    private final NotificationService notificationService;
+
     @Autowired
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, HotelRepository hotelRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, HotelRepository hotelRepository, NotificationService notificationService) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.hotelRepository = hotelRepository;
+        this.notificationService = notificationService;
     }
 
     // Create or Save a Review
-    public Review createReview(User user, ReviewRequest review) {
+    public Review createReview(User user, ReviewRequest request) {
         var hotel = hotelRepository
-            .findById(review.getHotelId())
+            .findById(request.getHotelId())
             .orElseThrow(
                 ()->new ResponseStatusException(HttpStatus.BAD_REQUEST, "hotel not found")
             );
 
-        var model = new Review();
-        model.setUser(user);
-        model.setHotel(hotel);
-        model.setRating(review.getRating());
-        model.setComment(review.getComment());
+        var review = new Review(
+            0,
+            user,
+            hotel,
+            request.getRating(),
+            request.getComment(),
+            null
+        );
 
-        return reviewRepository.save(model);
+        notificationService.sendNotification(
+            hotel.getOwner(),
+            "review",
+            "%s has posted a review with %d stars and with comment: %s".formatted(
+                review.getUser().getEmail(),
+                review.getRating(),
+                review.getComment()
+            )
+        );
+
+        return reviewRepository.save(review);
     }
 
     public Review respondToReview(int reviewId, User owner, ReviewResponseRequest request){

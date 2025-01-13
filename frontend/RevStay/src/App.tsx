@@ -13,7 +13,6 @@ import Payment from './components/payment/Payment';
 import {AuthProvider} from './hooks/AuthProvider.tsx'
 import ManageReservations from './views/reservations/ManageReservations.tsx'
 import SearchFilter from './components/search-filter/SearchFilter.tsx';
-import HotelCard from './components/search-filter/HotelCard';
 
 function App() {
     return (
@@ -31,8 +30,7 @@ function App() {
                             <Route path='/owner-dashboard' element={<AdminHotelList />} />
                             <Route path='/hotel/:id' element={<Hotel />} />
                             <Route path='/reservations' element={<ManageReservations />} />
-                            <Route path='/search-filter' element={<SearchFilter />} />
-                            
+                            <Route path='/' element={<SearchFilter />} />
                         </Routes>
                     </Router>
                 </div>

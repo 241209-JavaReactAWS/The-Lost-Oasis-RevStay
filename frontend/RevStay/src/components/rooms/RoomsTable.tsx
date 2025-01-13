@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { postman } from '../../postman';
 import { useParams } from 'react-router-dom';
-import './rooms.css';
+import './RoomsTable.css';
 import { Room, RoomType, RoomStatus } from '../../interfaces/room-interface';
+import ImageCarousel from './ImageCarousel';
 
 
 interface RoomsTableProps {
@@ -38,14 +39,14 @@ const RoomsTable = ({ rooms, onRoomDeleted, onEditClick }: RoomsTableProps) => {
         }
     };
     return (
-        <>
+        <div className="rooms-table-container">
             {error && <div className="error-message">{error}</div>}
 
 
             <table className="rooms-table">
                 <thead>
                     <tr className="rooms-table-header">
-                        <th></th>
+                        <th>Images</th>
                         <th>Room Number</th>
                         <th>Type</th>
                         <th>Price</th>
@@ -59,12 +60,15 @@ const RoomsTable = ({ rooms, onRoomDeleted, onEditClick }: RoomsTableProps) => {
                     {rooms.map((room) => (
                         <tr key={room.id} className="rooms-table-header">
                             <td>
-                                <img
-                                    src={room.images[0]}
-                                    alt={`Room ${room.roomNumber}`}
-                                />
+                                <div className='table-image-container'>
+                                    <ImageCarousel
+                                        images={room.images}
+                                        altText={`Room ${room.roomNumber}`}
+                                        variant="table"
+                                    />
+                                </div>
                             </td>
-                            <td>{room.roomNumber}</td>
+                            <td> <span className="room-number">{room.roomNumber}</span></td>
                             <td>{room.roomType}</td>
                             <td>${room.pricePerNight}</td>
                             <td>
@@ -93,7 +97,7 @@ const RoomsTable = ({ rooms, onRoomDeleted, onEditClick }: RoomsTableProps) => {
                     ))}
                 </tbody>
             </table>
-        </>
+        </div>
     );
 };
 

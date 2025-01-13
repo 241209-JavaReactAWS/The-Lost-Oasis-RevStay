@@ -3,6 +3,7 @@ import HotelInfo from '../../components/admin-hotel/HotelInfo';
 import AddHotelModal from '../../components/admin-hotel/AddHotelModal';
 import EditHotelModal from '../../components/admin-hotel/EditHotelModal';
 import { postman } from '../../postman';
+import './AdminHotelList.css';
 
 interface HotelData {
     id: number;
@@ -84,8 +85,15 @@ const HotelList: React.FC = () => {
     if (error) return <div>Error: {error}</div>;
 
     return (
-        <div className="hotel-list">
-            <button onClick={() => setIsModalOpen(true)}>Add New Hotel</button>
+        <div className="admin-hotel-list">
+            <div className='hotel-list-header'>
+                <h2>Hotels</h2>
+                <button
+                    className='add-hotel-btn'
+                    onClick={() => setIsModalOpen(true)}>
+                    Add New Hotel
+                </button>
+            </div>
 
             {hotels.map(hotel => (
                 <HotelInfo
@@ -97,8 +105,8 @@ const HotelList: React.FC = () => {
             ))}
 
             {hotels.length === 0 && (
-                <div>
-                    <p>No hotels found. Add your first hotel!</p>
+                <div className='no-hotels'>
+                    <h2>No hotels found. Add your first hotel!</h2>
                 </div>
             )}
 

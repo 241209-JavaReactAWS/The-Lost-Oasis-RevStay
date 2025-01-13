@@ -131,11 +131,11 @@
 }
 
 .modal-actions button[type="button"] {
-  background-color: #e5e7eb;
+  background-color: #b8babd;
 }
 
 .modal-actions button[type="button"]:hover {
-  background-color: #d1d5db;
+  background-color: #7b7e81;
 }
 
 .modal-actions button:disabled {

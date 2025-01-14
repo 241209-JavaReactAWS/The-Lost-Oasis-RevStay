@@ -193,11 +193,11 @@ function BookingTable(props: BookingTableProps){
             headers={
                 {
                     "Id": [
-                        t=>t.id.toString(),
+                        t=>t.id?.toString(),
                         null
                     ],
                     "Customer": [
-                        t=> t.customer.userId + " " + t.customer.firstName + " " + t.customer.lastName + " " + t.customer.email,
+                        t=> t.customer?.userId + " " + t.customer?.firstName + " " + t.customer?.lastName + " " + t.customer?.email,
                         null
                     ],
                     "Check-in Date": [
@@ -213,23 +213,23 @@ function BookingTable(props: BookingTableProps){
                         }
                     ],
                     "Room ID": [
-                        t=>t.room.id.toString(), 
+                        t=>t.room?.id?.toString(), 
                         (t, arg)=>{ 
                             return {...t, room: {...t.room, id: parseInt(arg)}}
                         }
                     ],
                     "Room#": [
-                        t=>t.room.roomNumber,
+                        t=>t.room?.roomNumber,
                         null
                     ],
                     "# of Guests": [
-                        t=>t.numGuests.toString(), 
+                        t=>t.numGuests?.toString(), 
                         (t, arg)=>{ 
                             return {...t, numGuests: parseInt(arg)}
                         }
                     ],
                     "Price": [
-                        t=>t.totalPrice.toString(), 
+                        t=>t.totalPrice?.toString(), 
                         (t, arg)=>{ 
                             return {...t, totalPrice: parseFloat(arg)}
                         }

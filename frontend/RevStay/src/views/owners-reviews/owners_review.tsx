@@ -116,11 +116,11 @@ function ReviewTable(props: ReviewTableProps){
                 objs={props.objs}
                 headers={{
                     "Id": [
-                        t=>t.reviewId.toString(),
+                        t=>t.reviewId?.toString(),
                         null
                     ],
                     "Customer": [
-                        t=> t.user.userId + " " + t.user.firstName + " " + t.user.lastName + " " + t.user.email,
+                        t=> t.user?.userId + " " + t.user?.firstName + " " + t.user?.lastName + " " + t.user?.email,
                         null
                     ],
                     "Rating": [

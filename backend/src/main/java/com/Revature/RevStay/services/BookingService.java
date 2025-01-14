@@ -195,9 +195,9 @@ public class BookingService {
             invoiceInfo.setAuthor("RevStay");
             invoiceInfo.setTitle("RevStay - Booking Confirmation #%s - %s".formatted(booking.getId(), booking.getHotel().getName()));
 
-            final PDType0Font MW_REGULAR = PDType0Font.load(invoiceDocument, ClassLoader.getSystemResourceAsStream("fonts/Merriweather-Regular.ttf"));
-            final PDType0Font MW_BOLD = PDType0Font.load(invoiceDocument, ClassLoader.getSystemResourceAsStream("fonts/Merriweather-Bold.ttf"));
-            final PDType0Font MW_LIGHT = PDType0Font.load(invoiceDocument, ClassLoader.getSystemResourceAsStream("fonts/Merriweather-Light.ttf"));
+            final PDType0Font MW_REGULAR = PDType0Font.load(invoiceDocument, getClass().getClassLoader().getResourceAsStream("fonts/Merriweather-Regular.ttf"));
+            final PDType0Font MW_BOLD = PDType0Font.load(invoiceDocument, getClass().getClassLoader().getResourceAsStream("fonts/Merriweather-Bold.ttf"));
+            final PDType0Font MW_LIGHT = PDType0Font.load(invoiceDocument, getClass().getClassLoader().getResourceAsStream("fonts/Merriweather-Light.ttf"));
 
             PDPage invoicePage = new PDPage();
             PDPageContentStream stream = new PDPageContentStream(invoiceDocument, invoicePage, PDPageContentStream.AppendMode.OVERWRITE, true, true);

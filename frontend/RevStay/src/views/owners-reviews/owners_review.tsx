@@ -73,7 +73,7 @@ export default function OwnersReview(){
                     },
                     "RESPOND": (anyChanges, newR)=>{
                         if (!anyChanges || newR.response!.length === 0){
-                            alert("Please enter a response")
+                            alert("Please enter a response!")
                             return
                         }
 

@@ -64,7 +64,7 @@ export default function OwnersBooking(){
                 extraActions={{
                     "CONFIRM": (anyChanges, b)=>{
                         if (anyChanges){
-                            alert("There are unsaved changes")
+                            alert("There are unsaved changes!")
                             return
                         }
 
@@ -116,7 +116,7 @@ export default function OwnersBooking(){
                 extraActions={{
                     "CANCEL": (anyChanges, b)=>{
                         if (anyChanges){
-                            alert("there are unsaved changes")
+                            alert("There are unsaved changes!")
                             return
                         }
 
@@ -219,7 +219,7 @@ function BookingTable(props: BookingTableProps){
                         (t, arg)=>{ 
                             const num = parseInt(arg)
                             if (Number.isNaN(num)){
-                                alert("Please input a valid number")
+                                alert("Please input a valid number!")
                                 return null
                             }
 
@@ -235,7 +235,7 @@ function BookingTable(props: BookingTableProps){
                         (t, arg)=>{ 
                             const num = parseInt(arg)
                             if (Number.isNaN(num)){
-                                alert("Please input a valid number")
+                                alert("Please input a valid number!")
                                 return null
                             }
 
@@ -247,7 +247,7 @@ function BookingTable(props: BookingTableProps){
                         (t, arg)=>{ 
                             const num = parseFloat(arg)
                             if (Number.isNaN(num)){
-                                alert("Please input a valid number")
+                                alert("Please input a valid number!")
                                 return null
                             }
 
@@ -260,7 +260,7 @@ function BookingTable(props: BookingTableProps){
                 {
                     "EDIT": (anyChange, newB)=>{
                         if (!anyChange){
-                            alert("There are no changes")
+                            alert("There are no changes!")
                             return
                         }
                         else {

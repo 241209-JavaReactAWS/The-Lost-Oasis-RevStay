@@ -215,7 +215,13 @@ function BookingTable(props: BookingTableProps){
                     "Room ID": [
                         t=>t.room?.id?.toString(), 
                         (t, arg)=>{ 
-                            return {...t, room: {...t.room, id: parseInt(arg)}}
+                            const num = parseInt(arg)
+                            if (Number.isNaN(num)){
+                                alert("Please input a valid number")
+                                return null
+                            }
+
+                            return {...t, room: {...t.room, id: num}}
                         }
                     ],
                     "Room#": [
@@ -225,13 +231,25 @@ function BookingTable(props: BookingTableProps){
                     "# of Guests": [
                         t=>t.numGuests?.toString(), 
                         (t, arg)=>{ 
-                            return {...t, numGuests: parseInt(arg)}
+                            const num = parseInt(arg)
+                            if (Number.isNaN(num)){
+                                alert("Please input a valid number")
+                                return null
+                            }
+
+                            return {...t, numGuests: num}
                         }
                     ],
                     "Price": [
                         t=>t.totalPrice?.toString(), 
                         (t, arg)=>{ 
-                            return {...t, totalPrice: parseFloat(arg)}
+                            const num = parseFloat(arg)
+                            if (Number.isNaN(num)){
+                                alert("Please input a valid number")
+                                return null
+                            }
+
+                            return {...t, totalPrice: num}
                         }
                     ],
                 }
@@ -240,7 +258,8 @@ function BookingTable(props: BookingTableProps){
                 {
                     "EDIT": (anyChange, newB)=>{
                         if (!anyChange){
-                            alert("there are no changes")
+                            alert("There are no changes")
+                            return
                         }
                         else {
                             postman

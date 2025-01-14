@@ -19,8 +19,8 @@ export interface Room {
     roomType: RoomType;
     pricePerNight: number;
     isAvailable: boolean;
-    totalRooms: number;
-    availableRooms: number;
+    // totalRooms: number;
+    // availableRooms: number;
     status: RoomStatus;
     images: string[];
 }

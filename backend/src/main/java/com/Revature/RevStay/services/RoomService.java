@@ -61,8 +61,8 @@ public class RoomService {
         room.setRoomNumber(request.getRoomNumber());
         room.setRoomType(request.getRoomType());
         room.setPricePerNight(request.getPricePerNight());
-        room.setTotalRooms(request.getTotalRooms());
-        room.setAvailableRooms(request.getTotalRooms());
+//        room.setTotalRooms(request.getTotalRooms());
+//        room.setAvailableRooms(request.getTotalRooms());
         room.setIsAvailable(request.getStatus() == RoomStatus.AVAILABLE); // Set based on status
         room.setStatus(request.getStatus());
         room.setImages(imageUrls);
@@ -126,7 +126,7 @@ public class RoomService {
         room.setRoomNumber(request.getRoomNumber());
         room.setRoomType(request.getRoomType());
         room.setPricePerNight(request.getPricePerNight());
-        room.setTotalRooms(request.getTotalRooms());
+//        room.setTotalRooms(request.getTotalRooms());
         room.setStatus(request.getStatus());
         room.setIsAvailable(request.getStatus() == RoomStatus.AVAILABLE);
 

@@ -74,7 +74,7 @@ const EditRoomModal: React.FC<EditRoomModalProps> = ({
                 roomNumber: formData.roomNumber,
                 roomType: formData.roomType,
                 pricePerNight: formData.pricePerNight,
-                totalRooms: formData.totalRooms,
+                // totalRooms: formData.totalRooms,
                 status: formData.status
             }));
 
@@ -154,7 +154,7 @@ const EditRoomModal: React.FC<EditRoomModalProps> = ({
                         />
                     </div>
 
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label htmlFor="totalRooms">Total Rooms:</label>
                         <input
                             type="number"
@@ -165,9 +165,9 @@ const EditRoomModal: React.FC<EditRoomModalProps> = ({
                             min="1"
                             required
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label htmlFor="availableRooms">Available Rooms:</label>
                         <input
                             type="number"
@@ -179,7 +179,7 @@ const EditRoomModal: React.FC<EditRoomModalProps> = ({
                             max={formData.totalRooms}
                             required
                         />
-                    </div>
+                    </div> */}
 
                     <div className="form-group">
                         <label htmlFor="status">Status:</label>

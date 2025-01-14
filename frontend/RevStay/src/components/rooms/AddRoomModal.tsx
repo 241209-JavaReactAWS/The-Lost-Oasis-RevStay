@@ -23,8 +23,8 @@ interface RoomData {
     roomType: RoomType;
     pricePerNight: number;
     isAvailable: boolean;
-    totalRooms: number;
-    availableRooms: number;
+    // totalRooms: number;
+    // availableRooms: number;
     status: RoomStatus;
     images: File[];
 }
@@ -42,8 +42,8 @@ const AddRoomModal: React.FC<AddRoomModalProps> = ({ hotelId, isOpen, onClose, o
         roomType: RoomType.SINGLE,
         pricePerNight: 0,
         isAvailable: true,
-        totalRooms: 1,
-        availableRooms: 1,
+        // totalRooms: 1,
+        // availableRooms: 1,
         status: RoomStatus.AVAILABLE,
         images: []
     });
@@ -89,7 +89,7 @@ const AddRoomModal: React.FC<AddRoomModalProps> = ({ hotelId, isOpen, onClose, o
                 roomNumber: formData.roomNumber,
                 roomType: formData.roomType,
                 pricePerNight: formData.pricePerNight,
-                totalRooms: formData.totalRooms,
+                // totalRooms: formData.totalRooms,
                 status: formData.status
             }));
 
@@ -166,7 +166,7 @@ const AddRoomModal: React.FC<AddRoomModalProps> = ({ hotelId, isOpen, onClose, o
                         />
                     </div>
 
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label htmlFor="totalRooms">Total Rooms:</label>
                         <input
                             type="number"
@@ -177,7 +177,7 @@ const AddRoomModal: React.FC<AddRoomModalProps> = ({ hotelId, isOpen, onClose, o
                             min="1"
                             required
                         />
-                    </div>
+                    </div> */}
 
                     <div className="form-group">
                         <label htmlFor="status">Status:</label>

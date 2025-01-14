@@ -71,7 +71,7 @@ function Row<T>(props: RowProp<T>){
         new Array(Object.entries(props.headers).length).fill(null)
     )
 
-    function initObjFromEntries(): T{
+    function updateCells(): T{
         return Object
             .values(
                 props.headers
@@ -79,6 +79,7 @@ function Row<T>(props: RowProp<T>){
             .reduce(
                 (acc, [toText, parseText], i)=> {
                     const entry = texts[i]
+                    //Skip this cell as there are no update to this cell
                     if (entry === null){
                         return acc
                     }
@@ -87,6 +88,11 @@ function Row<T>(props: RowProp<T>){
                     if (newT === null){
                         return acc
                     }
+
+                    //Update the cell to if it successfully parsed
+                    setTexts(
+                        [...texts.slice(0, i), null, ...texts.slice(i+1)]
+                    )
 
                     return newT
                 },
@@ -151,7 +157,7 @@ function Row<T>(props: RowProp<T>){
                                     return
                                 }
 
-                                const newObj = initObjFromEntries()
+                                const newObj = updateCells()
 
                                 const anyChange = JSON.stringify(newObj) !== JSON.stringify(props.initObj)
 

@@ -27,7 +27,7 @@ export default function OwnersReview(){
                 it=>setReviews(it)
             )
             .catch(
-                ()=>setError("Error while fetching reviews")
+                ()=>console.log("Error while fetching reviews")
             )
     }
 
@@ -38,12 +38,12 @@ export default function OwnersReview(){
         []
     )
 
-    const runTempError = (message: string)=>{
+    const runErrorAlert = (message: string)=>{
         setError(message)
 
         setTimeout(()=>{setError(null)}, 3000)
     }
-    const runTempSuccess = ()=>{
+    const runSuccessAlert = ()=>{
         setSuccess("Success!")
         setTimeout(()=>setSuccess(null), 3000)
     }
@@ -64,16 +64,16 @@ export default function OwnersReview(){
                             {response: ""}
                         )
                         .then(
-                            ()=>runTempSuccess()
+                            ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>runTempError("Error while ignoring response")
+                            ()=>runErrorAlert("Error while ignoring review!")
                         )
 
                     },
                     "RESPOND": (anyChanges, newR)=>{
                         if (!anyChanges || newR.response!.length === 0){
-                            alert("Please enter a response")
+                            alert("Please enter a response!")
                             return
                         }
 
@@ -82,10 +82,10 @@ export default function OwnersReview(){
                             {response: newR.response}
                         )
                         .then(
-                            ()=>runTempSuccess()
+                            ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>setError("Error while responding to reviews")
+                            ()=>runErrorAlert("Error while responding to reviews!")
                         )
                     }
                 }}         

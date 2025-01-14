@@ -29,7 +29,7 @@ const Payment = () => {
         }
 
         try {
-            const response = await postman.post('http://localhost:8080/payment/create', {
+            const response = await postman.post('/payment/create', {
                 amount: totalAmount, // Use the totalAmount
                 paymentDate: new Date().toISOString(),
                 paymentMethod,
@@ -55,7 +55,7 @@ const Payment = () => {
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '100vh',
-            backgroundImage: 'url(https://cdn-bnokp.nitrocdn.com/QNoeDwCprhACHQcnEmHgXDhDpbEOlRHH/assets/images/optimized/rev-6d59c08/www.decorilla.com/online-decorating/wp-content/uploads/2019/01/Luxury-boutique-interior-design-before-and-after-by-Decorilla-1.jpg)', 
+            backgroundImage: 'url(https://cdn-bnokp.nitrocdn.com/QNoeDwCprhACHQcnEmHgXDhDpbEOlRHH/assets/images/optimized/rev-6d59c08/www.decorilla.com/online-decorating/wp-content/uploads/2019/01/Luxury-boutique-interior-design-before-and-after-by-Decorilla-1.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -71,7 +71,7 @@ const Payment = () => {
                 padding: '1rem',
                 boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
                 borderRadius: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
             }}
         >
             <Typography variant="h4" sx={{ textAlign: 'center' }}>

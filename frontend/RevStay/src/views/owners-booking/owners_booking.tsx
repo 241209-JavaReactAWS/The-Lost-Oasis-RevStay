@@ -79,7 +79,7 @@ export default function OwnersBooking(){
                             ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>runErrorAlert("Error while confirming booking")
+                            ()=>runErrorAlert("Error while confirming booking!")
                         )
                     },
                     "REJECT": (anyChanges, b)=>{
@@ -99,7 +99,7 @@ export default function OwnersBooking(){
                             ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>runErrorAlert("Error while rejecting booking")
+                            ()=>runErrorAlert("Error while rejecting booking!")
                         )
                     },
                 }}
@@ -131,7 +131,7 @@ export default function OwnersBooking(){
                             ()=>runSuccessAlert()
                         )
                         .catch(()=>{
-                            runErrorAlert("Error while cancelling booking request")
+                            runErrorAlert("Error while cancelling booking request!")
                         })
                     }
                 }}
@@ -270,7 +270,7 @@ function BookingTable(props: BookingTableProps){
                                     props.runSuccessAlert()
                                 })
                                 .catch(()=>{
-                                    props.runErrorAlert("Error while editing booking request")
+                                    props.runErrorAlert("Error while editing booking request!")
                                 })
                         }
                     },

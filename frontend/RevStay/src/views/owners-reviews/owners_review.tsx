@@ -67,7 +67,7 @@ export default function OwnersReview(){
                             ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>runErrorAlert("Error while ignoring review")
+                            ()=>runErrorAlert("Error while ignoring review!")
                         )
 
                     },
@@ -85,7 +85,7 @@ export default function OwnersReview(){
                             ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>runErrorAlert("Error while responding to reviews")
+                            ()=>runErrorAlert("Error while responding to reviews!")
                         )
                     }
                 }}         

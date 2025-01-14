@@ -143,6 +143,7 @@ function ReviewTable(props: ReviewTableProps){
                         ...props.extraActions,
                     }
                 }
+                getKey={t=>t.reviewId}
             />
         </Hider>
     )

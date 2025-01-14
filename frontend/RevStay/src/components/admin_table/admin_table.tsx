@@ -17,7 +17,8 @@ type Action<T> = {
 type TableProps<T> = {
     headers: Header<T>, 
     objs: T[], 
-    actions: Action<T>
+    actions: Action<T>,
+    getKey: (t: T)=>number
 }
 export default function AdminTable<T extends object>(props: TableProps<T>){
     if (props.objs.length === 0){
@@ -52,7 +53,7 @@ export default function AdminTable<T extends object>(props: TableProps<T>){
         <tbody>{
             props.objs.map((o, i)=> 
                 <Row 
-                    key={i} 
+                    key={props.getKey(o)} 
                     headers={props.headers} 
                     actions={props.actions} 
                     initObj={o}

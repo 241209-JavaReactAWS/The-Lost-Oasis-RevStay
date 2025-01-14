@@ -256,6 +256,7 @@ function BookingTable(props: BookingTableProps){
                     ...props.extraActions,
                 }
             }
+            getKey={t=>t.id}
         />
         </Hider>
     )

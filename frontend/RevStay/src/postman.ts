@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const postman = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://ec2-184-72-73-59.compute-1.amazonaws.com:9090',
     timeout: 30000,
     headers: {
         'Content-Type': 'application/json'

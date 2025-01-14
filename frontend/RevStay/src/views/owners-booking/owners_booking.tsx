@@ -27,7 +27,7 @@ export default function OwnersBooking(){
                 it=>setBookings(it)
             )
             .catch(
-                ()=>setError("Error while fetching books")
+                ()=>console.log("Error while fetching books")
             )
     }
 
@@ -40,13 +40,13 @@ export default function OwnersBooking(){
         }
     }, [fetch])
 
-    const runTempError = (message: string)=>{
+    const runErrorAlert = (message: string)=>{
         setError(message)
 
         setTimeout(()=>setError(null), 3000)
     }
 
-    const runTempSuccess = ()=>{
+    const runSuccessAlert = ()=>{
         setSuccess("Success!")
         setTimeout(()=>setSuccess(null), 3000)
     }
@@ -76,10 +76,10 @@ export default function OwnersBooking(){
                             }
                         )
                         .then(
-                            ()=>runTempSuccess()
+                            ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>runTempError("Error confirming booking")
+                            ()=>runErrorAlert("Error while confirming booking")
                         )
                     },
                     "REJECT": (anyChanges, b)=>{
@@ -96,16 +96,16 @@ export default function OwnersBooking(){
                             }
                         )
                         .then(
-                            ()=>runTempSuccess()
+                            ()=>runSuccessAlert()
                         )
                         .catch(
-                            ()=>runTempError("Error rejecting booking")
+                            ()=>runErrorAlert("Error while rejecting booking")
                         )
                     },
                 }}
 
-                setError={runTempError}
-                setSuccess={runTempSuccess}
+                runErrorAlert={runErrorAlert}
+                runSuccessAlert={runSuccessAlert}
             />
             <BookingTable
                 name="Confirmed"
@@ -127,15 +127,17 @@ export default function OwnersBooking(){
                                 status: "OWNER_CANCELED"
                             }
                         )
+                        .then(
+                            ()=>runSuccessAlert()
+                        )
                         .catch(()=>{
-                            setError("Error cancelling booking request")
-                            setTimeout(()=>{setError(null)}, 1)
+                            runErrorAlert("Error while cancelling booking request")
                         })
                     }
                 }}
 
-                setError={runTempError}
-                setSuccess={runTempSuccess}
+                runErrorAlert={runErrorAlert}
+                runSuccessAlert={runSuccessAlert}
             />
             <BookingTable
                 name="Owner Cancelled"
@@ -146,8 +148,8 @@ export default function OwnersBooking(){
                 extraActions={{  
                 }}
 
-                setError={runTempError}
-                setSuccess={runTempSuccess}
+                runErrorAlert={runErrorAlert}
+                runSuccessAlert={runSuccessAlert}
             />
             <BookingTable
                 name="User Cancelled"
@@ -158,8 +160,8 @@ export default function OwnersBooking(){
                 extraActions={{  
                 }}
 
-                setError={runTempError}
-                setSuccess={runTempSuccess}
+                runErrorAlert={runErrorAlert}
+                runSuccessAlert={runSuccessAlert}
             />
             <BookingTable
                 name="Rejected"
@@ -169,8 +171,8 @@ export default function OwnersBooking(){
                 extraActions={{
                 }}
 
-                setError={runTempError}
-                setSuccess={runTempSuccess}
+                runErrorAlert={runErrorAlert}
+                runSuccessAlert={runSuccessAlert}
             />
         </>
     )
@@ -179,8 +181,8 @@ export default function OwnersBooking(){
 type BookingTableProps = {
     name: string,
     objs: Booking[],
-    setError: (_: string)=>void,
-    setSuccess: ()=>void,
+    runErrorAlert: (_: string)=>void,
+    runSuccessAlert: ()=>void,
     extraActions: {
         [key: string]: (anyChanges: boolean, b: Booking)=>void
     } 
@@ -265,10 +267,10 @@ function BookingTable(props: BookingTableProps){
                             postman
                                 .patch(`bookings`, newB)
                                 .then(()=>{
-                                    props.setSuccess()
+                                    props.runSuccessAlert()
                                 })
                                 .catch(()=>{
-                                    props.setError("Error editing booking request")
+                                    props.runErrorAlert("Error while editing booking request")
                                 })
                         }
                     },

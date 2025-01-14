@@ -124,7 +124,7 @@ function ReviewTable(props: ReviewTableProps){
                         null
                     ],
                     "Rating": [
-                        t=>t.rating.toString(),
+                        t=>"★".repeat(t.rating) + "☆".repeat(5 - t.rating),
                         null
                     ],
                     "Comment": [
@@ -132,7 +132,7 @@ function ReviewTable(props: ReviewTableProps){
                         null
                     ],
                     "Response": [
-                        t=>String(t.response),
+                        t=>t.response ?? "",
                         (t, arg)=>{
                             return {...t, response: arg}
                         }

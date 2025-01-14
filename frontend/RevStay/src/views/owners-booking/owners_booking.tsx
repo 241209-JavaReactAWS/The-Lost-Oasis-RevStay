@@ -193,11 +193,11 @@ function BookingTable(props: BookingTableProps){
             headers={
                 {
                     "Id": [
-                        t=>t.id.toString(),
+                        t=>t.id?.toString(),
                         null
                     ],
                     "Customer": [
-                        t=> t.customer.userId + " " + t.customer.firstName + " " + t.customer.lastName + " " + t.customer.email,
+                        t=> t.customer?.userId + " " + t.customer?.firstName + " " + t.customer?.lastName + " " + t.customer?.email,
                         null
                     ],
                     "Check-in Date": [
@@ -213,25 +213,43 @@ function BookingTable(props: BookingTableProps){
                         }
                     ],
                     "Room ID": [
-                        t=>t.room.id.toString(), 
+                        t=>t.room?.id?.toString(), 
                         (t, arg)=>{ 
-                            return {...t, room: {...t.room, id: parseInt(arg)}}
+                            const num = parseInt(arg)
+                            if (Number.isNaN(num)){
+                                alert("Please input a valid number")
+                                return null
+                            }
+
+                            return {...t, room: {...t.room, id: num}}
                         }
                     ],
                     "Room#": [
-                        t=>t.room.roomNumber,
+                        t=>t.room?.roomNumber,
                         null
                     ],
                     "# of Guests": [
-                        t=>t.numGuests.toString(), 
+                        t=>t.numGuests?.toString(), 
                         (t, arg)=>{ 
-                            return {...t, numGuests: parseInt(arg)}
+                            const num = parseInt(arg)
+                            if (Number.isNaN(num)){
+                                alert("Please input a valid number")
+                                return null
+                            }
+
+                            return {...t, numGuests: num}
                         }
                     ],
                     "Price": [
-                        t=>t.totalPrice.toString(), 
+                        t=>t.totalPrice?.toString(), 
                         (t, arg)=>{ 
-                            return {...t, totalPrice: parseFloat(arg)}
+                            const num = parseFloat(arg)
+                            if (Number.isNaN(num)){
+                                alert("Please input a valid number")
+                                return null
+                            }
+
+                            return {...t, totalPrice: num}
                         }
                     ],
                 }
@@ -240,7 +258,8 @@ function BookingTable(props: BookingTableProps){
                 {
                     "EDIT": (anyChange, newB)=>{
                         if (!anyChange){
-                            alert("there are no changes")
+                            alert("There are no changes")
+                            return
                         }
                         else {
                             postman
@@ -256,6 +275,7 @@ function BookingTable(props: BookingTableProps){
                     ...props.extraActions,
                 }
             }
+            getKey={t=>t.id}
         />
         </Hider>
     )

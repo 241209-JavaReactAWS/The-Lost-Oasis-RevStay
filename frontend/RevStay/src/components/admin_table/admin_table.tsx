@@ -2,12 +2,10 @@ import { CSSProperties, useState } from 'react'
 import "./admin_table.css"
 
 
-type Getter<T> = (t: T)=>string
-
-type Setter<T> = (t: T, arg: string)=>(T|null)
-
+type ToText<T> = (t: T)=>string
+type ParseText<T> = (t: T, arg: string)=>(T|null)
 type Header<T> = {
-    [key: string]: [Getter<T>, Setter<T>|null]
+    [key: string]: [ToText<T>, ParseText<T>|null]
 }
 
 type Action<T> = {
@@ -17,7 +15,8 @@ type Action<T> = {
 type TableProps<T> = {
     headers: Header<T>, 
     objs: T[], 
-    actions: Action<T>
+    actions: Action<T>,
+    getKey: (t: T)=>number
 }
 export default function AdminTable<T extends object>(props: TableProps<T>){
     if (props.objs.length === 0){
@@ -52,7 +51,7 @@ export default function AdminTable<T extends object>(props: TableProps<T>){
         <tbody>{
             props.objs.map((o, i)=> 
                 <Row 
-                    key={i} 
+                    key={props.getKey(o)} 
                     headers={props.headers} 
                     actions={props.actions} 
                     initObj={o}
@@ -67,27 +66,24 @@ type RowProp<T> = {
     actions: Action<T>, 
     initObj: T
 }
-function Row<T>(props: RowProp<T>){
-    const initEntries = Object
-        .values(props.headers)
-        .map(([getter, setter], _, __)=>{
-            return getter(props.initObj)
-        })
-    
-    const [currEntries, setEntryText] = useState(initEntries)
+function Row<T>(props: RowProp<T>){   
+    const [texts, setTexts] = useState<(string|null)[]>(
+        new Array(Object.entries(props.headers).length).fill(null)
+    )
 
-    function createObj(){
+    function initObjFromEntries(): T{
         return Object
             .values(
                 props.headers
             )
             .reduce(
-                (acc, [getter, setter], i)=> {
-                    if (setter === null){
+                (acc, [toText, parseText], i)=> {
+                    const entry = texts[i]
+                    if (entry === null){
                         return acc
                     }
-                    const newT = setter(acc, currEntries[i])
 
+                    const newT = parseText!(acc, entry)
                     if (newT === null){
                         return acc
                     }
@@ -100,28 +96,35 @@ function Row<T>(props: RowProp<T>){
     
     return <tr>
     {
-        Object.entries(props.headers)
-            .map(([name, [getter, setter]], i)=>
+        Object.values(props.headers)
+            .map(([toText, parseText], i)=>
                 <Entry
                     key={i}
                     currText={
-                        currEntries[i]
+                        texts[i] ?? toText(props.initObj)
                     }
                     canEdit={
-                        setter !== null
+                        parseText !== null && Object.entries(props.actions).length != 0
                     }
                     setText={
-                        (newText)=>setEntryText(
-                            [...currEntries.slice(0, i), newText, ...currEntries.slice(i+1)]
-                        )
+                        (newText)=>{
+                            let newEntry: null|string = newText
+                            if (newEntry === toText(props.initObj)){
+                                newEntry = null
+                            }
+
+                            setTexts(
+                                [...texts.slice(0, i), newEntry, ...texts.slice(i+1)]
+                            )
+                        }
                     }
                     reset={()=>
-                        setEntryText(
-                            [...currEntries.slice(0, i), initEntries[i], ...currEntries.slice(i+1)]
+                        setTexts(
+                            [...texts.slice(0, i), null, ...texts.slice(i+1)]
                         )
                     }
                     canReset={
-                        currEntries[i] !== getter(props.initObj)
+                        texts[i] !== null && texts[i] !== toText(props.initObj)
                     }
                 />
             )
@@ -136,7 +139,19 @@ function Row<T>(props: RowProp<T>){
                     children = {
                         <button
                             onClick={()=>{
-                                const newObj = createObj()
+                                const shouldContinue = Object.values(props.headers).every(([toText, parseText], i)=>{
+                                    //if a cell has something written, but cannot be parsed, then it should not continue
+                                    if (texts[i] !== null && parseText!(props.initObj, texts[i]) === null){
+                                        return false
+                                    }
+                                    return true
+                                })
+                                if (!shouldContinue){
+                                    //Any visual indication of errors should be done inside parseText instead of here
+                                    return
+                                }
+
+                                const newObj = initObjFromEntries()
 
                                 const anyChange = JSON.stringify(newObj) !== JSON.stringify(props.initObj)
 

@@ -116,15 +116,15 @@ function ReviewTable(props: ReviewTableProps){
                 objs={props.objs}
                 headers={{
                     "Id": [
-                        t=>t.reviewId.toString(),
+                        t=>t.reviewId?.toString(),
                         null
                     ],
                     "Customer": [
-                        t=> t.user.userId + " " + t.user.firstName + " " + t.user.lastName + " " + t.user.email,
+                        t=> t.user?.userId + " " + t.user?.firstName + " " + t.user?.lastName + " " + t.user?.email,
                         null
                     ],
                     "Rating": [
-                        t=>t.rating.toString(),
+                        t=>"★".repeat(t.rating) + "☆".repeat(5 - t.rating),
                         null
                     ],
                     "Comment": [
@@ -132,7 +132,7 @@ function ReviewTable(props: ReviewTableProps){
                         null
                     ],
                     "Response": [
-                        t=>String(t.response),
+                        t=>t.response ?? "",
                         (t, arg)=>{
                             return {...t, response: arg}
                         }
@@ -143,6 +143,7 @@ function ReviewTable(props: ReviewTableProps){
                         ...props.extraActions,
                     }
                 }
+                getKey={t=>t.reviewId}
             />
         </Hider>
     )

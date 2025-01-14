@@ -139,6 +139,18 @@ function Row<T>(props: RowProp<T>){
                     children = {
                         <button
                             onClick={()=>{
+                                const shouldContinue = Object.values(props.headers).every(([toText, parseText], i)=>{
+                                    //if a cell has something written, but cannot be parsed, then it should not continue
+                                    if (texts[i] !== null && parseText!(props.initObj, texts[i]) === null){
+                                        return false
+                                    }
+                                    return true
+                                })
+                                if (!shouldContinue){
+                                    //Any visual indication of errors should be done inside parseText instead of here
+                                    return
+                                }
+
                                 const newObj = initObjFromEntries()
 
                                 const anyChange = JSON.stringify(newObj) !== JSON.stringify(props.initObj)

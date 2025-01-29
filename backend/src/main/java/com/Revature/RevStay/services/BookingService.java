@@ -4,6 +4,7 @@ import com.Revature.RevStay.daos.BookingRepository;
 import com.Revature.RevStay.daos.HotelRepository;
 import com.Revature.RevStay.daos.RoomRepository;
 import com.Revature.RevStay.daos.UserRepository;
+import com.Revature.RevStay.dtos.BookingRequest;
 import com.Revature.RevStay.models.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;

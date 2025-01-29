@@ -1,4 +1,4 @@
-package com.Revature.RevStay.models;
+package com.Revature.RevStay.dtos;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package com.Revature.RevStay.controllers;
 
 import com.Revature.RevStay.models.Booking;
-import com.Revature.RevStay.models.BookingRequest;
+import com.Revature.RevStay.dtos.BookingRequest;
 import com.Revature.RevStay.services.BookingService;
 import com.Revature.RevStay.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;

@@ -11,6 +11,16 @@ export default function ReviewCard(props: IReview) {
                 <Typography>{stars}</Typography>
                 <Typography>{props.comment}</Typography>
                 <Typography>- {name}</Typography>
+                {
+                    props.response?.trim()?.length ?? 0 > 0 ?
+                    <>
+                    <br/>
+                    <Typography>{props.response}</Typography>
+                    <Typography>- Owner</Typography>
+                    </>
+                    :
+                    <></>
+                }
             </Stack>
         </CardContent>
     </Card>

@@ -75,8 +75,6 @@ const EditRoomModal: React.FC<EditRoomModalProps> = ({
                 roomNumber: formData.roomNumber,
                 roomType: formData.roomType,
                 pricePerNight: formData.pricePerNight,
-                // totalRooms: formData.totalRooms,
-                status: formData.status
             }));
 
             if (newImages.length > 0) {
@@ -153,50 +151,6 @@ const EditRoomModal: React.FC<EditRoomModalProps> = ({
                             min="0"
                             required
                         />
-                    </div>
-
-                    {/* <div className="form-group">
-                        <label htmlFor="totalRooms">Total Rooms:</label>
-                        <input
-                            type="number"
-                            id="totalRooms"
-                            name="totalRooms"
-                            value={formData.totalRooms}
-                            onChange={handleInputChange}
-                            min="1"
-                            required
-                        />
-                    </div> */}
-
-                    {/* <div className="form-group">
-                        <label htmlFor="availableRooms">Available Rooms:</label>
-                        <input
-                            type="number"
-                            id="availableRooms"
-                            name="availableRooms"
-                            value={formData.availableRooms}
-                            onChange={handleInputChange}
-                            min="0"
-                            max={formData.totalRooms}
-                            required
-                        />
-                    </div> */}
-
-                    <div className="form-group">
-                        <label htmlFor="status">Status:</label>
-                        <select
-                            id="status"
-                            name="status"
-                            value={formData.status}
-                            onChange={handleInputChange}
-                            required
-                        >
-                            {Object.values(RoomStatus).map(status => (
-                                <option key={status} value={status}>
-                                    {status.replace('_', ' ')}
-                                </option>
-                            ))}
-                        </select>
                     </div>
 
                     <div className="current-images">

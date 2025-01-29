@@ -1,5 +1,6 @@
 package com.Revature.RevStay.models;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,16 +34,6 @@ public class Room {
 
     @Column(nullable = false)
     private Double pricePerNight;
-
-    @Column(nullable = false)
-    private Boolean isAvailable;
-
-//    private Integer totalRooms;
-//    private Integer availableRooms;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RoomStatus status;
 
     @ElementCollection
     @Column(columnDefinition = "TEXT")

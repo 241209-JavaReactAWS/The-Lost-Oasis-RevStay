@@ -5,7 +5,6 @@ import com.Revature.RevStay.daos.RoomRepository;
 import com.Revature.RevStay.dtos.RoomRequest;
 import com.Revature.RevStay.models.Hotel;
 import com.Revature.RevStay.models.Room;
-import com.Revature.RevStay.models.RoomStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,10 +60,6 @@ public class RoomService {
         room.setRoomNumber(request.getRoomNumber());
         room.setRoomType(request.getRoomType());
         room.setPricePerNight(request.getPricePerNight());
-//        room.setTotalRooms(request.getTotalRooms());
-//        room.setAvailableRooms(request.getTotalRooms());
-        room.setIsAvailable(request.getStatus() == RoomStatus.AVAILABLE); // Set based on status
-        room.setStatus(request.getStatus());
         room.setImages(imageUrls);
 
         return roomRepository.save(room);
@@ -126,9 +121,6 @@ public class RoomService {
         room.setRoomNumber(request.getRoomNumber());
         room.setRoomType(request.getRoomType());
         room.setPricePerNight(request.getPricePerNight());
-//        room.setTotalRooms(request.getTotalRooms());
-        room.setStatus(request.getStatus());
-        room.setIsAvailable(request.getStatus() == RoomStatus.AVAILABLE);
 
         // Remove deleted images
         if (deletedImages != null && !deletedImages.isEmpty()) {

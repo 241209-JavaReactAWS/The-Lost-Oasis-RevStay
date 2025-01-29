@@ -72,13 +72,6 @@ const RoomsTable = ({ rooms, onRoomDeleted, onEditClick }: RoomsTableProps) => {
                             <td>{room.roomType}</td>
                             <td>${room.pricePerNight}</td>
                             <td>
-                                <span className={`status-badge status-${room.status.toLowerCase()}`}>
-                                    {room.status.replace('_', ' ')}
-                                </span>
-                            </td>
-                            {/* <td>{room.totalRooms}</td>
-                            <td>{room.availableRooms}</td> */}
-                            <td>
                                 <button
                                     className="edit-button"
                                     onClick={() => onEditClick(room)}

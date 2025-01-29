@@ -17,10 +17,22 @@ public class Payment {
     @ManyToOne
     @JoinColumn(name = "user_user_id")
     private User user;
+
+    @JoinColumn(nullable = false)
     private Double amount;
+
+    @JoinColumn(nullable = false)
     private String paymentMethod;
+
+    @JoinColumn(nullable = false)
     private String paymentDate;
+
+    @JoinColumn(nullable = false)
     private String cardNumber;
+
+    @JoinColumn(nullable = false)
     private String cvv;
+
+    @JoinColumn(nullable = false)
     private String expiryDate;
 }

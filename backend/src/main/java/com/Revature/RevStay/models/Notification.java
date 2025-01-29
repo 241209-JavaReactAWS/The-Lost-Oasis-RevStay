@@ -22,9 +22,16 @@ public class Notification {
     @ManyToOne
     private User user;
 
+    @JoinColumn(nullable = false)
     private String subject;
+
+    @JoinColumn(nullable = false)
     private String message;
+
+    @JoinColumn(nullable = false)
     private boolean read;
+
+    @JoinColumn(nullable = false)
     private LocalDateTime timestamp;
 
     public Notification(User recipient, String subject, String message) {

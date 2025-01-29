@@ -19,16 +19,27 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JoinColumn(nullable = false)
     private String name;
+
+    @JoinColumn(nullable = false)
     private String address;
+
+    @JoinColumn(nullable = false)
     private String city;
+
+    @JoinColumn(nullable = false)
     private String state;
 
     @Column(length = 10000)
+    @JoinColumn(nullable = false)
     private String description;
+
+    @JoinColumn(nullable = false)
     private String amenities;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User owner;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)

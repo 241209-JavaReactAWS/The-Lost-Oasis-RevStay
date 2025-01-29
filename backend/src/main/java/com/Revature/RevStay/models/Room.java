@@ -24,18 +24,24 @@ public class Room {
     @JsonIgnore
     private Hotel hotel;
 
+    @Column(nullable = false)
     private String roomNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RoomType roomType;
 
+    @Column(nullable = false)
     private Double pricePerNight;
+
+    @Column(nullable = false)
     private Boolean isAvailable;
 
 //    private Integer totalRooms;
 //    private Integer availableRooms;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RoomStatus status;
 
     @ElementCollection

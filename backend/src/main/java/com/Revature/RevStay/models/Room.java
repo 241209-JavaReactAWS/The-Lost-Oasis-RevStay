@@ -39,4 +39,9 @@ public class Room {
     @Column(columnDefinition = "TEXT")
     private List<String> images = new ArrayList<>();
 
+    @JsonGetter("maxGuests")
+    public int getMaxGuests(){
+        return this.roomType.maxGuests;
+    }
+
 }

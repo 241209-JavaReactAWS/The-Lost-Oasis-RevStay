@@ -19,13 +19,17 @@ export default function Room(props: Props) {
                 <Typography variant='h5'>{props.roomType}</Typography>
                 <Typography variant='subtitle1'>Room #{props.roomNumber}</Typography>
                 <Typography variant='subtitle1'>Price: ${props.pricePerNight} / night</Typography>
+                <Typography variant='subtitle1'>Max Guests: {props.maxGuests}</Typography>
             </Box>
             <Stack sx={{ml: 'auto'}} direction='row' gap={5} alignItems='center'>
-                {props.numDays &&
-                <Box>
-                    <Typography><strong>Total</strong></Typography>
-                    <Typography>${(props.numDays * props.pricePerNight).toFixed(2)}</Typography>
-                </Box>}
+                {props.numDays ?
+                    <Box>
+                        <Typography><strong>Total</strong></Typography>
+                        <Typography>${(props.numDays * props.pricePerNight).toFixed(2)}</Typography>
+                    </Box>
+                    :
+                    <></>
+                }
                 <Button sx={{height: 1}} disabled={props.reserveButtonDisabled} variant='contained' onClick={props.onSelected}>Reserve</Button>
             </Stack>
         </Stack>

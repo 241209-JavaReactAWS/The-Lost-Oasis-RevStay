@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom';
 import { postman } from "../../postman"
 import AdminTable from "../../components/admin_table/admin_table"
 import Hider from "../../components/hider/hider";
-import Review from "../../interfaces/review";
+import IReview from "../../interfaces/IReview";
 import { Alert } from "@mui/material";
 
 
 export default function OwnersReview(){
     const {hotelId} = useParams<{hotelId: string}>()
 
-    const [reviews, setReviews] = useState<Review[]>([])
+    const [reviews, setReviews] = useState<IReview[]>([])
 
     const [success, setSuccess] = useState<string|null>(null)
     const [error, setError] = useState<string|null>(null)
@@ -18,7 +18,7 @@ export default function OwnersReview(){
     const fetch = ()=>{
         postman.get(`/reviews/hotel/${hotelId}`, {timeout: 1000})
             .then(
-                it=>it.data as Review[]
+                it=>it.data as IReview[]
             )
             .then(
                 it=>it.sort((a, b)=>a.reviewId - b.reviewId)
@@ -104,15 +104,15 @@ export default function OwnersReview(){
 
 type ReviewTableProps = {
     name: string,
-    objs: Review[],
+    objs: IReview[],
     extraActions: {
-        [key: string]: (anyChanges: boolean, b: Review)=>void
+        [key: string]: (anyChanges: boolean, b: IReview)=>void
     } 
 }
 function ReviewTable(props: ReviewTableProps){
     return (
         <Hider name={props.name}>
-            <AdminTable<Review>
+            <AdminTable<IReview>
                 objs={props.objs}
                 headers={{
                     "Id": [

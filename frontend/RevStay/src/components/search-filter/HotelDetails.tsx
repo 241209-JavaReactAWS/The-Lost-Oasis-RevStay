@@ -1,7 +1,7 @@
 import React from 'react';
 import IHotel from '../../views/hotel/IHotel.ts';
-import IRoom from '../room/IRoom.ts';
 import { Button } from '@mui/material';
+import IRoom from '../../interfaces/IRoom.ts';
 
 export interface HotelDetailsProps {
     hotel: IHotel;

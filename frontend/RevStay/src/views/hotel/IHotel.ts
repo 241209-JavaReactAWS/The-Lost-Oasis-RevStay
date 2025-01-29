@@ -1,4 +1,5 @@
-import IRoom from '../../components/room/IRoom.tsx'
+import IRoom from "../../interfaces/IRoom";
+
 
 export default interface IHotel {
     id: number,

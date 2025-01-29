@@ -1,4 +1,4 @@
-import IReview from './IReview.tsx'
+import IReview from '../../interfaces/IReview.ts'
 import {Card, CardContent, Stack, Typography} from '@mui/material'
 
 export default function ReviewCard(props: IReview) {

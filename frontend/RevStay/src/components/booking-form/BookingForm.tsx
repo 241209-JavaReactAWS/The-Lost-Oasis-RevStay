@@ -1,12 +1,12 @@
 import {useState} from 'react'
 import {Alert, Box, MenuItem, Select, Snackbar, Stack, Typography} from '@mui/material'
 import {DatePicker} from '@mui/x-date-pickers'
-import IRoom from '../room/IRoom.tsx'
 import {Dayjs} from 'dayjs'
 import {postman} from '../../postman.ts'
 import { useNavigate } from 'react-router';
 import Room from '../room/Room.tsx'
 import IHotel from '../../views/hotel/IHotel.ts'
+import IRoom from '../../interfaces/IRoom.ts'
 
 interface Props {
     hotel: IHotel

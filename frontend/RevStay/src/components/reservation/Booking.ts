@@ -1,5 +1,5 @@
+import IRoom from '../../interfaces/IRoom.ts';
 import IHotel from '../../views/hotel/IHotel.ts'
-import IRoom from '../room/IRoom.tsx'
 
 export default interface Booking {
     id: number,

@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { postman } from '../../postman';
 import { useParams } from 'react-router-dom';
 import './RoomsTable.css';
-import { Room, RoomType, RoomStatus } from '../../interfaces/room-interface';
 import ImageCarousel from './ImageCarousel';
+import IRoom from '../../interfaces/IRoom';
 
 
 interface RoomsTableProps {
-    rooms: Room[];
+    rooms: IRoom[];
     onRoomDeleted: () => void;
-    onEditClick: (room: Room) => void;
+    onEditClick: (room: IRoom) => void;
 }
 
 const RoomsTable = ({ rooms, onRoomDeleted, onEditClick }: RoomsTableProps) => {

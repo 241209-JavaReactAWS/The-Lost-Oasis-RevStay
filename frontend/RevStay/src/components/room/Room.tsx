@@ -1,5 +1,5 @@
-import IRoom from './IRoom.tsx'
 import {Box, Button, Stack, Typography} from '@mui/material'
+import IRoom from '../../interfaces/IRoom'
 
 interface ComponentProps {
     onSelected: () => void,

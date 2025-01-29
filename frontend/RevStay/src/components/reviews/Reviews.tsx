@@ -1,8 +1,8 @@
 import {Box, Paper, Stack, Typography} from '@mui/material'
 import {useEffect, useState} from 'react'
 import {postman} from '../../postman.ts'
-import IReview from './IReview.tsx'
 import ReviewCard from './ReviewCard.tsx'
+import IReview from '../../interfaces/IReview.ts'
 
 interface Props {
     hotelId: number

@@ -3,14 +3,14 @@ import { useParams } from 'react-router-dom';
 import { postman } from "../../postman"
 import AdminTable from "../../components/admin_table/admin_table"
 import Hider from "../../components/hider/hider";
-import Booking from "../../interfaces/booking";
+import IBooking from "../../interfaces/IBooking";
 import { Alert } from "@mui/material";
 
 
 export default function OwnersBooking(){
     const {hotelId} = useParams<{hotelId: string}>()
     
-    const [bookings, setBookings] = useState<Booking[]>([])
+    const [bookings, setBookings] = useState<IBooking[]>([])
 
     const [success, setSuccess] = useState<string|null>(null)
     const [error, setError] = useState<string|null>(null)
@@ -18,7 +18,7 @@ export default function OwnersBooking(){
     const fetch = () => {
         postman.get(`/bookings/hotel/${hotelId}`, {timeout: 1000})
             .then(
-                it=>it.data as Booking[]
+                it=>it.data as IBooking[]
             )
             .then(
                 it=>it.sort((a, b)=>a.id - b.id)
@@ -180,17 +180,17 @@ export default function OwnersBooking(){
 
 type BookingTableProps = {
     name: string,
-    objs: Booking[],
+    objs: IBooking[],
     runErrorAlert: (_: string)=>void,
     runSuccessAlert: ()=>void,
     extraActions: {
-        [key: string]: (anyChanges: boolean, b: Booking)=>void
+        [key: string]: (anyChanges: boolean, b: IBooking)=>void
     } 
 }
 function BookingTable(props: BookingTableProps){
     return (
         <Hider name={props.name}>
-            <AdminTable<Booking>
+            <AdminTable<IBooking>
             objs={props.objs}
             headers={
                 {

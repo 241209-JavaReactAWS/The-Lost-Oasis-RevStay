@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Room, RoomType, RoomStatus } from '../../interfaces/room-interface';
 import { postman } from '../../postman';
 import './EditRoomModal.css';
+import { RoomType } from '../../interfaces/RoomType';
+import IRoom from '../../interfaces/IRoom';
 
 interface EditRoomModalProps {
-    room: Room;
+    room: IRoom;
     hotelId: number;
     isOpen: boolean;
     onClose: () => void;

@@ -53,14 +53,11 @@ public class Hotel {
     @JsonIgnore
     private List<Review> reviews;
 
-    public Hotel(Integer hotelId) {
-    }
-
     @JsonGetter("rating")
     public Double getRating() {
         if (reviews == null || reviews.isEmpty()) {
             return 0.0;
-        }else {
+        } else {
             return reviews.stream().map(Review::getRating).reduce(0, Integer::sum) / (double) reviews.size();
         }
     }

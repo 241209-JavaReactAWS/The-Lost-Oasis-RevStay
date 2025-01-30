@@ -4,16 +4,16 @@ import { useParams } from 'react-router-dom';
 import { postman } from '../../postman';
 import RoomsTable from './RoomsTable';
 import EditRoomModal from './EditRoomModal';
-import { Room } from '../../interfaces/room-interface';
 
 import './rooms.css'
+import IRoom from '../../interfaces/IRoom';
 
 const Rooms = () => {
 
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAddRoomModalOpen, setIsAddRoomModalOpen] = useState(false);
-    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+    const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const { hotelId } = useParams<{ hotelId: string }>();
@@ -39,7 +39,7 @@ const Rooms = () => {
         setIsAddRoomModalOpen(false);
     };
 
-    const handleEditClick = (room: Room) => {
+    const handleEditClick = (room: IRoom) => {
         setSelectedRoom(room);
         setIsEditModalOpen(true);
     };

@@ -1,6 +1,8 @@
+import IUser from "./IUser"
+
 export default interface IReview{
     reviewId: number,
-    user: {userId: number, firstName: string, lastName: string, email: string},
+    user: IUser,
     rating: number,
     comment: string
     response: string|null

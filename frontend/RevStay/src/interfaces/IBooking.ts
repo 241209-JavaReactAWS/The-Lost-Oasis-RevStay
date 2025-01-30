@@ -1,7 +1,10 @@
+import IRoom from "./IRoom";
+import IUser from "./IUser";
+
 export default interface IBooking {
     id: number,
-    customer: {userId: number, firstName: string, lastName: string, email: string},
-    room: {id: number, roomNumber: string},
+    customer: IUser,
+    room: IRoom,
     checkIn: string,
     checkOut: string,
     numGuests: number,

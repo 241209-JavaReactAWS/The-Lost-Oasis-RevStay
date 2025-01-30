@@ -1,7 +1,9 @@
+import { RoomType } from "./RoomType";
+
 export default interface IRoom {
     id: number,
     roomNumber: string,
-    roomType: "SINGLE"|"DOUBLE"|"DELUXE"|"EXECUTIVE"|"FAMILY",
+    roomType: RoomType,
     pricePerNight: number,
     maxGuests: number,
     images: Array<string>,

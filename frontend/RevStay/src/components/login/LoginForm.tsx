@@ -3,6 +3,12 @@ import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import {useNavigate} from 'react-router'
 import {useAuth} from '../../hooks/useAuth.tsx'
+import IUser from '../../interfaces/IUser.ts';
+
+interface Response{ 
+    token: string, 
+    user: IUser
+}
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -20,9 +26,9 @@ const LoginForm = () => {
                 password,
             });
 
-            const { token, user } = response.data;
+            const { token, user } = response.data as Response;
             sessionStorage.setItem('token', token);
-            sessionStorage.setItem('userId', user.id);
+            sessionStorage.setItem('userId', user.userId.toString());
             console.log('User logged in:', user);
             auth.setAuthenticated(true)
             auth.setRole(user.role)

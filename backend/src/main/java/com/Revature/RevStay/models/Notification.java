@@ -20,6 +20,7 @@ public class Notification {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @JoinColumn(nullable = false)

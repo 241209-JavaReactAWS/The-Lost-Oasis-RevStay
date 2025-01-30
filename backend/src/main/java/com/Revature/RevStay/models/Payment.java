@@ -14,8 +14,9 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @ManyToOne
-    @JoinColumn(name = "user_user_id")
+    @JoinColumn(nullable = false)
     private User user;
 
     @JoinColumn(nullable = false)

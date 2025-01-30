@@ -64,7 +64,7 @@ public class ReviewService {
                 ()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Review Not Found")
             );
 
-        if (review.getHotel().getOwner().getUserId() != owner.getUserId()){
+        if (review.getHotel().getOwner().getId() != owner.getId()){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not owner of the hotel this user has reviewed");
         }
 
@@ -73,7 +73,7 @@ public class ReviewService {
         }
 
         var newResponse = new Review(
-            review.getReviewId(),
+            review.getId(),
             review.getUser(),
             review.getHotel(),
             review.getRating(),

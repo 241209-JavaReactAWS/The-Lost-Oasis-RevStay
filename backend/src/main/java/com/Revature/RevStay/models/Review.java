@@ -14,17 +14,17 @@ import lombok.NoArgsConstructor;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer reviewId;
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "hotelId", nullable = false)
+    @JoinColumn(nullable = false)
     private Hotel hotel;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "INT CHECK (rating BETWEEN 1 AND 5)", nullable = false)
     private int rating;
 
     @Column(columnDefinition = "TEXT", nullable = false)

@@ -81,7 +81,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Long getUserIdByEmail(String email) {
         return userRepository.findUserByEmail(email)
-                .map(User::getUserId)
+                .map(User::getId)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + email));
     }
 

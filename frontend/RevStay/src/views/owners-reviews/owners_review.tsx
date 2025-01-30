@@ -21,7 +21,7 @@ export default function OwnersReview(){
                 it=>it.data as IReview[]
             )
             .then(
-                it=>it.sort((a, b)=>a.reviewId - b.reviewId)
+                it=>it.sort((a, b)=>a.id - b.id)
             )
             .then(
                 it=>setReviews(it)
@@ -60,7 +60,7 @@ export default function OwnersReview(){
                 extraActions={{
                     "IGNORE": (anyChanges, newR)=>{
                         postman.patch(
-                            `/reviews/${newR.reviewId}`, 
+                            `/reviews/${newR.id}`, 
                             {response: ""}
                         )
                         .then(
@@ -78,7 +78,7 @@ export default function OwnersReview(){
                         }
 
                         postman.patch(
-                            `/reviews/${newR.reviewId}`, 
+                            `/reviews/${newR.id}`, 
                             {response: newR.response}
                         )
                         .then(
@@ -116,11 +116,11 @@ function ReviewTable(props: ReviewTableProps){
                 objs={props.objs}
                 headers={{
                     "Id": [
-                        t=>t.reviewId?.toString(),
+                        t=>t.id?.toString(),
                         null
                     ],
                     "Customer": [
-                        t=> t.user?.userId + " " + t.user?.firstName + " " + t.user?.lastName + " " + t.user?.email,
+                        t=> t.user?.id + " " + t.user?.firstName + " " + t.user?.lastName + " " + t.user?.email,
                         null
                     ],
                     "Rating": [
@@ -143,7 +143,7 @@ function ReviewTable(props: ReviewTableProps){
                         ...props.extraActions,
                     }
                 }
-                getKey={t=>t.reviewId}
+                getKey={t=>t.id}
             />
         </Hider>
     )

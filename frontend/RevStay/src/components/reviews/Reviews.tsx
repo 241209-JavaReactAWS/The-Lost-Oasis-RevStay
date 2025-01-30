@@ -24,7 +24,7 @@ export default function Reviews(props: Props) {
             <Stack direction='row' overflow='scroll' gap={5}>
                 {error ? <Typography>An error occurred fetching the reviews.</Typography> : <>
                     {reviews && reviews.length === 0 && <Typography>No reviews available.</Typography>}
-                    {reviews.map((review) => <ReviewCard key={review.reviewId} {...review} />)}
+                    {reviews.map((review) => <ReviewCard key={review.id} {...review} />)}
                 </>}
             </Stack>
         </Paper>

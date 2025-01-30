@@ -199,7 +199,7 @@ function BookingTable(props: BookingTableProps){
                         null
                     ],
                     "Customer": [
-                        t=> t.customer?.userId + " " + t.customer?.firstName + " " + t.customer?.lastName + " " + t.customer?.email,
+                        t=> t.customer?.id + " " + t.customer?.firstName + " " + t.customer?.lastName + " " + t.customer?.email,
                         null
                     ],
                     "Check-in Date": [

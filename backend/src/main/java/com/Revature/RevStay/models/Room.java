@@ -20,9 +20,9 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "hotel_id")
     @JsonIgnore
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private Hotel hotel;
 
     @Column(nullable = false)

@@ -28,7 +28,7 @@ const LoginForm = () => {
 
             const { token, user } = response.data as Response;
             sessionStorage.setItem('token', token);
-            sessionStorage.setItem('userId', user.userId.toString());
+            sessionStorage.setItem('userId', user.id.toString());
             console.log('User logged in:', user);
             auth.setAuthenticated(true)
             auth.setRole(user.role)

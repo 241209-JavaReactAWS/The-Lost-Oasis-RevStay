@@ -42,15 +42,17 @@ public class Hotel {
     @JoinColumn(nullable = false)
     private User owner;
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(schema = "rooms")
     private List<Room> rooms;
 
     @ElementCollection
     @Column(columnDefinition = "TEXT")
     private List<String> images;
 
-    @OneToMany
     @JsonIgnore
+    @OneToMany
+    @JoinTable(schema = "reviews")
     private List<Review> reviews;
 
     @JsonGetter("rating")

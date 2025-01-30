@@ -40,7 +40,7 @@ public class RoomService {
 
         // Verify that the user is the owner of the hotel
         Long ownerId = userService.getUserIdByEmail(ownerEmail);
-        if (hotel.getOwner().getUserId() != ownerId) {
+        if (hotel.getOwner().getId() != ownerId) {
             throw new RuntimeException("User is not authorized to add rooms to this hotel");
         }
 
@@ -77,7 +77,7 @@ public class RoomService {
 
         // Verify ownership
         Long ownerId = userService.getUserIdByEmail(ownerEmail);
-        if (room.getHotel().getOwner().getUserId() != ownerId) {
+        if (room.getHotel().getOwner().getId() != ownerId) {
             throw new RuntimeException("User is not authorized to delete this room");
         }
 
@@ -113,7 +113,7 @@ public class RoomService {
 
         // Verify ownership
         Long ownerId = userService.getUserIdByEmail(ownerEmail);
-        if (room.getHotel().getOwner().getUserId() != ownerId) {
+        if (room.getHotel().getOwner().getId() != ownerId) {
             throw new RuntimeException("User is not authorized to update this room");
         }
 

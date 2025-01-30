@@ -75,7 +75,7 @@ public class HotelService {
     }
 
     public List<Hotel> getHotelsByUserId(Long userId) {
-        return hotelRepository.findByOwner_userId(userId);
+        return hotelRepository.findByOwner_id(userId);
     }
 
     public Hotel updateHotel(
@@ -89,7 +89,7 @@ public class HotelService {
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
         // Verify ownership
-        if (hotel.getOwner().getUserId() != userId) {
+        if (hotel.getOwner().getId() != userId) {
             throw new RuntimeException("User is not authorized to update this hotel");
         }
 
@@ -142,7 +142,7 @@ public class HotelService {
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
         // Verify that the user is the owner of the hotel
-        if (hotel.getOwner().getUserId() != userId) {
+        if (hotel.getOwner().getId() != userId) {
             throw new RuntimeException("User is not authorized to delete this hotel");
         }
 

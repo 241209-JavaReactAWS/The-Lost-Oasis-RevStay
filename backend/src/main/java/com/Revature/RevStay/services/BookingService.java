@@ -127,7 +127,7 @@ public class BookingService {
                    "Booking not found"
                ));
 
-        if (user.getUserId() != booking.getHotel().getOwner().getUserId()) {
+        if (user.getId() != booking.getHotel().getOwner().getId()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not owner of this booking's hotel");
         }
 

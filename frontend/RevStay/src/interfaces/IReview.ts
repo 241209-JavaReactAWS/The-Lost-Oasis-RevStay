@@ -1,7 +1,7 @@
 import IUser from "./IUser"
 
 export default interface IReview{
-    reviewId: number,
+    id: number,
     user: IUser,
     rating: number,
     comment: string
